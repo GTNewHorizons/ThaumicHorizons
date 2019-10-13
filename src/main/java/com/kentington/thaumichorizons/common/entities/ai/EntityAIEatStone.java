@@ -56,7 +56,7 @@ public class EntityAIEatStone extends EntityAIBase
     }
 
     public boolean continueExecuting() {
-        return this.count-- > 0 && this.targetEntity.isEntityAlive() && this.thePig.getNavigator().noPath();
+        return this.count-- > 0 && !this.thePig.getNavigator().noPath() && this.targetEntity.isEntityAlive();
     }
 
     public void resetTask() {
