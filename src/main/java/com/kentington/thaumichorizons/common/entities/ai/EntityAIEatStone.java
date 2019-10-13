@@ -32,14 +32,12 @@ public class EntityAIEatStone extends EntityAIBase
 
     private boolean findItem() {
         final float dmod = 16.0f;
+        double mindis_e = 128.0f;
 
         final List<Entity> targets = (List<Entity>)this.thePig.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)this.thePig, AxisAlignedBB.getBoundingBox(this.thePig.posX - 16.0, this.thePig.posY - 16.0, this.thePig.posZ - 16.0, this.thePig.posX + 16.0, this.thePig.posY + 16.0, this.thePig.posZ + 16.0));
         if (targets.size() == 0) {
             return false;
         }
-
-        double mindis_e = 128.0f;
-
         for ( Entity e :targets ) {
 
             if (e instanceof EntityItem && ((EntityItem)e).getEntityItem().getItem() == Item.getItemFromBlock(Blocks.cobblestone) && ((EntityItem)e).delayBeforeCanPickup < 5) {
