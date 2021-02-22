@@ -49,13 +49,14 @@ public class BlockVortexStabilizer extends BlockContainer
     }
     
     public void onNeighborBlockChange(final World world, final int x, final int y, final int z, final Block nbid) {
-        if (!world.isRemote) {
-            final TileVortexStabilizer tile = (TileVortexStabilizer) world.getTileEntity(x, y, z);
-            tile.redstoned = world.isBlockIndirectlyGettingPowered(x, y, z);
-            if ((!tile.redstoned && !world.isBlockIndirectlyGettingPowered(x, y, z)) || (tile.redstoned && world.isBlockIndirectlyGettingPowered(x, y, z))) {
-                tile.markDirty();
-                tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
-            }
+        if (world.isRemote)
+            return;
+
+        final TileVortexStabilizer tile = (TileVortexStabilizer) world.getTileEntity(x, y, z);
+        tile.redstoned = world.isBlockIndirectlyGettingPowered(x, y, z);
+        if ((!tile.redstoned && !world.isBlockIndirectlyGettingPowered(x, y, z)) || (tile.redstoned && world.isBlockIndirectlyGettingPowered(x, y, z))) {
+            tile.markDirty();
+            tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
         }
     }
     
