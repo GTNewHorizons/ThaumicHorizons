@@ -556,9 +556,10 @@ public class EventHandlerEntity
         if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer && event.entityLiving.getHealth() - event.ammount <= 0.0f) {
             final EntityPlayer player = (EntityPlayer)event.entity;
             if (prop.tumorWarpPermanent > 0 || prop.tumorWarp > 0 || prop.tumorWarpTemp > 0) {
-                Thaumcraft.proxy.getPlayerKnowledge().addWarpPerm(event.entity.getCommandSenderName(), prop.tumorWarpPermanent);
+                // these are meant to add the warp pack to the player, I'm turning them off to make the warp tumor viable again.
+               /* Thaumcraft.proxy.getPlayerKnowledge().addWarpPerm(event.entity.getCommandSenderName(), prop.tumorWarpPermanent);
                 Thaumcraft.proxy.getPlayerKnowledge().addWarpSticky(event.entity.getCommandSenderName(), prop.tumorWarp);
-                Thaumcraft.proxy.getPlayerKnowledge().addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp);
+                Thaumcraft.proxy.getPlayerKnowledge().addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp); */
             }
             prop.resetPlayerInfusions();
             final IInventory baubles = BaublesApi.getBaubles(player);
