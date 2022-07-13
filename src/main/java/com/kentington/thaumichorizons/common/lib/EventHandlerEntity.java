@@ -555,8 +555,6 @@ public class EventHandlerEntity
         }
         if (!event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer && event.entityLiving.getHealth() - event.ammount <= 0.0f) {
             final EntityPlayer player = (EntityPlayer)event.entity;
-            if (prop.tumorWarpPermanent > 0 || prop.tumorWarp > 0 || prop.tumorWarpTemp > 0) {
-            }
             prop.resetPlayerInfusions();
             final IInventory baubles = BaublesApi.getBaubles(player);
             for (int a = 0; a < 4; ++a) {
