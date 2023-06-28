@@ -66,7 +66,6 @@ public class PocketPlaneData {
     public static void generatePocketPlane(final AspectList aspects, final PocketPlaneData data, final World world,
             final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
         if (!world.isRemote) {
-            // System.out.println("Starting pocket plane generation");
             final int xCenter = 0;
             final int yCenter = 128;
             final int zCenter = 256 * PocketPlaneData.planes.size();
@@ -110,7 +109,6 @@ public class PocketPlaneData {
             data.portalD = new int[4];
             PocketPlaneData.planes.add(data);
             PocketPlaneData.positions.put(pocketPlaneMAXID, Vec3.createVectorHelper(vortexX, vortexY, vortexZ));
-            // System.out.println("Finished with pocket plane generation!");
             world.getChunkFromBlockCoords(vortexX, vortexZ).isModified = true;
             creatures = 0;
             ++pocketPlaneMAXID;
@@ -1340,7 +1338,6 @@ public class PocketPlaneData {
     public static void drawAPocket(final int xCenter, final int yCenter, final int zCenter, final PocketPlaneData data,
             final World world, final AspectList aspects, final int noise, final Block block, final int md,
             final int xSize, final int zSize, final int xOffset, final int yOffset, final int zOffset) {
-        // System.out.println("Drawing a pocket of " + block + " with width " + xSize + " and length " + zSize);
         final NoiseGeneratorOctaves noiseGen = new NoiseGeneratorOctaves(world.rand, 10);
         double[] noiseDataTop = null;
         noiseDataTop = noiseGen.generateNoiseOctaves(
@@ -1615,7 +1612,6 @@ public class PocketPlaneData {
     }
 
     public static void destroyPortal(final int id, final int which) {
-        // System.out.println("Destroying portal " + which + " in plane " + id);
         final PocketPlaneData data = PocketPlaneData.planes.get(id);
         final World world = MinecraftServer.getServer().worldServerForDimension(ThaumicHorizons.dimensionPocketId);
         if (which == 1) {
@@ -1658,7 +1654,6 @@ public class PocketPlaneData {
     }
 
     public static void makePortal(final int id, final int which, final int xCoord, final int yCoord, final int zCoord) {
-        // System.out.println("Creating portal " + which + " in plane " + id);
         final PocketPlaneData data = PocketPlaneData.planes.get(id);
         final World world = MinecraftServer.getServer().worldServerForDimension(ThaumicHorizons.dimensionPocketId);
         if (which == 1) {

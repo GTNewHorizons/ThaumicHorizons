@@ -85,23 +85,7 @@ public class TilePortalTH extends TileThaumcraft {
                         }
                         player.timeUntilPortal = 50;
                         final int oldDim = player.dimension;
-                        /*
-                         * player.mcServer.getConfigurationManager().transferPlayerToDimension(player, this.dimension,
-                         * (Teleporter)new NightmareTeleporter(mServer.worldServerForDimension(this.dimension))); if
-                         * (oldDim == ThaumicHorizons.dimensionPocketId &&
-                         * PocketPlaneData.positions.containsKey(player.getCommandSenderName())) {
-                         * //System.out.println("Loading position " +
-                         * PocketPlaneData.positions.get(player.getCommandSenderName()));
-                         * player.setPositionAndUpdate(PocketPlaneData.positions.get(player.getCommandSenderName()).
-                         * xCoord, PocketPlaneData.positions.get(player.getCommandSenderName()).yCoord,
-                         * PocketPlaneData.positions.get(player.getCommandSenderName()).zCoord); } else { if
-                         * (this.pocket < 0) { continue; } PocketPlaneData.positions.put(player.getCommandSenderName(),
-                         * Vec3.createVectorHelper(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5));
-                         * //System.out.println("Saving position " +
-                         * PocketPlaneData.positions.get(player.getCommandSenderName()));
-                         * player.setPositionAndUpdate(0.5, 129.0, (double)(128 * (this.pocket - 3) + 0.5f));
-                         * this.worldObj.setBlockToAir(this.xCoord, this.yCoord, this.zCoord);
-                         */ }
+                    }
                 }
             }
         }

@@ -657,12 +657,6 @@ public class ThaumicHorizons {
 
         GameRegistry.registerItem(itemGolemBellTH, "Golemancy Bell TH");
         ConfigItems.itemGolemBell = itemGolemBellTH;
-        /*
-         * try { GameRegistry.addSubstitutionAlias("Thaumcraft:GolemBell", Type.ITEM, itemGolemBellTH);
-         * ConfigItems.itemGolemBell = itemGolemBellTH; } catch (ExistingSubstitutionException var7) {
-         * var7.printStackTrace(); //System.out.
-         * println("WARNING: Unable to override golemancer\'s bell! Animated golems will behave unpredictably!"); }
-         */
 
         GameRegistry.registerItem(itemBoatGreatwood, "boatGreatwood");
         GameRegistry.registerItem(itemBoatThaumium, "boatThaumium");
@@ -758,14 +752,8 @@ public class ThaumicHorizons {
         FMLCommonHandler.instance().bus().register(instance);
     }
 
-    // public static Boolean OBFUSCATED = false;
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        /*
-         * boolean obf = true; try { obf = ((LaunchClassLoader)
-         * Transformer.class.getClassLoader()).getClassBytes("net.minecraft.world.World") == null; } catch (IOException
-         * iox) { } OBFUSCATED = obf;
-         */
         proxy.registerKeyBindings();
         proxy.registerDisplayInformation();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);

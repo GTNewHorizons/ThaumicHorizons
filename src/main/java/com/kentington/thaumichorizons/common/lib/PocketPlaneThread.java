@@ -31,7 +31,6 @@ public class PocketPlaneThread implements Runnable {
 
     @Override
     public void run() {
-        // System.out.println("Starting pocket plane generation thread...");
         PocketPlaneData.generatePocketPlane(this.aspects, this.data, this.world, this.x, this.y, this.z, this.returnID);
     }
 }
