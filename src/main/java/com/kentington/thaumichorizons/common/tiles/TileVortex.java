@@ -68,7 +68,6 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.ppThread = null;
     }
 
-
     public void updateEntity() {
         super.updateEntity();
 
