@@ -241,6 +241,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     public void updateEntity() {
         super.updateEntity();
         if (this.firstTick && this.entityNBTObj != null) {
+            //// System.out.println("Initialized vat");
             loadContainedEntity(entityNBTObj);
             this.firstTick = false;
         }
@@ -598,7 +599,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         for (final ChunkCoordinates cc : this.pedestals) {
             final TileEntity te = this.worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
             if (te instanceof final TilePedestal ped) {
-                if (ped.getStackInSlot(0) == null) {
+                if (ped.getStackInSlot(0) == null) { // func_70301_a
                     continue;
                 }
                 components.add(ped.getStackInSlot(0).copy());
@@ -1340,7 +1341,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 this.setEntityContained(
                         this.worldObj.getPlayerEntityByName(
                                 nbttagcompound.getCompoundTag("entity").getString("playerName")));
-            } else if (nbttagcompound.getCompoundTag("entity").hasKey("id")) {
+            } else if (nbttagcompound.getCompoundTag("entity").hasKey("id")) { // && !worldObj.isRemote){
 
                 this.setEntityContained(
                         (EntityLivingBase) EntityList
@@ -1574,7 +1575,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         return null;
     }
 
-    public void setInventorySlotContents(final int slot, final ItemStack stack) {
+    public void setInventorySlotContents(final int slot, final ItemStack stack) { // func_70299_a
         if (slot == 0) {
             this.sample = stack;
         } else {
