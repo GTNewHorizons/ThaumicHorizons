@@ -55,6 +55,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public boolean generating;
     public boolean cheat;
     public ArrayList<ItemStack> items;
+    Thread ppThread;
 
     public TileVortex() {
         this.aspects = new AspectList();
@@ -63,8 +64,10 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.createdDimension = false;
         this.generating = false;
         this.cheat = false;
-        this.items = new ArrayList<>();
+        this.items = new ArrayList<ItemStack>();
+        this.ppThread = null;
     }
+
 
     public void updateEntity() {
         super.updateEntity();
@@ -77,7 +80,16 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                     this.zCoord + this.worldObj.rand.nextFloat(),
                     1.0f,
                     false);
-            this.createDimension(null);
+            if (this.ppThread == null) {
+                this.createDimension(null);
+                return;
+            }
+            if (!this.ppThread.isAlive()) {
+                this.generating = false;
+                this.createdDimension = true;
+                this.markDirty();
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            }
         } else {
             if (this.collapsing) {
                 ++this.count;
@@ -289,17 +301,16 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.generating = true;
         if (!this.worldObj.isRemote) {
             this.returnID = this.worldObj.provider.dimensionId;
-            new PocketPlaneThread(
-                    data,
-                    this.aspects,
-                    MinecraftServer.getServer().worldServerForDimension(ThaumicHorizons.dimensionPocketId),
-                    this.xCoord,
-                    this.yCoord,
-                    this.zCoord,
-                    this.returnID);
-            this.generating = false;
-            this.createdDimension = true;
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            (this.ppThread = new Thread(
+                    new PocketPlaneThread(
+                            data,
+                            this.aspects,
+                            (World) MinecraftServer.getServer()
+                                    .worldServerForDimension(ThaumicHorizons.dimensionPocketId),
+                            this.xCoord,
+                            this.yCoord,
+                            this.zCoord,
+                            this.returnID))).run();
         }
         this.markDirty();
     }
