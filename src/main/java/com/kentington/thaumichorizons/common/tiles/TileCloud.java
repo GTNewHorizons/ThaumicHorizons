@@ -243,6 +243,7 @@ public class TileCloud extends TileThaumcraft {
                                     break;
                                 }
                             }
+                            // break;
                         }
                     }
                 }
@@ -352,6 +353,7 @@ public class TileCloud extends TileThaumcraft {
                                     }
                                     this.entityDropItem(new ItemStack(ConfigItems.itemNugget, 1, 0), 0.3f);
                                 }
+                                // break;
                             }
                             case 5 -> {
                                 switch (this.worldObj.rand.nextInt(10)) {
@@ -386,6 +388,7 @@ public class TileCloud extends TileThaumcraft {
                                         break Label_4978;
                                     }
                                 }
+                                // break;
                             }
                             case 6 -> {
                                 Aspect asp = null;
@@ -802,6 +805,7 @@ public class TileCloud extends TileThaumcraft {
                                         }
                                     }
                                 }
+                                // break;
                             }
                             case 9 -> {
                                 this.worldObj.spawnEntityInWorld(

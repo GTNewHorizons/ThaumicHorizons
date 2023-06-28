@@ -189,6 +189,7 @@ public class BlockGatewayPortal extends Block {
                             return this.leftSide(isXAligned, side);
                         }
                     }
+                    // break;
                 }
                 case 1, 2, 3 -> {
                     return this.leftSide(isXAligned, side);
@@ -229,6 +230,7 @@ public class BlockGatewayPortal extends Block {
                             break Label_0410;
                         }
                     }
+                    // break;
                 }
                 case 5 -> {
                     switch (side) {
@@ -333,6 +335,7 @@ public class BlockGatewayPortal extends Block {
                             return this.rightSide(isXAligned, side);
                         }
                     }
+                    // break;
                 }
                 case 11, 12, 13 -> {
                     return this.rightSide(isXAligned, side);
@@ -373,6 +376,7 @@ public class BlockGatewayPortal extends Block {
                             break Label_0410;
                         }
                     }
+                    // break;
                 }
             }
         }
