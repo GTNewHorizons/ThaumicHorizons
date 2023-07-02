@@ -448,6 +448,8 @@ public class ThaumicHorizons {
     public static InfusionRecipe recipeLensOrderEntropy;
     public static InfusionRecipe recipeEnchantClay;
     public static InfusionRecipe recipeKeystone;
+    public static InfusionRecipe recipeKeystone1;
+
     public static InfusionRecipe recipeVortexStabilizer;
     public static InfusionRecipe recipeRecombinator;
     public static InfusionRecipe recipeSlot;
@@ -2048,18 +2050,50 @@ public class ThaumicHorizons {
         ResearchPage infusion12;
         ResearchPage infusion13b;
         if (enablePocket) {
-            if (Loader.isModLoaded("gregtech")) {
-                ThaumcraftApi.addWarpToResearch("pocketPlane", 4);
-                ResearchItem dummyTag = new ResearchItem(
+            ResearchItem dummyTag = new ResearchItem(
+                    "pocketPlane",
+                    "ThaumicHorizons",
+                    (new AspectList()).add(Aspect.TRAVEL, 24).add(Aspect.VOID, 21).add(Aspect.CRAFT, 18)
+                            .add(Aspect.AURA, 15).add(Aspect.MECHANISM, 12).add(Aspect.ELDRITCH, 6)
+                            .add(Aspect.MECHANISM, 9).add(Aspect.MAGIC, 6).add(Aspect.MIND, 3),
+                    18,
+                    8,
+                    4,
+                    new ResourceLocation("thaumichorizons", "textures/misc/pocketplane.png"));
+            if (!Loader.isModLoaded("gregtech")) {
+                recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
                         "pocketPlane",
-                        "ThaumicHorizons",
-                        (new AspectList()).add(Aspect.TRAVEL, 24).add(Aspect.VOID, 21).add(Aspect.CRAFT, 18)
-                                .add(Aspect.AURA, 15).add(Aspect.MECHANISM, 12).add(Aspect.ELDRITCH, 6)
-                                .add(Aspect.MECHANISM, 9).add(Aspect.MAGIC, 6).add(Aspect.MIND, 3),
-                        18,
+                        new ItemStack(itemKeystone),
+                        6,
+                        (new AspectList()).add(Aspect.TRAVEL, 32).add(Aspect.VOID, 32).add(Aspect.EXCHANGE, 16),
+                        new ItemStack(itemPlanarConduit),
+                        new ItemStack[] { new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6) });
+                recipeKeystone1 = ThaumcraftApi.addInfusionCraftingRecipe(
+                        "planarKeystone",
+                        new ItemStack(itemKeystone),
+                        6,
+                        (new AspectList()).add(Aspect.TRAVEL, 24).add(Aspect.VOID, 24).add(Aspect.ELDRITCH, 12),
+                        new ItemStack(Items.diamond),
+                        new ItemStack[] { new ItemStack(ConfigItems.itemResource, 1, 3),
+                                new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(ConfigItems.itemResource, 1, 3),
+                                new ItemStack(ConfigItems.itemShard, 1, 6) });
+                recipeSlot = ThaumcraftApi.addInfusionCraftingRecipe(
+                        "planarKeystone",
+                        new ItemStack(blockSlot),
                         8,
-                        4,
-                        new ResourceLocation("thaumichorizons", "textures/misc/pocketplane.png"));
+                        (new AspectList()).add(Aspect.VOID, 32).add(Aspect.TRAVEL, 24).add(Aspect.MECHANISM, 24)
+                                .add(Aspect.ELDRITCH, 24),
+                        new ItemStack(itemPlanarConduit),
+                        new ItemStack[] { new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16) });
+            } else {
                 recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
                         "pocketPlane",
                         new ItemStack(itemKeystone),
@@ -2079,61 +2113,7 @@ public class ThaumicHorizons {
                                 new ItemStack(ConfigItems.itemShard, 1, 6),
                                 GT_OreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Glass, 1L),
                                 GT_OreDictUnificator.get(OrePrefixes.lens, Materials.InfusedOrder, 1L) });
-                ResearchPage dummyStack = new ResearchPage("pocketPlane1");
-                ResearchPage dummyInputStack = new ResearchPage("pocketPlane2");
-                ResearchPage generalInfusion = new ResearchPage("pocketPlane3");
-                infusion1 = new ResearchPage(recipeKeystone);
-                dummyTag.setPages(dummyStack, dummyInputStack, generalInfusion, infusion1);
-                dummyTag.setParents("planarRift", "PRIMPEARL");
-                dummyTag.setConcealed();
-                ResearchCategories.addResearch(dummyTag);
-                ResearchItem infusion2 = new ResearchItem(
-                        "planarClouds",
-                        "ThaumicHorizons",
-                        new AspectList(),
-                        20,
-                        6,
-                        1,
-                        new ItemStack(blockCloud));
-                infusion3 = new ResearchPage("planarClouds1");
-                infusion4 = new ResearchPage("planarClouds2");
-                infusion5 = new ResearchPage("planarClouds3");
-                infusion2.setPages(infusion3, infusion4, infusion5);
-                infusion2.setItemTriggers(
-                        new ItemStack(blockCloud, 1, 32767),
-                        new ItemStack(blockCloudGlowing, 1, 32767));
-                infusion2.setLost();
-                infusion2.setRound();
-                infusion2.setParents("pocketPlane");
-                ResearchCategories.addResearch(infusion2);
-                ResearchItem infusion6 = new ResearchItem(
-                        "leviathan",
-                        "ThaumicHorizons",
-                        new AspectList(),
-                        20,
-                        10,
-                        1,
-                        new ItemStack(blockLeviathan));
-                infusion7 = new ResearchPage("leviathan1");
-                infusion8 = new ResearchPage("leviathan2");
-                infusion6.setPages(infusion7, infusion8);
-                infusion6.setItemTriggers(new ItemStack(blockLeviathan));
-                infusion6.setLost();
-                infusion6.setRound();
-                infusion6.setParents("pocketPlane");
-                ResearchCategories.addResearch(infusion6);
-                ThaumcraftApi.addWarpToResearch("planarKeystone", 5);
-                ResearchItem infusion9 = new ResearchItem(
-                        "planarKeystone",
-                        "ThaumicHorizons",
-                        (new AspectList()).add(Aspect.TRAVEL, 15).add(Aspect.VOID, 12).add(Aspect.AURA, 9)
-                                .add(Aspect.ELDRITCH, 6).add(Aspect.MAGIC, 3),
-                        20,
-                        8,
-                        4,
-                        new ItemStack(blockSlot));
-                infusion10 = new ResearchPage("planarKeystone1");
-                recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
+                recipeKeystone1 = ThaumcraftApi.addInfusionCraftingRecipe(
                         "planarKeystone",
                         new ItemStack(itemKeystone),
                         9,
@@ -2148,8 +2128,6 @@ public class ThaumicHorizons {
                                 new ItemStack(ConfigItems.itemResource, 1, 3),
                                 GT_OreDictUnificator.get(OrePrefixes.lens, Materials.Glass, 1L),
                                 new ItemStack(ConfigItems.itemResource, 1, 3) });
-                infusion11 = new ResearchPage(recipeKeystone);
-                infusion12 = new ResearchPage("planarKeystone2");
                 recipeSlot = ThaumcraftApi.addInfusionCraftingRecipe(
                         "planarKeystone",
                         new ItemStack(blockSlot),
@@ -2169,48 +2147,104 @@ public class ThaumicHorizons {
                                 GT_OreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
                                 GT_OreDictUnificator.get(OrePrefixes.plateDense, Materials.Enderium, 1L),
                                 GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L) });
-                ResearchPage instilledLoyalty = new ResearchPage(recipeSlot);
-                ItemStack infusion13 = new ItemStack(ConfigBlocks.blockHole, 1, 15);
-                ConfigResearch.recipes.put(
-                        "PlanarGateway",
-                        Arrays.asList(
-                                (new AspectList()).add(Aspect.AIR, 250).add(Aspect.FIRE, 250).add(Aspect.WATER, 250)
-                                        .add(Aspect.EARTH, 250).add(Aspect.ENTROPY, 250).add(Aspect.ORDER, 250),
-                                5,
-                                5,
-                                1,
-                                Arrays.asList(
-                                        new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(blockSlot),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        infusion13,
-                                        infusion13,
-                                        infusion13,
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        infusion13,
-                                        infusion13,
-                                        infusion13,
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        infusion13,
-                                        infusion13,
-                                        infusion13,
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
-                                        new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3))));
-                infusion13b = new ResearchPage((List) ConfigResearch.recipes.get("PlanarGateway"));
-                infusion9.setPages(infusion10, infusion11, infusion12, instilledLoyalty, infusion13b);
-                infusion9.setParents("pocketPlane");
-                infusion9.setConcealed();
-                ResearchCategories.addResearch(infusion9);
             }
+            ThaumcraftApi.addWarpToResearch("pocketPlane", 4);
+            ThaumcraftApi.addWarpToResearch("planarKeystone", 5);
+
+            ResearchPage dummyStack = new ResearchPage("pocketPlane1");
+            ResearchPage dummyInputStack = new ResearchPage("pocketPlane2");
+            ResearchPage generalInfusion = new ResearchPage("pocketPlane3");
+            infusion1 = new ResearchPage(recipeKeystone);
+            dummyTag.setPages(dummyStack, dummyInputStack, generalInfusion, infusion1);
+            dummyTag.setParents("planarRift", "PRIMPEARL");
+            dummyTag.setConcealed();
+            ResearchCategories.addResearch(dummyTag);
+            ResearchItem infusion2 = new ResearchItem(
+                    "planarClouds",
+                    "ThaumicHorizons",
+                    new AspectList(),
+                    20,
+                    6,
+                    1,
+                    new ItemStack(blockCloud));
+            infusion3 = new ResearchPage("planarClouds1");
+            infusion4 = new ResearchPage("planarClouds2");
+            infusion5 = new ResearchPage("planarClouds3");
+            infusion2.setPages(infusion3, infusion4, infusion5);
+            infusion2.setItemTriggers(new ItemStack(blockCloud, 1, 32767), new ItemStack(blockCloudGlowing, 1, 32767));
+            infusion2.setLost();
+            infusion2.setRound();
+            infusion2.setParents("pocketPlane");
+            ResearchCategories.addResearch(infusion2);
+            ResearchItem infusion6 = new ResearchItem(
+                    "leviathan",
+                    "ThaumicHorizons",
+                    new AspectList(),
+                    20,
+                    10,
+                    1,
+                    new ItemStack(blockLeviathan));
+            infusion7 = new ResearchPage("leviathan1");
+            infusion8 = new ResearchPage("leviathan2");
+            infusion6.setPages(infusion7, infusion8);
+            infusion6.setItemTriggers(new ItemStack(blockLeviathan));
+            infusion6.setLost();
+            infusion6.setRound();
+            infusion6.setParents("pocketPlane");
+            ResearchCategories.addResearch(infusion6);
+            ResearchItem infusion9 = new ResearchItem(
+                    "planarKeystone",
+                    "ThaumicHorizons",
+                    (new AspectList()).add(Aspect.TRAVEL, 15).add(Aspect.VOID, 12).add(Aspect.AURA, 9)
+                            .add(Aspect.ELDRITCH, 6).add(Aspect.MAGIC, 3),
+                    20,
+                    8,
+                    4,
+                    new ItemStack(blockSlot));
+            infusion10 = new ResearchPage("planarKeystone1");
+            infusion11 = new ResearchPage(recipeKeystone1);
+            infusion12 = new ResearchPage("planarKeystone2");
+            ResearchPage instilledLoyalty = new ResearchPage(recipeSlot);
+            ItemStack infusion13 = new ItemStack(ConfigBlocks.blockHole, 1, 15);
+            ConfigResearch.recipes.put(
+                    "PlanarGateway",
+                    Arrays.asList(
+                            (new AspectList()).add(Aspect.AIR, 250).add(Aspect.FIRE, 250).add(Aspect.WATER, 250)
+                                    .add(Aspect.EARTH, 250).add(Aspect.ENTROPY, 250).add(Aspect.ORDER, 250),
+                            5,
+                            5,
+                            1,
+                            Arrays.asList(
+                                    new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(blockSlot),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    infusion13,
+                                    infusion13,
+                                    infusion13,
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    infusion13,
+                                    infusion13,
+                                    infusion13,
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    infusion13,
+                                    infusion13,
+                                    infusion13,
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockCosmeticSolid, 1, 11),
+                                    new ItemStack(ConfigBlocks.blockMetalDevice, 1, 3))));
+            infusion13b = new ResearchPage((List) ConfigResearch.recipes.get("PlanarGateway"));
+            infusion9.setPages(infusion10, infusion11, infusion12, instilledLoyalty, infusion13b);
+            infusion9.setParents("pocketPlane");
+            infusion9.setConcealed();
+            ResearchCategories.addResearch(infusion9);
         }
         ResearchItem generalInfusion1 = new ResearchItem(
                 "generalInfusion",
