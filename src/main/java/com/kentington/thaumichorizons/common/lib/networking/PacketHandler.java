@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 public class PacketHandler {
 
     public static final SimpleNetworkWrapper INSTANCE;
-    private static final Marker SECURITY_MARKER = MarkerManager.getMarker("SUSPICIOUS_PACKETS");
+    private static final Marker SECURITY_MARKER = MarkerManager.getMarker("SuspiciousPackets");
 
     public static void init() {
         int idx = 0;
