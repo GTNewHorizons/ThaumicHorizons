@@ -64,13 +64,11 @@ public class PacketHandler {
         ThaumicHorizons.log.warn(SECURITY_MARKER, message, args);
     }
 
-    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int sentPlayerID, int requiredInfusion) {
+    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int sentPlayerID,
+            int requiredInfusion) {
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         if (player.getEntityId() != sentPlayerID) {
-            PacketHandler.securityWarn(
-                    "Player {} tried to {} for other people!",
-                    player.getGameProfile(),
-                    action);
+            PacketHandler.securityWarn("Player {} tried to {} for other people!", player.getGameProfile(), action);
             return false;
         }
         EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
