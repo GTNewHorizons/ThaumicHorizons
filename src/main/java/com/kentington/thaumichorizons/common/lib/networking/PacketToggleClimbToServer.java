@@ -38,7 +38,7 @@ public class PacketToggleClimbToServer implements IMessage, IMessageHandler<Pack
     }
 
     public IMessage onMessage(final PacketToggleClimbToServer message, final MessageContext ctx) {
-        if (!PacketHandler.selfInfusionSecurityCheck(ctx, message.playerid, 9)) {
+        if (!PacketHandler.selfInfusionSecurityCheck(ctx, "toggle spider climb", message.playerid, 9)) {
             return null;
         }
         final World world = DimensionManager.getWorld(message.dim);

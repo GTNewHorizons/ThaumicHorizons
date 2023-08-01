@@ -38,7 +38,7 @@ public class PacketFingersToServer implements IMessage, IMessageHandler<PacketFi
     }
 
     public IMessage onMessage(final PacketFingersToServer message, final MessageContext ctx) {
-        if (!PacketHandler.selfInfusionSecurityCheck(ctx, message.playerid, 2)) {
+        if (!PacketHandler.selfInfusionSecurityCheck(ctx, "open workbench", message.playerid, 2)) {
             return null;
         }
         final World world = DimensionManager.getWorld(message.dim);

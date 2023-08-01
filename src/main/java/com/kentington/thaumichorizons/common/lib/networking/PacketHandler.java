@@ -64,19 +64,21 @@ public class PacketHandler {
         ThaumicHorizons.log.warn(SECURITY_MARKER, message, args);
     }
 
-    static boolean selfInfusionSecurityCheck(final MessageContext ctx, int sentPlayerID, int requiredInfusion) {
+    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int sentPlayerID, int requiredInfusion) {
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         if (player.getEntityId() != sentPlayerID) {
             PacketHandler.securityWarn(
-                    "Player {} tried to toggle chamelon skin (i.e. invisible) for other people!",
-                    player.getGameProfile());
+                    "Player {} tried to {} for other people!",
+                    player.getGameProfile(),
+                    action);
             return false;
         }
         EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
         if (!ieep.hasInfusion(requiredInfusion)) {
             PacketHandler.securityWarn(
-                    "Player {} tried to toggle on chamelon skin (i.e. invisible) getting the ability legitimately",
-                    player.getGameProfile());
+                    "Player {} tried to {} getting the ability legitimately",
+                    player.getGameProfile(),
+                    action);
             return false;
         }
         return true;

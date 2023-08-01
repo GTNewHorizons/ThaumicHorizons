@@ -42,7 +42,7 @@ public class PacketToggleInvisibleToServer
     }
 
     public IMessage onMessage(final PacketToggleInvisibleToServer message, final MessageContext ctx) {
-        if (!PacketHandler.selfInfusionSecurityCheck(ctx, message.playerid, 10)) {
+        if (!PacketHandler.selfInfusionSecurityCheck(ctx, "toggle chamelon skin (i.e. invisible)", message.playerid, 10)) {
             return null;
         }
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
