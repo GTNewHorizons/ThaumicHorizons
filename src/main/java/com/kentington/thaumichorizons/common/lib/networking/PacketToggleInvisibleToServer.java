@@ -7,10 +7,9 @@ package com.kentington.thaumichorizons.common.lib.networking;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import com.kentington.thaumichorizons.common.lib.EntityInfusionProperties;
 
@@ -43,12 +42,14 @@ public class PacketToggleInvisibleToServer
     }
 
     public IMessage onMessage(final PacketToggleInvisibleToServer message, final MessageContext ctx) {
-        final World world = DimensionManager.getWorld(message.dim);
-        final EntityPlayer player = (EntityPlayer) world.getEntityByID(message.playerid);
-        ((EntityInfusionProperties) player
-                .getExtendedProperties("CreatureInfusion")).toggleInvisible = !((EntityInfusionProperties) player
-                        .getExtendedProperties("CreatureInfusion")).toggleInvisible;
-        if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion")).toggleInvisible) {
+        if (!PacketHandler
+                .selfInfusionSecurityCheck(ctx, "toggle chamelon skin (i.e. invisible)", message.playerid, 10)) {
+            return null;
+        }
+        final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+        EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
+        ieep.toggleInvisible = !ieep.toggleInvisible;
+        if (ieep.toggleInvisible) {
             player.removePotionEffect(Potion.invisibility.id);
             player.setInvisible(false);
         } else {
