@@ -16,7 +16,11 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
-import com.kentington.thaumichorizons.common.lib.networking.*;
+import com.kentington.thaumichorizons.common.lib.networking.PacketFingersToServer;
+import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
+import com.kentington.thaumichorizons.common.lib.networking.PacketLensChangeToServer;
+import com.kentington.thaumichorizons.common.lib.networking.PacketToggleClimbToServer;
+import com.kentington.thaumichorizons.common.lib.networking.PacketToggleInvisibleToServer;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;

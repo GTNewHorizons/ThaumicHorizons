@@ -19,14 +19,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityGolemTH;
-import com.kentington.thaumichorizons.common.lib.*;
+import com.kentington.thaumichorizons.common.lib.PocketPlaneData;
+import com.kentington.thaumichorizons.common.lib.PocketPlaneThread;
+import com.kentington.thaumichorizons.common.lib.VortexTeleporter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import thaumcraft.api.ThaumcraftApiHelper;
