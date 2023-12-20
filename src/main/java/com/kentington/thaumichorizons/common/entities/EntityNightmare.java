@@ -123,7 +123,7 @@ public class EntityNightmare extends EntityEndersteed {
         if (this.hasCustomNameTag()) {
             return this.getCustomNameTag();
         }
-        return StatCollector.translateToLocal("entity.ThaumicHorizons.Nightmare.name");
+        return StatCollector.translateToLocal("entity.ThaumicHorizons.NightmareTH.name");
     }
 
     public void onUpdate() {
