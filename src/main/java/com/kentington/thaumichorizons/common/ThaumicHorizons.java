@@ -2060,40 +2060,8 @@ public class ThaumicHorizons {
                     8,
                     4,
                     new ResourceLocation("thaumichorizons", "textures/misc/pocketplane.png"));
-            if (!Loader.isModLoaded("gregtech")) {
-                recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
-                        "pocketPlane",
-                        new ItemStack(itemKeystone),
-                        6,
-                        (new AspectList()).add(Aspect.TRAVEL, 32).add(Aspect.VOID, 32).add(Aspect.EXCHANGE, 16),
-                        new ItemStack(itemPlanarConduit),
-                        new ItemStack[] { new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
-                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
-                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
-                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6) });
-                recipeKeystone1 = ThaumcraftApi.addInfusionCraftingRecipe(
-                        "planarKeystone",
-                        new ItemStack(itemKeystone),
-                        6,
-                        (new AspectList()).add(Aspect.TRAVEL, 24).add(Aspect.VOID, 24).add(Aspect.ELDRITCH, 12),
-                        new ItemStack(Items.diamond),
-                        new ItemStack[] { new ItemStack(ConfigItems.itemResource, 1, 3),
-                                new ItemStack(ConfigItems.itemShard, 1, 6),
-                                new ItemStack(ConfigItems.itemResource, 1, 3),
-                                new ItemStack(ConfigItems.itemShard, 1, 6) });
-                recipeSlot = ThaumcraftApi.addInfusionCraftingRecipe(
-                        "planarKeystone",
-                        new ItemStack(blockSlot),
-                        8,
-                        (new AspectList()).add(Aspect.VOID, 32).add(Aspect.TRAVEL, 24).add(Aspect.MECHANISM, 24)
-                                .add(Aspect.ELDRITCH, 24),
-                        new ItemStack(itemPlanarConduit),
-                        new ItemStack[] { new ItemStack(Items.gold_ingot),
-                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
-                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
-                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
-                                new ItemStack(ConfigItems.itemResource, 1, 16) });
-            } else {
+
+            if (Loader.isModLoaded("gregtech") && !Loader.isModLoaded("gregapi")) {
                 recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
                         "pocketPlane",
                         new ItemStack(itemKeystone),
@@ -2147,6 +2115,39 @@ public class ThaumicHorizons {
                                 GT_OreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
                                 GT_OreDictUnificator.get(OrePrefixes.plateDense, Materials.Enderium, 1L),
                                 GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L) });
+            } else {
+                recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
+                        "pocketPlane",
+                        new ItemStack(itemKeystone),
+                        6,
+                        (new AspectList()).add(Aspect.TRAVEL, 32).add(Aspect.VOID, 32).add(Aspect.EXCHANGE, 16),
+                        new ItemStack(itemPlanarConduit),
+                        new ItemStack[] { new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(Items.quartz), new ItemStack(ConfigItems.itemShard, 1, 6) });
+                recipeKeystone1 = ThaumcraftApi.addInfusionCraftingRecipe(
+                        "planarKeystone",
+                        new ItemStack(itemKeystone),
+                        6,
+                        (new AspectList()).add(Aspect.TRAVEL, 24).add(Aspect.VOID, 24).add(Aspect.ELDRITCH, 12),
+                        new ItemStack(Items.diamond),
+                        new ItemStack[] { new ItemStack(ConfigItems.itemResource, 1, 3),
+                                new ItemStack(ConfigItems.itemShard, 1, 6),
+                                new ItemStack(ConfigItems.itemResource, 1, 3),
+                                new ItemStack(ConfigItems.itemShard, 1, 6) });
+                recipeSlot = ThaumcraftApi.addInfusionCraftingRecipe(
+                        "planarKeystone",
+                        new ItemStack(blockSlot),
+                        8,
+                        (new AspectList()).add(Aspect.VOID, 32).add(Aspect.TRAVEL, 24).add(Aspect.MECHANISM, 24)
+                                .add(Aspect.ELDRITCH, 24),
+                        new ItemStack(itemPlanarConduit),
+                        new ItemStack[] { new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16), new ItemStack(Items.gold_ingot),
+                                new ItemStack(ConfigItems.itemResource, 1, 16) });
             }
             ThaumcraftApi.addWarpToResearch("pocketPlane", 4);
             ThaumcraftApi.addWarpToResearch("planarKeystone", 5);
