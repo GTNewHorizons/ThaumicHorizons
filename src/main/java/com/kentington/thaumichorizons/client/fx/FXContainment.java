@@ -48,8 +48,8 @@ public class FXContainment extends EntityFX {
         UtilsFX.bindTexture(FXContainment.portaltex);
         GL11.glPushMatrix();
         GL11.glDepthMask(false);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         final float f6 = 3.0f * this.particleScale;
         final float f7 = (float) (this.posX - FXContainment.interpPosX);
         final float f8 = (float) (this.posY - FXContainment.interpPosY);
@@ -79,7 +79,7 @@ public class FXContainment extends EntityFX {
                 f9 + p_70539_5_ * f6 - p_70539_7_ * f6,
                 f2,
                 f5);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
     }

@@ -76,13 +76,13 @@ public class GuiBloodInfuser extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(final float p_146976_1_, final int p_146976_2_,
             final int p_146976_3_) {
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", "textures/gui/guibloodinfuser.png"));
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int var5 = (this.width - this.xSize) / 2;
         final int var6 = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 
@@ -90,7 +90,7 @@ public class GuiBloodInfuser extends GuiContainer {
         this.drawEssentiaSelected();
         this.drawAspectList();
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", "textures/gui/guibloodinfuser.png"));
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (this.canScrollLeft()) {
@@ -234,7 +234,7 @@ public class GuiBloodInfuser extends GuiContainer {
             --this.flashTimer;
             this.drawFlash();
         }
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 
@@ -419,10 +419,10 @@ public class GuiBloodInfuser extends GuiContainer {
     void drawQuestionMark(final int x, final int y, final Color color) {
         final Minecraft mc = Minecraft.getMinecraft();
         GL11.glPushMatrix();
-        GL11.glDisable(2896);
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glPushMatrix();
         mc.renderEngine.bindTexture(new ResourceLocation("thaumcraft", "textures/aspects/_unknown.png"));
         GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f, 0.8f);
@@ -435,10 +435,10 @@ public class GuiBloodInfuser extends GuiContainer {
         var9.addVertexWithUV(x + 0.0, y + 0.0, this.zLevel, 0.0, 0.0);
         var9.draw();
         GL11.glPopMatrix();
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glAlphaFunc(516, 0.1f);
-        GL11.glEnable(2896);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.client.renderer.model.ModelVat;
 
@@ -27,7 +28,7 @@ public class TileVatRender extends TileEntitySpecialRenderer {
         GL11.glTranslatef((float) x + 0.5f, (float) y - 0.5f, (float) z + 0.5f);
         UtilsFX.bindTexture("thaumichorizons", this.tx1);
         TileVatRender.model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
-        GL11.glEnable(32826);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
     }
 

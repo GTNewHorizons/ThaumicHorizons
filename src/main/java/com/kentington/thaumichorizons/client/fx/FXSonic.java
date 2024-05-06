@@ -69,9 +69,9 @@ public class FXSonic extends EntityFX {
             final float f3, final float f4, final float f5) {
         tessellator.draw();
         GL11.glPushMatrix();
-        GL11.glDisable(2884);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         if (model == null) {
             model = AdvancedModelLoader.loadModel(FXSonic.MODEL);
         }
@@ -93,8 +93,8 @@ public class FXSonic extends EntityFX {
         GL11.glScaled(0.5, 0.5, -0.5);
         GL11.glColor4f(0.0f, b, b, 1.0f);
         model.renderAll();
-        GL11.glDisable(3042);
-        GL11.glEnable(2884);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glPopMatrix();
         Minecraft.getMinecraft().renderEngine.bindTexture(UtilsFX.getParticleTexture());
         tessellator.startDrawingQuads();

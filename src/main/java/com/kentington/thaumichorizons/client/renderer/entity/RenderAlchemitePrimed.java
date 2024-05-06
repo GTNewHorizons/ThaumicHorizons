@@ -53,16 +53,16 @@ public class RenderAlchemitePrimed extends RenderEntity {
         this.bindEntityTexture(entity);
         this.blockRenderer.renderBlockAsItem(ThaumicHorizons.blockAlchemite, 0, entity.getBrightness(p_76986_9_));
         if (entity.fuse / 5 % 2 == 0) {
-            GL11.glDisable(3553);
-            GL11.glDisable(2896);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 772);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, f2);
             this.blockRenderer.renderBlockAsItem(ThaumicHorizons.blockAlchemite, 0, 1.0f);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            GL11.glDisable(3042);
-            GL11.glEnable(2896);
-            GL11.glEnable(3553);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
         GL11.glPopMatrix();
     }

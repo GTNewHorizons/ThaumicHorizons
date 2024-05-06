@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
@@ -41,8 +42,8 @@ public class TileVatSlaveRender extends TileEntitySpecialRenderer {
                     final float n = 800 - tco.progress;
                     tco.getClass();
                     final float scale = n / 800.0f;
-                    GL11.glEnable(3042);
-                    GL11.glBlendFunc(770, 771);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, scale);
                     final Entity p_147936_1_ = tco.getEntityContained();
                     final double d0 = p_147936_1_.lastTickPosX + (p_147936_1_.posX - p_147936_1_.lastTickPosX) * f;
@@ -62,7 +63,7 @@ public class TileVatSlaveRender extends TileEntitySpecialRenderer {
                     RenderManager.instance.renderEntitySimple(tco.getEntityContained(), f);
                 }
                 GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
             } else if (tco.mode == 3) {
                 GL11.glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
                 GL11.glTranslatef(
@@ -98,7 +99,7 @@ public class TileVatSlaveRender extends TileEntitySpecialRenderer {
                         0.0f);
                 RenderManager.instance.renderEntitySimple(this.stack, f);
             }
-            GL11.glEnable(32826);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
         }
     }

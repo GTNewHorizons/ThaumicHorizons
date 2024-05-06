@@ -29,7 +29,7 @@ public class GuiInspiratron extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(final float p_146976_1_, final int p_146976_2_,
             final int p_146976_3_) {
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", "textures/gui/guiinspiratron.png"));
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int var5 = (this.width - this.xSize) / 2;
@@ -37,7 +37,7 @@ public class GuiInspiratron extends GuiContainer {
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         final int i1 = this.tile.getTimeRemainingScaled(28);
         this.drawTexturedModalRect(var5 + 66, var6 + 102, 176, 158 - i1, 44, i1);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 }

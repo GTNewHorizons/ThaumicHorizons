@@ -28,8 +28,8 @@ public class ModelGolemTH extends ModelGolem {
                 GL11.glColor3f(0.5f + h1, 0.9f + h2, 0.5f + h1);
             }
         }
-        this.golemHead.rotateAngleY = par4 / 57.295776f;
-        this.golemHead.rotateAngleX = par5 / 57.295776f;
+        this.golemHead.rotateAngleY = par4 / (180F / (float) Math.PI);
+        this.golemHead.rotateAngleX = par5 / (180F / (float) Math.PI);
         this.golemRightLeg.rotateAngleX = -1.5f * this.func_78172_a(par1, 13.0f) * par2;
         this.golemLeftLeg.rotateAngleX = 1.5f * this.func_78172_a(par1, 13.0f) * par2;
         this.golemRightLeg.rotateAngleY = 0.0f;
@@ -38,8 +38,8 @@ public class ModelGolemTH extends ModelGolem {
         this.golemRightArm.rotateAngleZ = 0.0f;
         if (core == 6) {
             final float s = (1.0f - (0.5f + Math.min(64, ((EntityGolemBase) en).getCarryLimit()) / 128.0f)) * 25.0f;
-            this.golemLeftArm.rotateAngleZ = s / 57.295776f;
-            this.golemRightArm.rotateAngleZ = -s / 57.295776f;
+            this.golemLeftArm.rotateAngleZ = s / (180F / (float) Math.PI);
+            this.golemRightArm.rotateAngleZ = -s / (180F / (float) Math.PI);
         }
     }
 

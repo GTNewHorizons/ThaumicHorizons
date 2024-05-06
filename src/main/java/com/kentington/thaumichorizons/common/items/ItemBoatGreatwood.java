@@ -44,8 +44,8 @@ public class ItemBoatGreatwood extends ItemBoat {
         final double d2 = p_77659_3_.prevPosY + (p_77659_3_.posY - p_77659_3_.prevPosY) * f + 1.62 - p_77659_3_.yOffset;
         final double d3 = p_77659_3_.prevPosZ + (p_77659_3_.posZ - p_77659_3_.prevPosZ) * f;
         final Vec3 vec3 = Vec3.createVectorHelper(d0, d2, d3);
-        final float f4 = MathHelper.cos(-f3 * 0.017453292f - 3.1415927f);
-        final float f5 = MathHelper.sin(-f3 * 0.017453292f - 3.1415927f);
+        final float f4 = MathHelper.cos(-f3 * 0.017453292f - (float) Math.PI);
+        final float f5 = MathHelper.sin(-f3 * 0.017453292f - (float) Math.PI);
         final float f6 = -MathHelper.cos(-f2 * 0.017453292f);
         final float f7 = MathHelper.sin(-f2 * 0.017453292f);
         final float f8 = f5 * f6;

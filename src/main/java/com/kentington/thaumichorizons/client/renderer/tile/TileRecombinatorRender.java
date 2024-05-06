@@ -42,8 +42,8 @@ public class TileRecombinatorRender extends TileEntitySpecialRenderer {
             final int frames = UtilsFX.getTextureAnimationSize(TileRecombinatorRender.tx2);
             final int i = (int) ((nt / 40000000L + x) % frames);
             UtilsFX.bindTexture("thaumcraft", TileRecombinatorRender.tx2);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glScalef(1.0f, 1.0f, 1.0f);
             GL11.glPushMatrix();
             UtilsFX.renderFacingQuad(
@@ -73,7 +73,7 @@ public class TileRecombinatorRender extends TileEntitySpecialRenderer {
                         0.1f,
                         3);
             }
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
         }
         GL11.glPopMatrix();
     }

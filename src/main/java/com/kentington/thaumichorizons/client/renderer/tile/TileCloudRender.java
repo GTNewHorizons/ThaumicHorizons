@@ -51,7 +51,7 @@ public class TileCloudRender extends TileEntitySpecialRenderer {
             return;
         }
         final float f1 = 1.0f;
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         if (f1 > 0.0f) {
             final Tessellator tessellator = Tessellator.instance;
             final BiomeGenBase biomegenbase = tco.getWorldObj().getBiomeGenForCoords(tco.xCoord, tco.zCoord);
@@ -62,11 +62,11 @@ public class TileCloudRender extends TileEntitySpecialRenderer {
             } else {
                 this.bindTexture(TileCloudRender.locationSnowPng);
             }
-            GL11.glTexParameterf(3553, 10242, 10497.0f);
-            GL11.glTexParameterf(3553, 10243, 10497.0f);
-            GL11.glDisable(2896);
-            GL11.glDisable(2884);
-            GL11.glDisable(3042);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0f);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0f);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glDepthMask(true);
             OpenGlHelper.glBlendFunc(770, 1, 1, 0);
             final float f2 = tco.getWorldObj().getTotalWorldTime() + p_147500_8_ + tco.xCoord + 16 * tco.zCoord;
@@ -130,8 +130,8 @@ public class TileCloudRender extends TileEntitySpecialRenderer {
             tessellator.addVertexWithUV(p_147500_2_ + d4, p_147500_4_, p_147500_6_ + d5, d13, d15);
             tessellator.addVertexWithUV(p_147500_2_ + d4, p_147500_4_ - d12, p_147500_6_ + d5, d13, d16);
             tessellator.draw();
-            GL11.glEnable(2896);
-            GL11.glEnable(3553);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glDepthMask(true);
         }
     }

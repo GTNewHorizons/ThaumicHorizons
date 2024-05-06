@@ -18,6 +18,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.common.tiles.TileSyntheticNode;
 
@@ -80,7 +81,7 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                     && tco.getAspectsBase().getAspects()[0] != null) {
                 final double offset = 6.283185307179586 / tco.getAspectsBase().size();
                 int which = 0;
-                GL11.glAlphaFunc(516, 0.003921569f);
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
                 GL11.glDepthMask(false);
                 for (final Aspect asp2 : tco.getAspectsBase().getAspects()) {
                     if (asp2 == null) {
@@ -88,8 +89,8 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                     }
                     final Color colo = new Color(asp2.getColor());
                     GL11.glPushMatrix();
-                    GL11.glEnable(3042);
-                    GL11.glBlendFunc(770, 771);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     final double radian = Math.toRadians(tco.rotation);
                     final double dist = 0.4 + 0.1 * Math.cos(radian);
                     UtilsFX.renderFacingStrip(
@@ -104,12 +105,12 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                             (int) tco.rotation % frames,
                             f,
                             colo.getRGB());
-                    GL11.glDisable(3042);
+                    GL11.glDisable(GL11.GL_BLEND);
                     GL11.glPopMatrix();
                     ++which;
                 }
                 GL11.glDepthMask(true);
-                GL11.glAlphaFunc(516, 0.1f);
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             }
             if (tco != null && tco.drainEntity != null && tco.drainCollision != null) {
                 final Entity drainEntity = tco.drainEntity;
@@ -128,11 +129,11 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                 final Vec3 vec3 = Vec3.createVectorHelper(-0.1, -0.1, 0.5);
                 vec3.rotateAroundX(
                         -(drainEntity.prevRotationPitch
-                                + (drainEntity.rotationPitch - drainEntity.prevRotationPitch) * f) * 3.141593f
+                                + (drainEntity.rotationPitch - drainEntity.prevRotationPitch) * f) * (float) Math.PI
                                 / 180.0f);
                 vec3.rotateAroundY(
                         -(drainEntity.prevRotationYaw + (drainEntity.rotationYaw - drainEntity.prevRotationYaw) * f)
-                                * 3.141593f
+                                * (float) Math.PI
                                 / 180.0f);
                 vec3.rotateAroundY(-f2 * 0.01f);
                 vec3.rotateAroundX(-f2 * 0.015f);
@@ -155,8 +156,8 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                         Math.min(iiud, 10) / 10.0f);
                 GL11.glPopMatrix();
             }
-            GL11.glDisable(3042);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
@@ -174,10 +175,10 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
         final float g = c.getGreen() / 220.0f;
         final float b = c.getBlue() / 220.0f;
         GL11.glPushMatrix();
-        GL11.glEnable(2977);
-        GL11.glEnable(3042);
-        GL11.glEnable(32826);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glTranslatef(x + 0.5f, (float) (y - 0.15f + 0.10000000149011612 * Math.sin(Math.toRadians(a1))), z + 0.5f);
         GL11.glRotatef(a1, 0.0f, 1.0f, 0.0f);
         GL11.glRotatef(a2, 1.0f, 0.0f, 0.0f);
@@ -192,8 +193,8 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
         GL11.glColor4f(r, g, b, 1.0f);
         this.model.render();
         GL11.glScalef(1.0f, 1.0f, 1.0f);
-        GL11.glDisable(32826);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glPopMatrix();
     }

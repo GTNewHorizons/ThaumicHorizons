@@ -30,6 +30,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityBoatThaumium;
@@ -245,14 +246,14 @@ public class RenderEventHandler {
             return;
         }
         GL11.glPushMatrix();
-        GL11.glClear(256);
-        GL11.glMatrixMode(5889);
+        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
         GL11.glOrtho(0.0, sw, sh, 0.0, 1000.0, 3000.0);
-        GL11.glMatrixMode(5888);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glTranslatef(0.0f, 0.0f, -2000.0f);
-        GL11.glDisable(2929);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(false);
         GL11.glPushMatrix();
         GL11.glTranslated(sw / 2.0, sh / 2.0, 0.0);
@@ -261,9 +262,9 @@ public class RenderEventHandler {
         UtilsFX.bindTexture("textures/misc/radial.png");
         GL11.glPushMatrix();
         GL11.glRotatef(partialTicks + mc.thePlayer.ticksExisted % 720 / 2.0f, 0.0f, 0.0f, 1.0f);
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         UtilsFX.renderQuadCenteredFromTexture(
                 width * 2.75f * RenderEventHandler.radialHudScale,
                 0.5f,
@@ -272,15 +273,15 @@ public class RenderEventHandler {
                 200,
                 771,
                 0.5f);
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glPopMatrix();
         UtilsFX.bindTexture("textures/misc/radial2.png");
         GL11.glPushMatrix();
         GL11.glRotatef(-(partialTicks + mc.thePlayer.ticksExisted % 720 / 2.0f), 0.0f, 0.0f, 1.0f);
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         UtilsFX.renderQuadCenteredFromTexture(
                 width * 2.55f * RenderEventHandler.radialHudScale,
                 0.5f,
@@ -289,18 +290,18 @@ public class RenderEventHandler {
                 200,
                 771,
                 0.5f);
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glPopMatrix();
         if (lens != null) {
             GL11.glPushMatrix();
-            GL11.glEnable(32826);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
             final ItemStack item = new ItemStack((Item) lens);
             item.stackTagCompound = null;
             ri.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, item, -8, -8);
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(32826);
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
             final int mx = (int) (i - sw / 2.0);
             final int my = (int) (j - sh / 2.0);
@@ -316,19 +317,19 @@ public class RenderEventHandler {
         final float pieSlice = 360.0f / this.fociItem.size();
         String key = this.foci.firstKey();
         for (int a = 0; a < this.fociItem.size(); ++a) {
-            final double xx = MathHelper.cos(currentRot / 180.0f * 3.141593f) * width;
-            final double yy = MathHelper.sin(currentRot / 180.0f * 3.141593f) * width;
+            final double xx = MathHelper.cos(currentRot / 180.0f * (float) Math.PI) * width;
+            final double yy = MathHelper.sin(currentRot / 180.0f * (float) Math.PI) * width;
             currentRot += pieSlice;
             GL11.glPushMatrix();
             GL11.glTranslated(xx, yy, 100.0);
             GL11.glScalef(this.fociScale.get(key), this.fociScale.get(key), this.fociScale.get(key));
-            GL11.glEnable(32826);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
             final ItemStack item2 = this.fociItem.get(key).copy();
             item2.stackTagCompound = null;
             ri.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, item2, -8, -8);
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(32826);
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
             if (!THKeyHandler.radialLock && THKeyHandler.radialActive) {
                 final int mx2 = (int) (i - sw / 2.0 - xx);
@@ -360,8 +361,8 @@ public class RenderEventHandler {
                     11);
         }
         GL11.glDepthMask(true);
-        GL11.glEnable(2929);
-        GL11.glDisable(3042);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glPopMatrix();
     }

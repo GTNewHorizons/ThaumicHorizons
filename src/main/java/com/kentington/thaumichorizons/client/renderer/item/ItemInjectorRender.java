@@ -77,7 +77,14 @@ public class ItemInjectorRender implements IItemRenderer {
             GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         }
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", this.tx1));
-        this.injector.render(null, f * 3.1415927f / 16.0f, f * 3.1415927f / 4.0f, (float) rotation, f, 0.0f, 0.125f);
+        this.injector.render(
+                null,
+                f * (float) Math.PI / 16.0f,
+                f * (float) Math.PI / 4.0f,
+                (float) rotation,
+                f,
+                0.0f,
+                0.125f);
         GL11.glPopMatrix();
     }
 }

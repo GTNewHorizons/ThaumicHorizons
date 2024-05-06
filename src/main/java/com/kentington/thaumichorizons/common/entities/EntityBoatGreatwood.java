@@ -260,10 +260,10 @@ public class EntityBoatGreatwood extends EntityBoat {
             }
             if (this.riddenByEntity != null && this.riddenByEntity instanceof final EntityLivingBase entitylivingbase) {
                 final float f = this.riddenByEntity.rotationYaw + -entitylivingbase.moveStrafing * 90.0f;
-                this.motionX += -Math.sin(f * 3.1415927f / 180.0f) * this.speedMultiplier
+                this.motionX += -Math.sin(f * (float)Math.PI / 180.0f) * this.speedMultiplier
                         * entitylivingbase.moveForward
                         * 0.05000000074505806;
-                this.motionZ += Math.cos(f * 3.1415927f / 180.0f) * this.speedMultiplier
+                this.motionZ += Math.cos(f * (float)Math.PI / 180.0f) * this.speedMultiplier
                         * entitylivingbase.moveForward
                         * 0.05000000074505806;
             }

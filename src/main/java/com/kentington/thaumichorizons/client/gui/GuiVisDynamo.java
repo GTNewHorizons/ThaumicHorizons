@@ -43,13 +43,13 @@ public class GuiVisDynamo extends GuiContainer {
 
     protected void drawGuiContainerBackgroundLayer(final float par1, final int par2, final int par3) {
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", "textures/gui/guidynamo.png"));
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int var5 = (this.width - this.xSize) / 2;
         final int var6 = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 

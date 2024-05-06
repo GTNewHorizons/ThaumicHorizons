@@ -53,9 +53,9 @@ public class TileEssentiaDynamoRender extends TileEntitySpecialRenderer {
         }
         if (tco.rise >= 0.3f && tco.ticksProvided > 0) {
             GL11.glPushMatrix();
-            GL11.glAlphaFunc(516, 0.003921569f);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 1);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             final long nt = System.nanoTime();
             UtilsFX.bindTexture(TileEssentiaDynamoRender.tx3);
             final int frames = UtilsFX.getTextureAnimationSize(TileEssentiaDynamoRender.tx3);
@@ -71,8 +71,8 @@ public class TileEssentiaDynamoRender extends TileEntitySpecialRenderer {
                     i,
                     f,
                     tco.essentia.getColor());
-            GL11.glDisable(3042);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             GL11.glPopMatrix();
         }
         GL11.glPushMatrix();

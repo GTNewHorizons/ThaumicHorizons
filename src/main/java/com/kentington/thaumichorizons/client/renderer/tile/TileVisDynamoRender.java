@@ -41,9 +41,9 @@ public class TileVisDynamoRender extends TileEntitySpecialRenderer {
         final TileVisDynamo tco = (TileVisDynamo) te;
         if (tco.rise >= 0.3f && tco.ticksProvided > 0) {
             GL11.glPushMatrix();
-            GL11.glAlphaFunc(516, 0.003921569f);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 1);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             final long nt = System.nanoTime();
             UtilsFX.bindTexture(TileVisDynamoRender.tx3);
             final int frames = UtilsFX.getTextureAnimationSize(TileVisDynamoRender.tx3);
@@ -59,8 +59,8 @@ public class TileVisDynamoRender extends TileEntitySpecialRenderer {
                     i,
                     f,
                     tco.color.getRGB());
-            GL11.glDisable(3042);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             GL11.glPopMatrix();
         }
         if (tco.drainEntity != null && tco.drainCollision != null) {
@@ -79,11 +79,11 @@ public class TileVisDynamoRender extends TileEntitySpecialRenderer {
                 final Vec3 vec3 = Vec3.createVectorHelper(-0.1, -0.1, 0.5);
                 vec3.rotateAroundX(
                         -(drainEntity.prevRotationPitch
-                                + (drainEntity.rotationPitch - drainEntity.prevRotationPitch) * f) * 3.141593f
+                                + (drainEntity.rotationPitch - drainEntity.prevRotationPitch) * f) * (float) Math.PI
                                 / 180.0f);
                 vec3.rotateAroundY(
                         -(drainEntity.prevRotationYaw + (drainEntity.rotationYaw - drainEntity.prevRotationYaw) * f)
-                                * 3.141593f
+                                * (float) Math.PI
                                 / 180.0f);
                 vec3.rotateAroundY(-f2 * 0.01f);
                 vec3.rotateAroundX(-f2 * 0.015f);

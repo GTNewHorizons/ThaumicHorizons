@@ -27,16 +27,16 @@ public class EntityBlastPhial extends EntityPotion {
                 p_i1790_2_.posZ,
                 p_i1790_2_.rotationYaw,
                 p_i1790_2_.rotationPitch);
-        this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
+        this.posX -= MathHelper.cos(this.rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
         this.posY -= 0.10000000149011612;
-        this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f) * 0.16f;
+        this.posZ -= MathHelper.sin(this.rotationYaw / 180.0f * (float) Math.PI) * 0.16f;
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0f;
-        this.motionX = -MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f)
-                * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
-        this.motionZ = MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f)
-                * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
-        this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * 3.1415927f);
+        this.motionX = -MathHelper.sin(this.rotationYaw / 180.0f * (float) Math.PI)
+                * MathHelper.cos(this.rotationPitch / 180.0f * (float) Math.PI);
+        this.motionZ = MathHelper.cos(this.rotationYaw / 180.0f * (float) Math.PI)
+                * MathHelper.cos(this.rotationPitch / 180.0f * (float) Math.PI);
+        this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * (float) Math.PI);
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, power * 1.5f, 1.0f);
     }
 

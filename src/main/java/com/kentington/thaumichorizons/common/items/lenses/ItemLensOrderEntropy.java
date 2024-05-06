@@ -296,9 +296,9 @@ public class ItemLensOrderEntropy extends Item implements ILens {
 
     public void drawAspectTag(final Aspect aspect, final int amount, final int x, final int y, final int sw) {
         GL11.glPushMatrix();
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         final Minecraft mc = Minecraft.getMinecraft();
         final Color color = new Color(aspect.getColor());
         mc.renderEngine.bindTexture(aspect.getImage());
@@ -317,8 +317,8 @@ public class ItemLensOrderEntropy extends Item implements ILens {
         final String am = myFormatter.format(amount);
         mc.fontRenderer.drawString(am, 24 + x * 2, 32 - mc.fontRenderer.FONT_HEIGHT + y * 2, 16777215);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glPopMatrix();
     }
 

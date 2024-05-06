@@ -53,20 +53,20 @@ public class TileInspiratron extends TileThaumcraft implements ISoulReceiver, IS
             } else {
                 this.field_40066_q += 0.01f;
             }
-            while (this.rota >= 3.141593f) {
-                this.rota -= 6.283185f;
+            while (this.rota >= (float) Math.PI) {
+                this.rota -= ((float) Math.PI * 2F);
             }
-            while (this.rota < -3.141593f) {
-                this.rota += 6.283185f;
+            while (this.rota < -(float) Math.PI) {
+                this.rota += ((float) Math.PI * 2F);
             }
-            while (this.field_40066_q >= 3.141593f) {
-                this.field_40066_q -= 6.283185f;
+            while (this.field_40066_q >= (float) Math.PI) {
+                this.field_40066_q -= ((float) Math.PI * 2F);
             }
-            while (this.field_40066_q < -3.141593f) {
-                this.field_40066_q += 6.283185f;
+            while (this.field_40066_q < -(float) Math.PI) {
+                this.field_40066_q += ((float) Math.PI * 2F);
             }
             float f4;
-            for (f4 = this.field_40066_q - this.rota; f4 < -3.141593f; f4 += 6.283185f) {}
+            for (f4 = this.field_40066_q - this.rota; f4 < -(float) Math.PI; f4 += ((float) Math.PI * 2F)) {}
             this.rota += f4 * 0.04f;
         }
     }
