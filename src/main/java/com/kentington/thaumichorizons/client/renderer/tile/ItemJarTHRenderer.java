@@ -49,20 +49,20 @@ public class ItemJarTHRenderer implements IItemRenderer {
             if (item.hasTagCompound() && item.stackTagCompound.getBoolean("isSoul")) {
                 final long nt = System.nanoTime();
                 UtilsFX.bindTexture("thaumichorizons", ItemJarTHRenderer.tx3);
-                GL11.glEnable(3042);
-                GL11.glAlphaFunc(516, 0.003921569f);
-                GL11.glDisable(2929);
-                GL11.glDisable(2884);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
+                GL11.glDisable(GL11.GL_CULL_FACE);
                 GL11.glPushMatrix();
                 GL11.glTranslated(0.0, 0.4, 0.0);
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, 771);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 UtilsFX.renderAnimatedQuad(0.3f, 0.9f, 16, (int) (nt / 40000000L % 16L), 0.0f, 16777215);
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
-                GL11.glEnable(2884);
-                GL11.glEnable(2929);
-                GL11.glDisable(3042);
+                GL11.glEnable(GL11.GL_CULL_FACE);
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
+                GL11.glDisable(GL11.GL_BLEND);
             } else if (item.hasTagCompound()) {
                 final TileSoulJar th = new TileSoulJar();
                 GL11.glPushMatrix();
@@ -71,21 +71,21 @@ public class ItemJarTHRenderer implements IItemRenderer {
                 final EntityLivingBase viewer = Minecraft.getMinecraft().thePlayer;
                 th.entity = EntityList.createEntityFromNBT(item.getTagCompound(), viewer.worldObj);
                 TileEntityRendererDispatcher.instance.renderTileEntityAt(th, 0.0, 0.0, 0.0, 0.0f);
-                GL11.glBlendFunc(770, 771);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 Minecraft.getMinecraft().entityRenderer.disableLightmap(0.0);
                 GL11.glPopMatrix();
             }
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0f, 0.5f, 0.0f);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
             final RenderBlocks rb = (RenderBlocks) data[0];
             rb.useInventoryTint = true;
             rb.renderBlockAsItem(ConfigBlocks.blockJar, 0, 1.0f);
             GL11.glPopMatrix();
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
         }
     }
 

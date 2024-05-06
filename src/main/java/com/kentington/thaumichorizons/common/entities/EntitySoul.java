@@ -99,7 +99,7 @@ public class EntitySoul extends EntityFlying implements IMob {
                 this.waypointZ = this.posZ;
             }
         }
-        final float n = -(float) Math.atan2(this.motionX, this.motionZ) * 180.0f / 3.141593f;
+        final float n = -(float) Math.atan2(this.motionX, this.motionZ) * 180.0f / (float) Math.PI;
         this.rotationYaw = n;
         this.renderYawOffset = n;
     }

@@ -24,8 +24,8 @@ public class BlockJarTHRenderer extends BlockRenderer implements ISimpleBlockRen
     public void renderInventoryBlock(final Block block, final int metadata, final int modelID,
             final RenderBlocks renderer) {
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         final IIcon i1 = ((BlockSoulJar) block).iconJarTop;
         final IIcon i2 = ((BlockSoulJar) block).iconJarSide;

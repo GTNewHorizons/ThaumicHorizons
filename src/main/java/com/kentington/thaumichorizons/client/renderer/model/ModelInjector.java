@@ -45,7 +45,7 @@ public class ModelInjector extends ModelBase {
         this.BowR1.setRotationPoint(2.5f, 1.0f, -8.0f);
         this.BowR1.setTextureSize(64, 32);
         this.BowR1.mirror = true;
-        this.setRotation(this.BowR1, 0.0f, 3.141593f, 0.0f);
+        this.setRotation(this.BowR1, 0.0f, (float) Math.PI, 0.0f);
         (this.BowL2 = new ModelRenderer(this, 0, 8)).addBox(0.0f, -1.0f, 0.0f, 3, 1, 1);
         this.BowL2.setRotationPoint(6.0f, 1.0f, -7.5f);
         this.BowL2.setTextureSize(64, 32);
@@ -84,8 +84,8 @@ public class ModelInjector extends ModelBase {
         this.BowR2.render(f5);
         this.Stock.render(f5);
         this.Grip.render(f5);
-        GL11.glDisable(3553);
-        GL11.glDisable(2896);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
         final Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(3);
         tessellator.setColorOpaque_I(0);
@@ -102,8 +102,8 @@ public class ModelInjector extends ModelBase {
                 this.BowL2.rotationPointY - 0.9375,
                 this.BowL2.rotationPointZ + 6.8125 + f3 * 0.125);
         tessellator.draw();
-        GL11.glEnable(2896);
-        GL11.glEnable(3553);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         this.Thingy.setRotationPoint(
                 (this.BowR2.rotationPointX + this.BowL2.rotationPointX) / 2.0f,
                 0.0f,
@@ -121,9 +121,9 @@ public class ModelInjector extends ModelBase {
             final float f5, final Entity ent) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, ent);
         this.BowL1.rotateAngleY = -f;
-        this.BowR1.rotateAngleY = f + 3.1415927f;
+        this.BowR1.rotateAngleY = f + (float) Math.PI;
         this.BowL2.rotateAngleY = -0.34906238f - f1;
         this.BowR2.rotateAngleY = 3.490655f + f1;
-        this.Drum.rotateAngleZ = f2 * 2.0f * 3.1415927f / 180.0f;
+        this.Drum.rotateAngleZ = f2 * 2.0f * (float) Math.PI / 180.0f;
     }
 }

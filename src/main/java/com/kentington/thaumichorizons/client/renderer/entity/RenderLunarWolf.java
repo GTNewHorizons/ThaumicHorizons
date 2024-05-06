@@ -36,12 +36,12 @@ public class RenderLunarWolf extends RenderWolf {
         }
         final float scale = p_76986_1_.worldObj.getCurrentMoonPhaseFactor() * 3.0f;
         GL11.glPushMatrix();
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         GL11.glPushMatrix();
         GL11.glDepthMask(false);
-        GL11.glDisable(2884);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         final int i = p_76986_1_.ticksExisted % 32;
         UtilsFX.bindTexture(TileNodeRenderer.nodetex);
         UtilsFX.renderFacingStrip(
@@ -56,11 +56,11 @@ public class RenderLunarWolf extends RenderWolf {
                 i,
                 p_76986_9_,
                 11197951);
-        GL11.glEnable(2884);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glPopMatrix();
     }
 

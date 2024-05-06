@@ -46,11 +46,11 @@ public class GuiFingers extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(final float par1, final int par2, final int par3) {
         UtilsFX.bindTexture("thaumichorizons", "textures/gui/guifingers.png");
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         final int var5 = (this.width - this.xSize) / 2;
         final int var6 = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         ItemWandCasting wand = null;
         if (this.tileEntity.getStackInSlot(10) != null
                 && this.tileEntity.getStackInSlot(10).getItem() instanceof ItemWandCasting) {
@@ -97,9 +97,9 @@ public class GuiFingers extends GuiContainer {
             final float var7 = 0.33f;
             GL11.glColor4f(var7, var7, var7, 0.66f);
             GuiFingers.itemRender.renderWithColor = false;
-            GL11.glEnable(2896);
-            GL11.glEnable(2884);
-            GL11.glEnable(3042);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+            GL11.glEnable(GL11.GL_BLEND);
             GuiFingers.itemRender.renderItemAndEffectIntoGUI(
                     this.mc.fontRenderer,
                     this.mc.renderEngine,
@@ -113,8 +113,8 @@ public class GuiFingers extends GuiContainer {
                     var5 + 160,
                     var6 + 64);
             GuiFingers.itemRender.renderWithColor = true;
-            GL11.glDisable(3042);
-            GL11.glDisable(2896);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
             GL11.glPushMatrix();
             GL11.glTranslatef((float) (var5 + 168), (float) (var6 + 46), 0.0f);

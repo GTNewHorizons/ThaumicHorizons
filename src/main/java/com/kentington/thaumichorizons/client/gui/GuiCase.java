@@ -33,9 +33,9 @@ public class GuiCase extends GuiContainer {
         UtilsFX.bindTexture("textures/gui/gui_focuspouch.png");
         final float t = this.zLevel;
         this.zLevel = 200.0f;
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         this.drawTexturedModalRect(8 + this.blockSlot * 18, 209, 240, 0, 16, 16);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         this.zLevel = t;
     }
 
@@ -51,8 +51,8 @@ public class GuiCase extends GuiContainer {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int var5 = (this.width - this.xSize) / 2;
         final int var6 = (this.height - this.ySize) / 2;
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }

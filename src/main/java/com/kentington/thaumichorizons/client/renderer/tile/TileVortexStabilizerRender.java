@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.client.renderer.model.ModelVortexAttenuator;
 import com.kentington.thaumichorizons.common.tiles.TileVortexStabilizer;
@@ -27,7 +28,7 @@ public class TileVortexStabilizerRender extends TileEntitySpecialRenderer {
             final float p_147500_8_) {
         final TileVortexStabilizer te = (TileVortexStabilizer) p_147500_1_;
         GL11.glPushMatrix();
-        GL11.glDisable(2884);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glTranslatef((float) x + 0.5f, (float) y, (float) z + 0.5f);
         switch (te.blockMetadata) {
             case 0 -> {
@@ -60,9 +61,9 @@ public class TileVortexStabilizerRender extends TileEntitySpecialRenderer {
         }
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
-        GL11.glEnable(32826);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
         UtilsFX.bindTexture("thaumichorizons", TileVortexStabilizerRender.tx1);
         this.model.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);

@@ -37,8 +37,8 @@ public class RenderWizardCow extends RenderCow {
 
     public void doRender(final EntityWizardCow p_76986_1_, final double p_76986_2_, final double p_76986_4_,
             final double p_76986_6_, final float p_76986_8_, final float p_76986_9_) {
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -57,7 +57,7 @@ public class RenderWizardCow extends RenderCow {
                     RenderWizardCow.cowTypes.get(p_76986_1_.getUniqueID().toString()),
                     RenderWizardCow.cowMods.get(p_76986_1_.getUniqueID().toString()));
         }
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     public void renderMyNode(final double x, final double y, final double z, final EntityLivingBase viewer,
@@ -86,16 +86,16 @@ public class RenderWizardCow extends RenderCow {
                 }
             }
             GL11.glPushMatrix();
-            GL11.glAlphaFunc(516, 0.003921569f);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
             GL11.glDepthMask(false);
             if (depthIgnore) {
-                GL11.glDisable(2929);
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
             }
-            GL11.glDisable(2884);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             final long time = nt / 5000000L;
             final float bscale = 0.25f;
             GL11.glPushMatrix();
-            final float rad = 6.283186f;
+            final float rad = ((float) Math.PI * 2F);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
             int i = (int) ((nt / 40000000L + x) % frames);
             int count = 0;
@@ -108,8 +108,8 @@ public class RenderWizardCow extends RenderCow {
                 }
                 average += aspects.getAmount(aspect);
                 GL11.glPushMatrix();
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, aspect.getBlend());
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, aspect.getBlend());
                 scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                 scale = 0.2f + scale * (aspects.getAmount(aspect) / 50.0f);
                 scale *= size;
@@ -126,7 +126,7 @@ public class RenderWizardCow extends RenderCow {
                         i,
                         partialTicks,
                         aspect.getColor());
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
                 ++count;
                 if (aspect.getBlend() == 771) {
@@ -135,62 +135,62 @@ public class RenderWizardCow extends RenderCow {
             }
             average /= aspects.size();
             GL11.glPushMatrix();
-            GL11.glEnable(3042);
+            GL11.glEnable(GL11.GL_BLEND);
             i = (int) ((nt / 40000000L + x) % frames);
             scale = 0.1f + average / 150.0f;
             scale *= size;
             int strip = 1;
             switch (type) {
                 case NORMAL -> {
-                    GL11.glBlendFunc(770, 1);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 }
                 case UNSTABLE -> {
-                    GL11.glBlendFunc(770, 1);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                     strip = 6;
                     angle = 0.0f;
                 }
                 case DARK -> {
-                    GL11.glBlendFunc(770, 771);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     strip = 2;
                 }
                 case TAINTED -> {
-                    GL11.glBlendFunc(770, 771);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     strip = 5;
                 }
                 case HUNGRY -> {
-                    GL11.glBlendFunc(770, 1);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                     strip = 4;
                 }
                 case PURE -> {
                     scale *= 0.75f;
-                    GL11.glBlendFunc(770, 1);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                     strip = 3;
                 }
             }
             GL11.glColor4f(1.0f, 0.0f, 1.0f, alpha);
             UtilsFX.renderFacingStrip(x, y, z, angle, scale, alpha, frames, strip, i, partialTicks, 16777215);
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
             GL11.glPopMatrix();
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
             if (depthIgnore) {
-                GL11.glEnable(2929);
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
             }
             GL11.glDepthMask(true);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             GL11.glPopMatrix();
         } else {
             GL11.glPushMatrix();
-            GL11.glAlphaFunc(516, 0.003921569f);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 1);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             GL11.glDepthMask(false);
             final int j = (int) ((nt / 40000000L + x) % frames);
             GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.1f);
             UtilsFX.renderFacingStrip(x, y, z, 0.0f, 0.5f, 0.1f, frames, 1, j, partialTicks, 16777215);
             GL11.glDepthMask(true);
-            GL11.glDisable(3042);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             GL11.glPopMatrix();
         }
     }

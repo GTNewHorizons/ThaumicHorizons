@@ -104,9 +104,9 @@ public class ItemLensAir extends Item implements ILens {
                 horiz /= hScale;
                 vert = vert / hScale / var7 * var6;
                 GL11.glPushMatrix();
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, 771);
-                GL11.glAlphaFunc(518, 0.005f);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glAlphaFunc(GL11.GL_GEQUAL, 0.005f);
                 final float minEnt = Math.min(ent.width, ent.height);
                 double size = minEnt * (minScreen / scale);
                 final double xCenter = var6 * (1.0 + horiz) / 2.0;
@@ -157,7 +157,7 @@ public class ItemLensAir extends Item implements ILens {
                     GL11.glPopMatrix();
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 }
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
             }
         }

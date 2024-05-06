@@ -92,8 +92,8 @@ public class RenderGolemTH extends RenderGolemBase {
             final int upgrades = ((EntityGolemTH) entity).upgrades.length;
             final float shift = 0.08f;
             GL11.glPushMatrix();
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             for (int a = 0; a < upgrades; ++a) {
                 GL11.glPushMatrix();
                 GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
@@ -116,7 +116,7 @@ public class RenderGolemTH extends RenderGolemBase {
                 tessellator2.draw();
                 GL11.glPopMatrix();
             }
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         } else {
             if (pass == 1 && (((EntityGolemTH) entity).getGolemDecoration().length() > 0

@@ -73,16 +73,16 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
             }
             float alpha = (float) ((viewDistance - distance) / viewDistance);
             GL11.glPushMatrix();
-            GL11.glAlphaFunc(516, 0.003921569f);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
             GL11.glDepthMask(false);
             if (depthIgnore) {
-                GL11.glDisable(2929);
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
             }
-            GL11.glDisable(2884);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             final long time = nt / 5000000L;
             final float bscale = 0.25f;
             GL11.glPushMatrix();
-            final float rad = 6.283186f;
+            final float rad = ((float) Math.PI * 2F);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
             final int i = (int) ((nt / 40000000L + x) % frames);
             int count = 0;
@@ -99,8 +99,8 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 }
                 average += aspects.getAmount(aspect);
                 GL11.glPushMatrix();
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, aspect.getBlend());
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, aspect.getBlend());
                 scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                 scale = 0.4f;
                 scale *= size;
@@ -132,7 +132,7 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                             partialTicks,
                             aspect.getColor());
                 }
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
                 ++count;
                 if (aspect.getBlend() == 771) {
@@ -141,8 +141,8 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
             }
             average /= aspects.size();
             GL11.glPushMatrix();
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glColor4f(1.0f, 0.0f, 1.0f, alpha);
             float corescale = 1.0f;
             if (timeOpen < 50 && !collapsing) {
@@ -176,7 +176,7 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                         partialTicks,
                         16777215);
             }
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
             if (plane) {
                 for (Aspect aspect2 : aspects.getAspects()) {
@@ -188,8 +188,8 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                     }
                     average += aspects.getAmount(aspect2);
                     GL11.glPushMatrix();
-                    GL11.glEnable(3042);
-                    GL11.glBlendFunc(770, 771);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                     scale = 0.4f;
                     scale *= size;
@@ -206,7 +206,7 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                             i,
                             partialTicks,
                             aspect2.getColor());
-                    GL11.glDisable(3042);
+                    GL11.glDisable(GL11.GL_BLEND);
                     GL11.glPopMatrix();
                     ++count;
                     if (aspect2.getBlend() == 771) {
@@ -215,12 +215,12 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 }
             }
             GL11.glPopMatrix();
-            GL11.glEnable(2884);
+            GL11.glEnable(GL11.GL_CULL_FACE);
             if (depthIgnore) {
-                GL11.glEnable(2929);
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
             }
             GL11.glDepthMask(true);
-            GL11.glAlphaFunc(516, 0.1f);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
             GL11.glPopMatrix();
         }
     }

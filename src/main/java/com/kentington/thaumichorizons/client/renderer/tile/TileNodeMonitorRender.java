@@ -11,6 +11,7 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.common.tiles.TileNodeMonitor;
 
@@ -69,10 +70,10 @@ public class TileNodeMonitorRender extends TileEntitySpecialRenderer {
         }
         UtilsFX.bindTexture("thaumichorizons", TileNodeMonitorRender.tx1);
         this.model.renderAll();
-        GL11.glEnable(2977);
-        GL11.glEnable(3042);
-        GL11.glEnable(32826);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         if (tco.switchy) {
             UtilsFX.bindTexture("thaumichorizons", TileNodeMonitorRender.tx3);
         } else {

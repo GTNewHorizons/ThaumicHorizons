@@ -39,8 +39,8 @@ public class TilePortalTHRender extends TileEntitySpecialRenderer {
         UtilsFX.bindTexture(TilePortalTHRender.portaltex);
         GL11.glPushMatrix();
         GL11.glDepthMask(false);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
         if (Minecraft.getMinecraft().renderViewEntity instanceof final EntityPlayer player) {
             final Tessellator tessellator = Tessellator.instance;
@@ -91,7 +91,7 @@ public class TilePortalTHRender extends TileEntitySpecialRenderer {
                     .addVertexWithUV(px + v4.xCoord * scale, py + v4.yCoord * scaley, pz + v4.zCoord * scale, f2, f4);
             tessellator.draw();
         }
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
     }

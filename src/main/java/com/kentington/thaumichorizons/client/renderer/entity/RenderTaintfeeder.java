@@ -37,12 +37,12 @@ public class RenderTaintfeeder extends RenderPig {
             final double p_76986_6_, final float p_76986_8_, final float p_76986_9_) {
         super.doRender(p_76986_1_, p_76986_2_, p_76986_4_, p_76986_6_, p_76986_8_, p_76986_9_);
         GL11.glPushMatrix();
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         GL11.glPushMatrix();
         GL11.glDepthMask(false);
-        GL11.glDisable(2884);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         final int i = p_76986_1_.ticksExisted % 32;
         UtilsFX.bindTexture(TileNodeRenderer.nodetex);
         UtilsFX.renderFacingStrip(
@@ -57,11 +57,11 @@ public class RenderTaintfeeder extends RenderPig {
                 i,
                 p_76986_9_,
                 11197951);
-        GL11.glEnable(2884);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         GL11.glPopMatrix();
     }
 
@@ -90,9 +90,9 @@ public class RenderTaintfeeder extends RenderPig {
         }
         final float f = (float) Math.sin(Math.toRadians(p_77032_1_.ticksExisted % 45) * 8.0);
         this.bindTexture(RenderTaintfeeder.pigEyesTextures);
-        GL11.glEnable(3042);
-        GL11.glDisable(3008);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDepthMask(!p_77032_1_.isInvisible());
         final char c0 = '\uf0f0';
         final int j = c0 % 65536;

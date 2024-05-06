@@ -92,27 +92,30 @@ public class ModelGuardianPanther extends ModelBase {
 
     public void setRotationAngles(final float p_78087_1_, final float p_78087_2_, final float p_78087_3_,
             final float p_78087_4_, final float p_78087_5_, final float p_78087_6_, final Entity p_78087_7_) {
-        this.ocelotHead.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.ocelotHead.rotateAngleY = p_78087_4_ / 57.295776f;
+        this.ocelotHead.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.ocelotHead.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
         if (this.field_78163_i != 3) {
-            this.ocelotBody.rotateAngleX = 1.5707964f;
+            this.ocelotBody.rotateAngleX = ((float) Math.PI / 2F);
             if (this.field_78163_i == 2) {
                 this.ocelotBackLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
                 this.ocelotBackRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 0.3f) * 1.0f * p_78087_2_;
-                this.ocelotFrontLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f + 0.3f) * 1.0f
+                this.ocelotFrontLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI + 0.3f)
+                        * 1.0f
                         * p_78087_2_;
-                this.ocelotFrontRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f
+                this.ocelotFrontRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f
                         * p_78087_2_;
-                this.ocelotTail2.rotateAngleX = 1.7278761f + 0.31415927f * MathHelper.cos(p_78087_1_) * p_78087_2_;
+                this.ocelotTail2.rotateAngleX = 1.7278761f
+                        + ((float) Math.PI / 10F) * MathHelper.cos(p_78087_1_) * p_78087_2_;
             } else {
                 this.ocelotBackLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
-                this.ocelotBackRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f
+                this.ocelotBackRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f
                         * p_78087_2_;
-                this.ocelotFrontLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f
+                this.ocelotFrontLeftLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f
                         * p_78087_2_;
                 this.ocelotFrontRightLeg.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
                 if (this.field_78163_i == 1) {
-                    this.ocelotTail2.rotateAngleX = 1.7278761f + 0.7853982f * MathHelper.cos(p_78087_1_) * p_78087_2_;
+                    this.ocelotTail2.rotateAngleX = 1.7278761f
+                            + ((float) Math.PI / 4F) * MathHelper.cos(p_78087_1_) * p_78087_2_;
                 } else {
                     this.ocelotTail2.rotateAngleX = 1.7278761f + 0.47123894f * MathHelper.cos(p_78087_1_) * p_78087_2_;
                 }
@@ -163,18 +166,18 @@ public class ModelGuardianPanther extends ModelBase {
             ocelotTail2.rotationPointY -= 4.0f;
             final ModelRenderer ocelotTail3 = this.ocelotTail2;
             ocelotTail3.rotationPointZ += 2.0f;
-            this.ocelotTail.rotateAngleX = 1.5707964f;
-            this.ocelotTail2.rotateAngleX = 1.5707964f;
+            this.ocelotTail.rotateAngleX = ((float) Math.PI / 2F);
+            this.ocelotTail2.rotateAngleX = ((float) Math.PI / 2F);
             this.field_78163_i = 0;
         } else if (entityocelot.isSprinting()) {
             this.ocelotTail2.rotationPointY = this.ocelotTail.rotationPointY;
             final ModelRenderer ocelotTail4 = this.ocelotTail2;
             ocelotTail4.rotationPointZ += 2.0f;
-            this.ocelotTail.rotateAngleX = 1.5707964f;
-            this.ocelotTail2.rotateAngleX = 1.5707964f;
+            this.ocelotTail.rotateAngleX = ((float) Math.PI / 2F);
+            this.ocelotTail2.rotateAngleX = ((float) Math.PI / 2F);
             this.field_78163_i = 2;
         } else if (entityocelot.isSitting()) {
-            this.ocelotBody.rotateAngleX = 0.7853982f;
+            this.ocelotBody.rotateAngleX = ((float) Math.PI / 4F);
             final ModelRenderer ocelotBody2 = this.ocelotBody;
             ocelotBody2.rotationPointY -= 4.0f;
             final ModelRenderer ocelotBody3 = this.ocelotBody;
@@ -210,7 +213,7 @@ public class ModelGuardianPanther extends ModelBase {
             ocelotFrontLeftLeg5.rotationPointZ = n7;
             final ModelRenderer ocelotBackLeftLeg3 = this.ocelotBackLeftLeg;
             final ModelRenderer ocelotBackRightLeg3 = this.ocelotBackRightLeg;
-            final float n8 = -1.5707964f;
+            final float n8 = -((float) Math.PI / 2F);
             ocelotBackRightLeg3.rotateAngleX = n8;
             ocelotBackLeftLeg3.rotateAngleX = n8;
             final ModelRenderer ocelotBackLeftLeg4 = this.ocelotBackLeftLeg;

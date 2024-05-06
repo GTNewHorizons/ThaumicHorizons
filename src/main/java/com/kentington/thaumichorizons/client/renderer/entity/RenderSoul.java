@@ -44,8 +44,8 @@ public class RenderSoul extends Render {
         final Tessellator tessellator = Tessellator.instance;
         GL11.glPushMatrix();
         GL11.glDepthMask(false);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         UtilsFX.bindTexture("thaumichorizons", "textures/misc/soul.png");
         final int i = entity.ticksExisted % 16;
         final float x2 = i / this.size1;
@@ -57,7 +57,7 @@ public class RenderSoul extends Render {
         tessellator.addVertexWithUV(f7 + f1 * f6 + f4 * f6, f8 + f2 * f6, f9 + f3 * f6 + f5 * f6, x2, 1.0);
         tessellator.addVertexWithUV(f7 + f1 * f6 - f4 * f6, f8 - f2 * f6, f9 + f3 * f6 - f5 * f6, x2, 0.0);
         tessellator.draw();
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
     }

@@ -39,17 +39,17 @@ public class ModelFamiliar extends ModelBase {
         this.Body.setRotationPoint(0.0f, 12.0f, -10.0f);
         this.Body.setTextureSize(64, 32);
         this.Body.mirror = true;
-        this.setRotation(this.Body, 1.570796f, 0.0f, 0.0f);
+        this.setRotation(this.Body, ((float) Math.PI / 2F), 0.0f, 0.0f);
         (this.Tail1 = new ModelRenderer(this, 0, 15)).addBox(-0.5f, 0.0f, 0.0f, 1, 8, 1);
         this.Tail1.setRotationPoint(0.0f, 15.0f, 8.0f);
         this.Tail1.setTextureSize(64, 32);
         this.Tail1.mirror = true;
-        this.setRotation(this.Tail1, 1.570796f, 0.0f, 0.0f);
+        this.setRotation(this.Tail1, ((float) Math.PI / 2F), 0.0f, 0.0f);
         (this.Tail2 = new ModelRenderer(this, 4, 15)).addBox(-0.5f, 0.0f, 0.0f, 1, 8, 1);
         this.Tail2.setRotationPoint(0.0f, 15.0f, 14.0f);
         this.Tail2.setTextureSize(64, 32);
         this.Tail2.mirror = true;
-        this.setRotation(this.Tail2, 1.570796f, 0.0f, 0.0f);
+        this.setRotation(this.Tail2, ((float) Math.PI / 2F), 0.0f, 0.0f);
         (this.LegBackL = new ModelRenderer(this, 8, 13)).addBox(-1.0f, 0.0f, 1.0f, 2, 6, 2);
         this.LegBackL.setRotationPoint(1.1f, 18.0f, 5.0f);
         this.LegBackL.setTextureSize(64, 32);
@@ -146,40 +146,44 @@ public class ModelFamiliar extends ModelBase {
 
     public void setRotationAngles(final float p_78087_1_, final float p_78087_2_, final float p_78087_3_,
             final float p_78087_4_, final float p_78087_5_, final float p_78087_6_, final Entity p_78087_7_) {
-        this.Main.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.Main.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.Nose.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.Nose.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.Ear1.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.Ear1.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.Ear2.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.Ear2.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.HatA.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.HatA.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.HatB.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.HatB.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.HatC.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.HatC.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.HatBuckle.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.HatBuckle.rotateAngleY = p_78087_4_ / 57.295776f;
-        this.HatBase.rotateAngleX = p_78087_5_ / 57.295776f;
-        this.HatBase.rotateAngleY = p_78087_4_ / 57.295776f;
+        this.Main.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.Main.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.Nose.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.Nose.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.Ear1.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.Ear1.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.Ear2.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.Ear2.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.HatA.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.HatA.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.HatB.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.HatB.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.HatC.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.HatC.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.HatBuckle.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.HatBuckle.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
+        this.HatBase.rotateAngleX = p_78087_5_ / (180F / (float) Math.PI);
+        this.HatBase.rotateAngleY = p_78087_4_ / (180F / (float) Math.PI);
         if (this.field_78163_i != 3) {
-            this.Body.rotateAngleX = 1.5707964f;
+            this.Body.rotateAngleX = ((float) Math.PI / 2F);
             if (this.field_78163_i == 2) {
                 this.LegBackL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
                 this.LegBackR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 0.3f) * 1.0f * p_78087_2_;
-                this.LegFrontL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f + 0.3f) * 1.0f
+                this.LegFrontL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI + 0.3f) * 1.0f
                         * p_78087_2_;
-                this.LegFrontR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f * p_78087_2_;
-                this.Tail2.rotateAngleX = 1.7278761f + 0.31415927f * MathHelper.cos(p_78087_1_) * p_78087_2_;
+                this.LegFrontR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f
+                        * p_78087_2_;
+                this.Tail2.rotateAngleX = 1.7278761f
+                        + ((float) Math.PI / 10F) * MathHelper.cos(p_78087_1_) * p_78087_2_;
             } else {
                 this.LegBackL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
-                this.LegBackR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f * p_78087_2_;
-                this.LegFrontL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + 3.1415927f) * 1.0f * p_78087_2_;
+                this.LegBackR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f * p_78087_2_;
+                this.LegFrontL.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f + (float) Math.PI) * 1.0f
+                        * p_78087_2_;
                 this.LegFrontR.rotateAngleX = MathHelper.cos(p_78087_1_ * 0.6662f) * 1.0f * p_78087_2_;
                 if (this.field_78163_i == 1) {
-                    this.Tail2.rotateAngleX = 1.7278761f + 0.7853982f * MathHelper.cos(p_78087_1_) * p_78087_2_;
+                    this.Tail2.rotateAngleX = 1.7278761f
+                            + ((float) Math.PI / 4F) * MathHelper.cos(p_78087_1_) * p_78087_2_;
                 } else {
                     this.Tail2.rotateAngleX = 1.7278761f + 0.47123894f * MathHelper.cos(p_78087_1_) * p_78087_2_;
                 }
@@ -262,18 +266,18 @@ public class ModelFamiliar extends ModelBase {
             tail2.rotationPointY -= 4.0f;
             final ModelRenderer tail3 = this.Tail2;
             tail3.rotationPointZ += 2.0f;
-            this.Tail1.rotateAngleX = 1.5707964f;
-            this.Tail2.rotateAngleX = 1.5707964f;
+            this.Tail1.rotateAngleX = ((float) Math.PI / 2F);
+            this.Tail2.rotateAngleX = ((float) Math.PI / 2F);
             this.field_78163_i = 0;
         } else if (entityocelot.isSprinting()) {
             this.Tail2.rotationPointY = this.Tail1.rotationPointY;
             final ModelRenderer tail4 = this.Tail2;
             tail4.rotationPointZ += 2.0f;
-            this.Tail1.rotateAngleX = 1.5707964f;
-            this.Tail2.rotateAngleX = 1.5707964f;
+            this.Tail1.rotateAngleX = ((float) Math.PI / 2F);
+            this.Tail2.rotateAngleX = ((float) Math.PI / 2F);
             this.field_78163_i = 2;
         } else if (entityocelot.isSitting()) {
-            this.Body.rotateAngleX = 0.7853982f;
+            this.Body.rotateAngleX = ((float) Math.PI / 4F);
             final ModelRenderer body2 = this.Body;
             body2.rotationPointY -= 4.0f;
             final ModelRenderer body3 = this.Body;
@@ -341,7 +345,7 @@ public class ModelFamiliar extends ModelBase {
             legFrontL5.rotationPointZ = n7;
             final ModelRenderer legBackL3 = this.LegBackL;
             final ModelRenderer legBackR3 = this.LegBackR;
-            final float n8 = -1.5707964f;
+            final float n8 = -((float) Math.PI / 2F);
             legBackR3.rotateAngleX = n8;
             legBackL3.rotateAngleX = n8;
             final ModelRenderer legBackL4 = this.LegBackL;

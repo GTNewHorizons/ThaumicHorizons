@@ -22,10 +22,10 @@ public class RenderLightningBoltFinite extends RenderLightningBolt {
     public void doRender(final EntityLightningBoltFinite p_76986_1_, final double p_76986_2_, final double p_76986_4_,
             final double p_76986_6_, final float p_76986_8_, final float p_76986_9_) {
         final Tessellator tessellator = Tessellator.instance;
-        GL11.glDisable(3553);
-        GL11.glDisable(2896);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         final double[] adouble = new double[8];
         final double[] adouble2 = new double[8];
         double d3 = 0.0;
@@ -102,8 +102,8 @@ public class RenderLightningBoltFinite extends RenderLightningBolt {
                 }
             }
         }
-        GL11.glDisable(3042);
-        GL11.glEnable(2896);
-        GL11.glEnable(3553);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 }

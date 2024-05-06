@@ -36,15 +36,15 @@ public class TileSoulBeaconRender extends TileEntitySpecialRenderer {
             return;
         }
         final float f1 = tco.func_146002_i();
-        GL11.glAlphaFunc(516, 0.1f);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         if (f1 > 0.0f) {
             final Tessellator tessellator = Tessellator.instance;
             this.bindTexture(TileSoulBeaconRender.field_147523_b);
-            GL11.glTexParameterf(3553, 10242, 10497.0f);
-            GL11.glTexParameterf(3553, 10243, 10497.0f);
-            GL11.glDisable(2896);
-            GL11.glDisable(2884);
-            GL11.glDisable(3042);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0f);
+            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0f);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glDepthMask(true);
             OpenGlHelper.glBlendFunc(770, 1, 1, 0);
             final float f2 = tco.getWorldObj().getTotalWorldTime() + p_147500_8_;
@@ -84,7 +84,7 @@ public class TileSoulBeaconRender extends TileEntitySpecialRenderer {
             tessellator.addVertexWithUV(p_147500_2_ + d5, p_147500_4_, p_147500_6_ + d6, d14, d16);
             tessellator.addVertexWithUV(p_147500_2_ + d5, p_147500_4_ + d13, p_147500_6_ + d6, d14, d17);
             tessellator.draw();
-            GL11.glEnable(3042);
+            GL11.glEnable(GL11.GL_BLEND);
             OpenGlHelper.glBlendFunc(770, 771, 1, 0);
             GL11.glDepthMask(false);
             tessellator.startDrawingQuads();
@@ -119,8 +119,8 @@ public class TileSoulBeaconRender extends TileEntitySpecialRenderer {
             tessellator.addVertexWithUV(p_147500_2_ + d18, p_147500_4_, p_147500_6_ + d19, d27, d29);
             tessellator.addVertexWithUV(p_147500_2_ + d18, p_147500_4_ + d26, p_147500_6_ + d19, d27, d30);
             tessellator.draw();
-            GL11.glEnable(2896);
-            GL11.glEnable(3553);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glDepthMask(true);
         }
     }

@@ -58,11 +58,11 @@ public class ItemSyringeRender implements IItemRenderer {
         } else {
             GL11.glTranslated(0.0, -2.75, 0.0);
         }
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", this.tx1));
         this.syringe.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.125f, item);
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 }

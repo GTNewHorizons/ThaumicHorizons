@@ -34,7 +34,7 @@ public class GuiVat extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(final float p_146976_1_, final int p_146976_2_,
             final int p_146976_3_) {
         GL11.glPushMatrix();
-        GL11.glEnable(3042);
+        GL11.glEnable(GL11.GL_BLEND);
         UtilsFX.bindTexture(new ResourceLocation("thaumichorizons", "textures/gui/guivat.png"));
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int var5 = (this.width - this.xSize) / 2;
@@ -114,7 +114,7 @@ public class GuiVat extends GuiContainer {
                         16);
             }
         }
-        GL11.glDisable(3042);
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 

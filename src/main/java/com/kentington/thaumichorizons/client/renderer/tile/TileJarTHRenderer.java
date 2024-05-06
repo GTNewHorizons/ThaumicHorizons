@@ -37,13 +37,13 @@ public class TileJarTHRenderer extends TileEntitySpecialRenderer {
         if (th.jarTag != null && th.jarTag.getBoolean("isSoul")) {
             final long nt = System.nanoTime();
             UtilsFX.bindTexture("thaumichorizons", TileJarTHRenderer.tx3);
-            GL11.glEnable(3042);
-            GL11.glAlphaFunc(516, 0.003921569f);
-            GL11.glDisable(2929);
-            GL11.glDisable(2884);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             GL11.glPushMatrix();
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             UtilsFX.renderFacingQuad(
                     tile.xCoord + 0.5,
                     tile.yCoord + 0.4,
@@ -55,15 +55,15 @@ public class TileJarTHRenderer extends TileEntitySpecialRenderer {
                     (int) (nt / 40000000L % 16L),
                     f,
                     16777215);
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
-            GL11.glEnable(2884);
-            GL11.glEnable(2929);
-            GL11.glDisable(3042);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_BLEND);
             return;
         }
         GL11.glPushMatrix();
-        GL11.glDisable(2884);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glTranslatef((float) x + 0.5f, (float) y + 0.01f, (float) z + 0.5f);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.bindTexture(th.getTexture());
@@ -77,7 +77,7 @@ public class TileJarTHRenderer extends TileEntitySpecialRenderer {
                 render.doRender(th.entity, 0.0, 0.0, 0.0, 0.0f, f);
             }
         }
-        GL11.glEnable(2884);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glPopMatrix();
     }
 

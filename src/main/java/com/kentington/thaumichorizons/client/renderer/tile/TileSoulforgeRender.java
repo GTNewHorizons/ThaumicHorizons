@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.client.renderer.model.ModelSoulforge;
 import com.kentington.thaumichorizons.common.tiles.TileSoulforge;
@@ -31,16 +32,16 @@ public class TileSoulforgeRender extends TileEntitySpecialRenderer {
     public void renderTileEntityAt(final TileEntity tile, final double x, final double y, final double z,
             final float f) {
         GL11.glPushMatrix();
-        GL11.glDisable(2884);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glTranslatef((float) x + 0.5f, (float) y, (float) z + 0.5f);
         GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glPushMatrix();
         GL11.glTranslatef(0.0f, -0.25f, 0.0f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.renderBrains((TileSoulforge) tile, x, y, z, f);
-        GL11.glEnable(32826);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
         GL11.glTranslatef(0.0f, -1.5f, 0.0f);
         UtilsFX.bindTexture("thaumichorizons", TileSoulforgeRender.tx1);
@@ -51,8 +52,8 @@ public class TileSoulforgeRender extends TileEntitySpecialRenderer {
             final int frames = UtilsFX.getTextureAnimationSize(TileSoulforgeRender.tx2);
             final int i = (int) ((nt / 40000000L + x) % frames);
             UtilsFX.bindTexture("thaumcraft", TileSoulforgeRender.tx2);
-            GL11.glEnable(3042);
-            GL11.glBlendFunc(770, 771);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glScalef(1.0f, 1.0f, 1.0f);
             GL11.glPushMatrix();
             UtilsFX.renderFacingQuad(
@@ -106,7 +107,7 @@ public class TileSoulforgeRender extends TileEntitySpecialRenderer {
                     f,
                     16777215);
             GL11.glPopMatrix();
-            GL11.glDisable(3042);
+            GL11.glDisable(GL11.GL_BLEND);
         }
         if (((TileSoulforge) tile).souls > 0) {
             final double offset = 6.283185307179586 / ((TileSoulforge) tile).souls;
@@ -114,14 +115,14 @@ public class TileSoulforgeRender extends TileEntitySpecialRenderer {
             final double radian = Math.toRadians((int) (nt / 40000000L % 360L));
             final double dist = 0.1 + 0.1 * Math.cos(radian);
             UtilsFX.bindTexture("thaumichorizons", TileSoulforgeRender.tx3);
-            GL11.glEnable(3042);
-            GL11.glAlphaFunc(516, 0.003921569f);
-            GL11.glDisable(2929);
-            GL11.glDisable(2884);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_CULL_FACE);
             for (int which = 0; which < ((TileSoulforge) tile).souls; ++which) {
                 GL11.glPushMatrix();
-                GL11.glEnable(3042);
-                GL11.glBlendFunc(770, 771);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 UtilsFX.renderFacingQuad(
                         tile.xCoord + 0.5 + dist * Math.sin(2.0 * radian + offset * which),
                         tile.yCoord + 0.85,
@@ -133,12 +134,12 @@ public class TileSoulforgeRender extends TileEntitySpecialRenderer {
                         (int) (nt / 40000000L % frames),
                         f,
                         16777215);
-                GL11.glDisable(3042);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
             }
-            GL11.glEnable(2884);
-            GL11.glEnable(2929);
-            GL11.glDisable(3042);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_BLEND);
         }
     }
 

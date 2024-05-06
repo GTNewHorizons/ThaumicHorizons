@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.tiles.TileVortexStabilizer;
@@ -27,7 +28,7 @@ public class BlockVortexStabilizerRender extends BlockRenderer implements ISimpl
         final TileVortexStabilizer tc = new TileVortexStabilizer();
         tc.blockMetadata = metadata;
         TileEntityRendererDispatcher.instance.renderTileEntityAt(tc, 0.0, 0.0, 0.0, 0.0f);
-        GL11.glEnable(32826);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glPopMatrix();
     }
 

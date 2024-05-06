@@ -50,12 +50,12 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
         final float f2 = 0.9f;
         final float f3 = 0.0f;
         final Random random = new Random(245L);
-        GL11.glDisable(3553);
-        GL11.glShadeModel(7425);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
-        GL11.glDisable(3008);
-        GL11.glEnable(2884);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(false);
         GL11.glPushMatrix();
         for (int i = 0; i < q; ++i) {
@@ -81,14 +81,14 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
         }
         GL11.glPopMatrix();
         GL11.glDepthMask(true);
-        GL11.glDisable(2884);
-        GL11.glDisable(3042);
-        GL11.glShadeModel(7424);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glEnable(3553);
-        GL11.glEnable(3008);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderHelper.enableStandardItemLighting();
-        GL11.glBlendFunc(770, 771);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glPopMatrix();
     }
 
@@ -151,9 +151,9 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
             }
         }
         GL11.glPushMatrix();
-        GL11.glAlphaFunc(516, 0.003921569f);
-        GL11.glEnable(3042);
-        GL11.glBlendFunc(770, 1);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         for (int a = 0; a < 2; ++a) {
             for (int b4 = 0; b4 < 2; ++b4) {
                 for (int c = 0; c < 2; ++c) {
@@ -197,9 +197,9 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
                 }
             }
         }
-        GL11.glDisable(3042);
-        GL11.glAlphaFunc(516, 0.1f);
-        GL11.glBlendFunc(770, 771);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
         if (vat != null && vat.mode == 2) {
