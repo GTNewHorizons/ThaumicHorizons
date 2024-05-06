@@ -199,6 +199,7 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
         }
         GL11.glDisable(3042);
         GL11.glAlphaFunc(516, 0.1f);
+        GL11.glBlendFunc(770, 771);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
         if (vat != null && vat.mode == 2) {
