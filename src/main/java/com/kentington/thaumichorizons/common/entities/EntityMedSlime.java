@@ -25,7 +25,7 @@ public class EntityMedSlime extends EntitySlime {
 
     public void setDead() {
         final int i = this.getSlimeSize();
-        if (!this.worldObj.isRemote && i > 1) {
+        if (!this.worldObj.isRemote && i > 1 && this.getHealth() <= 0.0f) {
             for (int j = 2 + this.rand.nextInt(3), k = 0; k < j; ++k) {
                 final float f = (k % 2 - 0.5f) * i / 4.0f;
                 final float f2 = (k / 2 - 0.5f) * i / 4.0f;
