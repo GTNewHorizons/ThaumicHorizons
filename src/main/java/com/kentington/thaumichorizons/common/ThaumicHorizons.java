@@ -3907,7 +3907,7 @@ public class ThaumicHorizons {
         Property alternateBell = config.get("general", "alternateGolemBell", true);
         alternateBell.comment = "Enable alternate golemancer\'s bell recipe (in case of mod conflict).";
         alternateBell.setRequiresMcRestart(true);
-        useAlternateBell = true; // alternateBell.getBoolean();
+        useAlternateBell = alternateBell.getBoolean();
         Property enablePocketPlane = config.get("general", "enablePocketPlane", true);
         enablePocketPlane.comment = "Enable pocket plane content (currently incomplete - many aspects will not generate the cool stuff they are supposed to). World backups are highly suggested.";
         enablePocketPlane.setRequiresMcRestart(true);
