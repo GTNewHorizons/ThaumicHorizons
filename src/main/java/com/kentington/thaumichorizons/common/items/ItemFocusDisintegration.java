@@ -96,9 +96,9 @@ public class ItemFocusDisintegration extends ItemFocusBasic {
         if (!wand.consumeAllVis(stack, p, this.getVisCost(stack), false, true)) {
             p.stopUsingItem();
         } else {
-            String pp = "R" + p.getCommandSenderName();
+            String pp = "SP|" + p.getCommandSenderName();
             if (!p.worldObj.isRemote) {
-                pp = "S" + p.getCommandSenderName();
+                pp = "MP|" + p.getCommandSenderName();
             }
             ItemFocusDisintegration.soundDelay.putIfAbsent(pp, 0L);
             ItemFocusDisintegration.breakcount.putIfAbsent(pp, 0.0f);
