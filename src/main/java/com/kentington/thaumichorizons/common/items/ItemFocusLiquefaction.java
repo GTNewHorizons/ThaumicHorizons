@@ -89,57 +89,72 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
     }
 
     @Override
-    public void onUsingFocusTick(final ItemStack stack, final EntityPlayer p, final int count) {
+    public void onUsingFocusTick(final ItemStack stack, final EntityPlayer player, final int count) {
         final ItemWandCasting wand = (ItemWandCasting) stack.getItem();
         final int size = 2 + wand.getFocusEnlarge(stack) * 8;
-        if (!wand.consumeAllVis(stack, p, this.getVisCost(stack), false, true)) {
-            p.stopUsingItem();
+        if (!wand.consumeAllVis(stack, player, this.getVisCost(stack), false, true)) {
+            player.stopUsingItem();
         } else {
-            String pp = "R" + p.getCommandSenderName();
-            if (!p.worldObj.isRemote) {
-                pp = "S" + p.getCommandSenderName();
+            String playerProfile = "SP|" + player.getCommandSenderName();
+            if (!player.worldObj.isRemote) {
+                playerProfile = "MP|" + player.getCommandSenderName();
             }
-            ItemFocusLiquefaction.soundDelay.putIfAbsent(pp, 0L);
-            ItemFocusLiquefaction.breakcount.putIfAbsent(pp, 0.0f);
-            ItemFocusLiquefaction.lastX.putIfAbsent(pp, 0);
-            ItemFocusLiquefaction.lastY.putIfAbsent(pp, 0);
-            ItemFocusLiquefaction.lastZ.putIfAbsent(pp, 0);
-            final MovingObjectPosition mop = BlockUtils.getTargetBlock(p.worldObj, p, true);
-            final Entity ent = getPointedEntity(p.worldObj, p, 10.0);
-            final Vec3 v = p.getLookVec();
-            double tx = p.posX + v.xCoord * 10.0;
-            double ty = p.posY + v.yCoord * 10.0;
-            double tz = p.posZ + v.zCoord * 10.0;
+            ItemFocusLiquefaction.soundDelay.putIfAbsent(playerProfile, 0L);
+            ItemFocusLiquefaction.breakcount.putIfAbsent(playerProfile, 0.0f);
+            ItemFocusLiquefaction.lastX.putIfAbsent(playerProfile, 0);
+            ItemFocusLiquefaction.lastY.putIfAbsent(playerProfile, 0);
+            ItemFocusLiquefaction.lastZ.putIfAbsent(playerProfile, 0);
+
+            final MovingObjectPosition mop = BlockUtils.getTargetBlock(player.worldObj, player, true);
+            final Entity ent = getPointedEntity(player.worldObj, player, 10.0);
+            final Vec3 v = player.getLookVec();
+            double tx = player.posX + v.xCoord * 10.0;
+            double ty = player.posY + v.yCoord * 10.0;
+            double tz = player.posZ + v.zCoord * 10.0;
             byte impact = 0;
-            if ((ent == null || (ent instanceof EntityItem
-                    && FurnaceRecipes.smelting().getSmeltingResult(((EntityItem) ent).getEntityItem()) == null))
-                    && mop != null) {
-                tx = mop.hitVec.xCoord;
-                ty = mop.hitVec.yCoord;
-                tz = mop.hitVec.zCoord;
-                impact = 5;
-                if (!p.worldObj.isRemote && ItemFocusLiquefaction.soundDelay.get(pp) < System.currentTimeMillis()) {
-                    p.worldObj.playSoundEffect(tx, ty, tz, "fire.fire", 8.0f, 1.0f);
-                    ItemFocusLiquefaction.soundDelay.put(pp, System.currentTimeMillis() + 1200L);
+
+            ItemStack droppedItem = null;
+            ItemStack resultItem = null;
+
+            if (ent instanceof EntityItem) {
+                droppedItem = ((EntityItem) ent).getEntityItem();
+                if (droppedItem != null && droppedItem.stackSize > 0) {
+                    ItemStack smeltingOutput = FurnaceRecipes.smelting().getSmeltingResult(droppedItem);
+                    if (smeltingOutput != null) {
+                        resultItem = smeltingOutput.copy();
+                    }
                 }
-            } else if (ent != null) {
+            }
+
+            if (ent instanceof EntityLiving) {
                 tx = ent.posX;
                 ty = ent.posY;
                 tz = ent.posZ;
                 impact = 5;
-                if (!p.worldObj.isRemote && ItemFocusLiquefaction.soundDelay.get(pp) < System.currentTimeMillis()) {
-                    p.worldObj.playSoundEffect(tx, ty, tz, "fire.fire", 0.3f, 1.0f);
-                    ItemFocusLiquefaction.soundDelay.put(pp, System.currentTimeMillis() + 1200L);
+                if (!player.worldObj.isRemote
+                        && ItemFocusLiquefaction.soundDelay.get(playerProfile) < System.currentTimeMillis()) {
+                    player.worldObj.playSoundEffect(tx, ty, tz, "fire.fire", 0.3f, 1.0f);
+                    ItemFocusLiquefaction.soundDelay.put(playerProfile, System.currentTimeMillis() + 1200L);
+                }
+            } else if (resultItem == null && mop != null) {
+                tx = mop.hitVec.xCoord;
+                ty = mop.hitVec.yCoord;
+                tz = mop.hitVec.zCoord;
+                impact = 5;
+                if (!player.worldObj.isRemote
+                        && ItemFocusLiquefaction.soundDelay.get(playerProfile) < System.currentTimeMillis()) {
+                    player.worldObj.playSoundEffect(tx, ty, tz, "fire.fire", 8.0f, 1.0f);
+                    ItemFocusLiquefaction.soundDelay.put(playerProfile, System.currentTimeMillis() + 1200L);
                 }
             } else {
-                ItemFocusLiquefaction.soundDelay.put(pp, 0L);
+                ItemFocusLiquefaction.soundDelay.put(playerProfile, 0L);
             }
-            if (p.worldObj.isRemote) {
+            if (player.worldObj.isRemote) {
                 ItemFocusLiquefaction.beam.put(
-                        pp,
+                        playerProfile,
                         Thaumcraft.proxy.beamCont(
-                                p.worldObj,
-                                p,
+                                player.worldObj,
+                                player,
                                 tx,
                                 ty,
                                 tz,
@@ -147,47 +162,62 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
                                 16729156,
                                 false,
                                 (impact > 0) ? ((float) size) : 0.0f,
-                                ItemFocusLiquefaction.beam.get(pp),
+                                ItemFocusLiquefaction.beam.get(playerProfile),
                                 5));
             }
-            if ((ent == null || (!(ent instanceof EntityLiving) && (!(ent instanceof EntityItem)
-                    || FurnaceRecipes.smelting().getSmeltingResult(((EntityItem) ent).getEntityItem()) == null)))
-                    && mop != null
-                    && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                final Block bi = p.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-                final int md = p.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-                final int meltable = this.isMeltableBlock(bi, md);
-                final boolean flammable = bi
-                        .isFlammable(p.worldObj, mop.blockX, mop.blockY, mop.blockZ, ForgeDirection.UNKNOWN);
-                if (meltable > 0 || flammable
-                        || FurnaceRecipes.smelting().getSmeltingResult(new ItemStack(bi, 1, md)) != null) {
+
+            if (ent instanceof EntityLiving) {
+                if (wand.consumeAllVis(stack, player, ItemFocusLiquefaction.costCritter, true, true)) {
+                    ThaumicHorizons.proxy.smeltFX(ent.posX - 0.5, ent.posY, ent.posZ - 0.5, player.worldObj, 5, false);
+                    ent.attackEntityFrom(DamageSource.inFire, 1.0f + 0.5f * wand.getFocusPotency(stack));
+                }
+            } else if (resultItem != null) {
+                final int quantity = ((EntityItem) ent).getEntityItem().stackSize;
+                if (wand.consumeAllVis(stack, player, this.getVisCost(stack), true, true)) {
+                    ThaumicHorizons.proxy
+                            .smeltFX(ent.posX - 0.5, ent.posY, ent.posZ - 0.5, player.worldObj, 5 * quantity, false);
+
+                    resultItem.stackSize = quantity;
+                    ((EntityItem) ent).setEntityItemStack(resultItem);
+                }
+            } else if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                final Block block = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
+                final int meta = player.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+                final ItemStack resultBlock = FurnaceRecipes.smelting()
+                        .getSmeltingResult(new ItemStack(block, 1, meta));
+                final int meltingBehaviour = this.isMeltableBlock(block, meta);
+                final boolean flammable = block
+                        .isFlammable(player.worldObj, mop.blockX, mop.blockY, mop.blockZ, ForgeDirection.UNKNOWN);
+                if (meltingBehaviour > 0 || flammable || resultBlock != null) {
                     final int pot = wand.getFocusPotency(stack);
                     final float speed = 0.15f + pot * 0.05f;
                     float hardness = 2.0f;
-                    if (meltable > 0
-                            || bi.isFlammable(p.worldObj, mop.blockX, mop.blockY, mop.blockZ, ForgeDirection.UP)) {
-                        hardness = 0.25f;
-                    }
-                    if (meltable == 6) {
+
+                    if (meltingBehaviour == 6) {
                         hardness = 20.0f;
-                    }
-                    if (ItemFocusLiquefaction.lastX.get(pp) == mop.blockX
-                            && ItemFocusLiquefaction.lastY.get(pp) == mop.blockY
-                            && ItemFocusLiquefaction.lastZ.get(pp) == mop.blockZ) {
-                        final float bc = ItemFocusLiquefaction.breakcount.get(pp);
-                        if (p.worldObj.isRemote && bc > 0.0f && bi != null) {
-                            final int gt = (int) (bc / hardness * 9.0f);
-                            ThaumicHorizons.proxy.smeltFX(mop.blockX, mop.blockY, mop.blockZ, p.worldObj, 15, size > 2);
-                        }
-                        if (p.worldObj.isRemote) {
-                            if (bc >= hardness) {
-                                p.worldObj.playAuxSFX(2001, mop.blockX, mop.blockY, mop.blockZ, 0);
-                                ItemFocusLiquefaction.breakcount.put(pp, 0.0f);
-                            } else {
-                                ItemFocusLiquefaction.breakcount.put(pp, bc + speed);
+                    } else if (meltingBehaviour > 0 || block
+                            .isFlammable(player.worldObj, mop.blockX, mop.blockY, mop.blockZ, ForgeDirection.UP)) {
+                                hardness = 0.25f;
                             }
-                        } else if (bc >= hardness) {
-                            this.processBlock(mop.blockX, mop.blockY, mop.blockZ, wand, stack, p, pp);
+
+                    if (ItemFocusLiquefaction.lastX.get(playerProfile) == mop.blockX
+                            && ItemFocusLiquefaction.lastY.get(playerProfile) == mop.blockY
+                            && ItemFocusLiquefaction.lastZ.get(playerProfile) == mop.blockZ) {
+                        final float breakcount = ItemFocusLiquefaction.breakcount.get(playerProfile);
+
+                        if (player.worldObj.isRemote) {
+                            if (breakcount > 0.0f) {
+                                ThaumicHorizons.proxy
+                                        .smeltFX(mop.blockX, mop.blockY, mop.blockZ, player.worldObj, 15, size > 2);
+                            }
+                            if (breakcount >= hardness) {
+                                player.worldObj.playAuxSFX(2001, mop.blockX, mop.blockY, mop.blockZ, 0);
+                                ItemFocusLiquefaction.breakcount.put(playerProfile, 0.0f);
+                            } else {
+                                ItemFocusLiquefaction.breakcount.put(playerProfile, breakcount + speed);
+                            }
+                        } else if (breakcount >= hardness) {
+                            this.processBlock(mop.blockX, mop.blockY, mop.blockZ, wand, stack, player, playerProfile);
                             if (size > 2) {
                                 for (int x = -1; x < 2; ++x) {
                                     for (int y = -1; y < 2; ++y) {
@@ -199,52 +229,36 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
                                                         mop.blockZ + z,
                                                         wand,
                                                         stack,
-                                                        p,
-                                                        pp);
+                                                        player,
+                                                        playerProfile);
                                             }
                                         }
                                     }
                                 }
                             }
                         } else {
-                            ItemFocusLiquefaction.breakcount.put(pp, bc + speed);
+                            ItemFocusLiquefaction.breakcount.put(playerProfile, breakcount + speed);
                         }
                     } else {
-                        ItemFocusLiquefaction.lastX.put(pp, mop.blockX);
-                        ItemFocusLiquefaction.lastY.put(pp, mop.blockY);
-                        ItemFocusLiquefaction.lastZ.put(pp, mop.blockZ);
-                        ItemFocusLiquefaction.breakcount.put(pp, 0.0f);
+                        ItemFocusLiquefaction.lastX.put(playerProfile, mop.blockX);
+                        ItemFocusLiquefaction.lastY.put(playerProfile, mop.blockY);
+                        ItemFocusLiquefaction.lastZ.put(playerProfile, mop.blockZ);
+                        ItemFocusLiquefaction.breakcount.put(playerProfile, 0.0f);
                     }
                 }
-            } else if (ent instanceof EntityLiving
-                    && wand.consumeAllVis(stack, p, ItemFocusLiquefaction.costCritter, true, true)) {
-                        ThaumicHorizons.proxy.smeltFX(ent.posX - 0.5, ent.posY, ent.posZ - 0.5, p.worldObj, 5, false);
-                        ent.attackEntityFrom(DamageSource.inFire, 1.0f + 0.5f * wand.getFocusPotency(stack));
-                    } else
-                if (ent instanceof EntityItem
-                        && FurnaceRecipes.smelting().getSmeltingResult(((EntityItem) ent).getEntityItem()) != null) {
-                            final int num = ((EntityItem) ent).getEntityItem().stackSize;
-                            if (wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
-                                ThaumicHorizons.proxy
-                                        .smeltFX(ent.posX - 0.5, ent.posY, ent.posZ - 0.5, p.worldObj, 5 * num, false);
-                                final ItemStack stacky = FurnaceRecipes.smelting()
-                                        .getSmeltingResult(((EntityItem) ent).getEntityItem());
-                                stacky.stackSize = num;
-                                ((EntityItem) ent).setEntityItemStack(stacky);
-                            }
-                        } else {
-                            ItemFocusLiquefaction.lastX.put(pp, Integer.MAX_VALUE);
-                            ItemFocusLiquefaction.lastY.put(pp, Integer.MAX_VALUE);
-                            ItemFocusLiquefaction.lastZ.put(pp, Integer.MAX_VALUE);
-                            ItemFocusLiquefaction.breakcount.put(pp, 0.0f);
-                        }
+            } else {
+                ItemFocusLiquefaction.lastX.put(playerProfile, Integer.MAX_VALUE);
+                ItemFocusLiquefaction.lastY.put(playerProfile, Integer.MAX_VALUE);
+                ItemFocusLiquefaction.lastZ.put(playerProfile, Integer.MAX_VALUE);
+                ItemFocusLiquefaction.breakcount.put(playerProfile, 0.0f);
+            }
         }
     }
 
     public void onPlayerStoppedUsing(final ItemStack stack, final World world, final EntityPlayer p, final int count) {
-        String pp = "R" + p.getCommandSenderName();
+        String pp = "SP|" + p.getCommandSenderName();
         if (!p.worldObj.isRemote) {
-            pp = "S" + p.getCommandSenderName();
+            pp = "MP|" + p.getCommandSenderName();
         }
         ItemFocusLiquefaction.soundDelay.putIfAbsent(pp, 0L);
         ItemFocusLiquefaction.breakcount.putIfAbsent(pp, 0.0f);
