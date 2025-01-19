@@ -184,7 +184,7 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
                 final Block block = player.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
                 final int meta = player.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
                 final ItemStack resultBlock = FurnaceRecipes.smelting()
-                        .getSmeltingResult(new ItemStack(block, 1, meta).copy());
+                        .getSmeltingResult(new ItemStack(block, 1, meta));
                 final int meltingBehaviour = this.isMeltableBlock(block, meta);
                 final boolean flammable = block
                         .isFlammable(player.worldObj, mop.blockX, mop.blockY, mop.blockZ, ForgeDirection.UNKNOWN);
