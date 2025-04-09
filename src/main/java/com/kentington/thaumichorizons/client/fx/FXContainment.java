@@ -4,6 +4,7 @@
 
 package com.kentington.thaumichorizons.client.fx;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
@@ -36,8 +37,9 @@ public class FXContainment extends EntityFX {
         this.noClip = true;
     }
 
-    public void renderParticle(final Tessellator p_70539_1_, final float p_70539_2_, final float p_70539_3_,
+    public void renderParticle(final Tessellator tessellator, final float p_70539_2_, final float p_70539_3_,
             final float p_70539_4_, final float p_70539_5_, final float p_70539_6_, final float p_70539_7_) {
+        tessellator.draw();
         final long nt = System.nanoTime();
         final long time = nt / 50000000L;
         final int frame = (int) time % 16;
@@ -54,26 +56,26 @@ public class FXContainment extends EntityFX {
         final float f7 = (float) (this.posX - FXContainment.interpPosX);
         final float f8 = (float) (this.posY - FXContainment.interpPosY);
         final float f9 = (float) (this.posZ - FXContainment.interpPosZ);
-        p_70539_1_.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, 0.1f);
-        p_70539_1_.addVertexWithUV(
+        tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, 0.1f);
+        tessellator.addVertexWithUV(
                 f7 - p_70539_3_ * f6 - p_70539_6_ * f6,
                 f8 - p_70539_4_ * f6,
                 f9 - p_70539_5_ * f6 - p_70539_7_ * f6,
                 f2,
                 f4);
-        p_70539_1_.addVertexWithUV(
+        tessellator.addVertexWithUV(
                 f7 - p_70539_3_ * f6 + p_70539_6_ * f6,
                 f8 + p_70539_4_ * f6,
                 f9 - p_70539_5_ * f6 + p_70539_7_ * f6,
                 f3,
                 f4);
-        p_70539_1_.addVertexWithUV(
+        tessellator.addVertexWithUV(
                 f7 + p_70539_3_ * f6 + p_70539_6_ * f6,
                 f8 + p_70539_4_ * f6,
                 f9 + p_70539_5_ * f6 + p_70539_7_ * f6,
                 f3,
                 f5);
-        p_70539_1_.addVertexWithUV(
+        tessellator.addVertexWithUV(
                 f7 + p_70539_3_ * f6 - p_70539_6_ * f6,
                 f8 - p_70539_4_ * f6,
                 f9 + p_70539_5_ * f6 - p_70539_7_ * f6,
@@ -82,6 +84,8 @@ public class FXContainment extends EntityFX {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
+        Minecraft.getMinecraft().renderEngine.bindTexture(UtilsFX.getParticleTexture());
+        tessellator.startDrawingQuads();
     }
 
     public int getFXLayer() {
