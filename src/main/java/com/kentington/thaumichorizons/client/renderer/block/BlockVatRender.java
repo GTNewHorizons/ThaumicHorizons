@@ -29,8 +29,9 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
             if (boss == null) {
                 return false;
             }
-            Tessellator.instance.setColorRGBA(255, 255, 255, 192);
-            Tessellator.instance.setBrightness(241);
+            final Tessellator tess = Tessellator.instance;
+            tess.setColorRGBA(255, 255, 255, 192);
+            tess.setBrightness(241);
             renderer.enableAO = false;
             final int dx = boss.xCoord - tco.xCoord;
             final int dy = boss.yCoord - tco.yCoord;
@@ -42,7 +43,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassTR);
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 0.75f, 1.0f, 0.75f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -52,7 +53,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassTL);
                         block.setBlockBounds(0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 0.75f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -62,7 +63,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassTR);
                         block.setBlockBounds(0.25f, 0.0f, 0.25f, 1.0f, 1.0f, 1.0f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -72,7 +73,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassTL);
                         block.setBlockBounds(0.0f, 0.0f, 0.25f, 0.75f, 1.0f, 1.0f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -82,7 +83,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassT);
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.75f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -90,7 +91,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassT);
                             block.setBlockBounds(0.0f, 0.0f, 0.25f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -100,7 +101,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceXPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassT);
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 0.75f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -108,7 +109,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceXNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassT);
                             block.setBlockBounds(0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -122,7 +123,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassBR);
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 0.75f, 1.0f, 0.75f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -132,7 +133,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassBL);
                         block.setBlockBounds(0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 0.75f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -142,7 +143,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassBR);
                         block.setBlockBounds(0.25f, 0.0f, 0.25f, 1.0f, 1.0f, 1.0f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -152,7 +153,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                         renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassBL);
                         block.setBlockBounds(0.0f, 0.0f, 0.25f, 0.75f, 1.0f, 1.0f);
                         renderer.setRenderBoundsFromBlock(block);
-                        Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                        tess.setColorRGBA(255, 255, 255, 255);
                         renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                         block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
@@ -162,7 +163,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceZPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassB);
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.75f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceZPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -170,7 +171,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceZNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassB);
                             block.setBlockBounds(0.0f, 0.0f, 0.25f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceZNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -180,7 +181,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceXPos(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassB);
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 0.75f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceXPos(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
@@ -188,7 +189,7 @@ public class BlockVatRender implements ISimpleBlockRenderingHandler {
                             renderer.renderFaceXNeg(block, x, y, z, ((BlockVat) ThaumicHorizons.blockVat).iconGlassB);
                             block.setBlockBounds(0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
-                            Tessellator.instance.setColorRGBA(255, 255, 255, 255);
+                            tess.setColorRGBA(255, 255, 255, 255);
                             renderer.renderFaceXNeg(block, x, y, z, Blocks.water.getBlockTextureFromSide(0));
                             block.setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
                             renderer.setRenderBoundsFromBlock(block);
