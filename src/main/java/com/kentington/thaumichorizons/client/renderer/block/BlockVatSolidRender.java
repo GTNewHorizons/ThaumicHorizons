@@ -23,13 +23,14 @@ public class BlockVatSolidRender implements ISimpleBlockRenderingHandler {
 
     public boolean renderWorldBlock(final IBlockAccess world, final int x, final int y, final int z, final Block block,
             final int modelId, final RenderBlocks renderer) {
+        final Tessellator tess = Tessellator.instance;
         if (world.getTileEntity(x, y, z) instanceof final TileVatSlave tco) {
             final TileVat boss = tco.getBoss(-1);
             if (boss == null) {
                 return false;
             }
-            Tessellator.instance.setColorOpaque_F(1.0f, 1.0f, 1.0f);
-            Tessellator.instance.setBrightness(150);
+            tess.setColorOpaque_F(1.0f, 1.0f, 1.0f);
+            tess.setBrightness(150);
             renderer.enableAO = false;
             final int dx = boss.xCoord - tco.xCoord;
             final int dy = boss.yCoord - tco.yCoord;
@@ -303,7 +304,7 @@ public class BlockVatSolidRender implements ISimpleBlockRenderingHandler {
                 }
             }
         } else if (world.getBlockMetadata(x, y, z) == 7) {
-            Tessellator.instance.setColorOpaque_F(1.0f, 1.0f, 1.0f);
+            tess.setColorOpaque_F(1.0f, 1.0f, 1.0f);
             renderer.enableAO = false;
             renderer.renderFaceYPos(block, x, y, z, ((BlockVatSolid) ThaumicHorizons.blockVatSolid).iconLidCenterTop);
             renderer.renderFaceYNeg(block, x, y, z, ((BlockVatSolid) ThaumicHorizons.blockVatSolid).iconInnerCenter);
