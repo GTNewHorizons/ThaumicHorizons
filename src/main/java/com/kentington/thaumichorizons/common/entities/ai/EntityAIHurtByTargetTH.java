@@ -31,7 +31,7 @@ public class EntityAIHurtByTargetTH extends EntityAITargetTH {
         this.field_142052_b = this.taskOwner.func_142015_aE();
         if (this.entityCallsForHelp) {
             final double d0 = this.getTargetDistance();
-            final List<EntityLiving> list = this.taskOwner.worldObj.getEntitiesWithinAABB(
+            final List<? extends EntityLiving> list = this.taskOwner.worldObj.getEntitiesWithinAABB(
                     this.taskOwner.getClass(),
                     AxisAlignedBB.getBoundingBox(
                             this.taskOwner.posX,
