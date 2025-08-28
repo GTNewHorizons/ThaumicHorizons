@@ -68,6 +68,7 @@ import com.kentington.thaumichorizons.common.lib.networking.PacketPlayerInfusion
 import com.kentington.thaumichorizons.common.tiles.TileSoulBeacon;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
+import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -686,30 +687,38 @@ public class EventHandlerEntity {
                         .addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp);
             }
             prop.resetPlayerInfusions();
+            ItemStack amulet = null;
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                if (bauble == null || !(bauble.getItem() instanceof ItemAmuletMirror)) {
-                    continue;
+                if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
+                    amulet = bauble;
+                    break;
                 }
+            }
+            if (amulet != null) {
                 boolean transportedSomething = false;
-                for (ItemStack item : player.inventory.armorInventory) {
-                    if (item != null && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                for (int i = 0; i < player.inventory.armorInventory.length; ++i) {
+                    final ItemStack item = player.inventory.armorInventory[i];
+                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        player.inventory.armorInventory[i] = null;
                     }
                 }
-                Arrays.fill(player.inventory.armorInventory, null);
-                for (ItemStack item : player.inventory.mainInventory) {
-                    if (item != null && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
+                    final ItemStack item = player.inventory.mainInventory[i];
+                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        player.inventory.mainInventory[i] = null;
                     }
                 }
-                Arrays.fill(player.inventory.mainInventory, null);
-                for (ItemStack item : PlayerHandler.getPlayerBaubles(player).stackList) {
-                    if (item != bauble && item != null
-                            && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+                for (int i = 0; i < baubles.stackList.length; ++i) {
+                    final ItemStack item = baubles.stackList[i];
+                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        baubles.stackList[i] = null;
                     }
                 }
-                PlayerHandler.clearPlayerBaubles(player);
+                PlayerHandler.setPlayerBaubles(player, baubles);
                 if (transportedSomething) {
                     PacketHandler.INSTANCE.sendToAllAround(
                             new PacketFXContainment(
@@ -740,7 +749,6 @@ public class EventHandlerEntity {
                     drop.lifespan = Integer.MAX_VALUE;
                     player.worldObj.spawnEntityInWorld(drop);
                 }
-                break;
             }
         }
         if (event.entityLiving instanceof EntityPlayer player && event.entityLiving.getHealth() - event.ammount <= 0.0f
