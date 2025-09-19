@@ -1,0 +1,15 @@
+{
+
+  "vortex": {
+
+    "category": "ambient",
+
+    "sounds": [
+
+      { "name": "thaumichorizons:vortex", "stream": true }
+
+    ]
+
+  }
+
+}

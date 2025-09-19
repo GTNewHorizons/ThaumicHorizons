@@ -27,6 +27,10 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import com.kentington.thaumichorizons.client.audio.VortexSound;
+import net.minecraft.tileentity.TileEntity;
 
 import com.kentington.thaumichorizons.client.fx.FXSonic;
 import com.kentington.thaumichorizons.client.gui.GuiBloodInfuser;
@@ -554,5 +558,15 @@ public class ClientProxy extends CommonProxy {
                 1.0f,
                 1.0f,
                 0.1f);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public class ClientProxy extends CommonProxy {
+        @Override
+        public void playVortexSound(TileEntity tile) {
+            if (tile == null) return;
+            Minecraft.getMinecraft().getSoundHandler().playSound(new VortexSound(tile));
+        }
+
     }
 }

@@ -134,4 +134,9 @@ public class CommonProxy implements IGuiHandler {
 
     public void lightningBolt(final World worldObj, final double x, final double y, final double z,
             final int boltLength) {}
+
+    public void playVortexSound(net.minecraft.tileentity.TileEntity tile) {
+        // no-op on server
+    }
 }
+

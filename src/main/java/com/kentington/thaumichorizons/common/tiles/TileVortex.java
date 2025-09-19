@@ -572,4 +572,12 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public int containerContains(final Aspect tag) {
         return 0;
     }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (this.worldObj != null && this.worldObj.isRemote) {
+            com.kentington.thaumichorizons.ThaumicHorizons.proxy.playVortexSound(this);
+        }
+    }
 }
