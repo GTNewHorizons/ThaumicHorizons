@@ -560,32 +560,53 @@ public class ClientProxy extends CommonProxy {
                 0.1f);
     }
 
-    @SideOnly(Side.CLIENT)
     public class ClientProxy extends CommonProxy {
 
-    private final Map<BlockPos, ISound> activeVortexSounds = new HashMap<>();
+    private final Map<TileCoord, VortexSound> activeVortexSounds = new HashMap<>();
 
     @Override
-    public void playVortexSound(TileEntity tile) {
-        if (!(tile instanceof TileVortex)) return;
-        BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+    public void playVortexSound(TileVortex tile) {
+        if (tile == null || tile.isInvalid() || tile.getWorldObj() == null) return;
 
-        // Prevent duplicate sounds per tile
+        TileCoord pos = new TileCoord(tile.xCoord, tile.yCoord, tile.zCoord);
         if (activeVortexSounds.containsKey(pos)) return;
 
-        VortexSound sound = new VortexSound((TileVortex) tile);
+        VortexSound sound = new VortexSound(tile);
         Minecraft.getMinecraft().getSoundHandler().playSound(sound);
         activeVortexSounds.put(pos, sound);
     }
 
     @Override
-    public void stopVortexSound(TileEntity tile) {
-        if (!(tile instanceof TileVortex)) return;
-        BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+    public void stopVortexSound(TileVortex tile) {
+        if (tile == null) return;
 
-        ISound sound = activeVortexSounds.remove(pos);
+        TileCoord pos = new TileCoord(tile.xCoord, tile.yCoord, tile.zCoord);
+        VortexSound sound = activeVortexSounds.remove(pos);
         if (sound != null) {
-            Minecraft.getMinecraft().getSoundHandler().stopSound(sound);
+            sound.donePlaying = true;
+        }
+    }
+
+    // Inner class to replace BlockPos for 1.7.10
+    private static class TileCoord {
+        final int x, y, z;
+
+        TileCoord(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof TileCoord)) return false;
+            TileCoord other = (TileCoord) o;
+            return this.x == other.x && this.y == other.y && this.z == other.z;
+        }
+
+        @Override
+        public int hashCode() {
+            return x * 31 * 31 + y * 31 + z;
         }
     }
 }
