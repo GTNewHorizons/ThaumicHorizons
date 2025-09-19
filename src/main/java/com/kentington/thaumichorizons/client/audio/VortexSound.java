@@ -37,7 +37,7 @@ public class VortexSound extends MovingSound {
         if (p != null) {
             double dist = p.getDistance(this.xPosF, this.yPosF, this.zPosF);
             float maxRange = 32.0F;
-            this.volume = Math.max(0.0F, 1.0F - (float)(dist / maxRange));
+            this.volume = Math.max(0.0F, 1.0F / (1.0F + (float)(dist / 8.0F)));
         }
     }
 }
