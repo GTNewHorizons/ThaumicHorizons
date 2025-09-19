@@ -62,6 +62,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public boolean cheat;
     public ArrayList<ItemStack> items;
     Thread ppThread;
+    private boolean soundStarted = false;
 
     public TileVortex() {
         this.aspects = new AspectList();
@@ -574,10 +575,31 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     }
 
     @Override
-    public void validate() {
-        super.validate();
-        if (this.worldObj != null && this.worldObj.isRemote) {
-            com.kentington.thaumichorizons.ThaumicHorizons.proxy.playVortexSound(this);
+    public void updateEntity() {
+        super.updateEntity();
+
+        if (this.worldObj != null && this.worldObj.isRemote && !soundStarted) {
+            ThaumicHorizons.proxy.playVortexSound(this);
+            soundStarted = true;
         }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        stopSound();
+    }
+    
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        stopSound();
+    }
+    
+    private void stopSound() {
+        if (this.worldObj != null && this.worldObj.isRemote) {
+            ThaumicHorizons.proxy.stopVortexSound(this);
+        }
+        soundStarted = false;
     }
 }
