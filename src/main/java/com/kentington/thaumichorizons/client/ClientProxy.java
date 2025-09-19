@@ -562,11 +562,31 @@ public class ClientProxy extends CommonProxy {
 
     @SideOnly(Side.CLIENT)
     public class ClientProxy extends CommonProxy {
-        @Override
-        public void playVortexSound(TileEntity tile) {
-            if (tile == null) return;
-            Minecraft.getMinecraft().getSoundHandler().playSound(new VortexSound(tile));
-        }
 
+    private final Map<BlockPos, ISound> activeVortexSounds = new HashMap<>();
+
+    @Override
+    public void playVortexSound(TileEntity tile) {
+        if (!(tile instanceof TileVortex)) return;
+        BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+
+        // Prevent duplicate sounds per tile
+        if (activeVortexSounds.containsKey(pos)) return;
+
+        VortexSound sound = new VortexSound((TileVortex) tile);
+        Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+        activeVortexSounds.put(pos, sound);
     }
+
+    @Override
+    public void stopVortexSound(TileEntity tile) {
+        if (!(tile instanceof TileVortex)) return;
+        BlockPos pos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+
+        ISound sound = activeVortexSounds.remove(pos);
+        if (sound != null) {
+            Minecraft.getMinecraft().getSoundHandler().stopSound(sound);
+        }
+    }
+}
 }
