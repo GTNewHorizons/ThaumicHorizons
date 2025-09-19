@@ -5,6 +5,8 @@
 package com.kentington.thaumichorizons.client;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -27,10 +29,8 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import com.kentington.thaumichorizons.client.audio.VortexSound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.audio.ISound;
 
 import com.kentington.thaumichorizons.client.fx.FXSonic;
 import com.kentington.thaumichorizons.client.gui.GuiBloodInfuser;
@@ -112,6 +112,7 @@ import com.kentington.thaumichorizons.client.renderer.tile.TileVatSlaveRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVisDynamoRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexStabilizerRender;
+import com.kentington.thaumichorizons.client.audio.VortexSound;
 import com.kentington.thaumichorizons.common.CommonProxy;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityAlchemitePrimed;
