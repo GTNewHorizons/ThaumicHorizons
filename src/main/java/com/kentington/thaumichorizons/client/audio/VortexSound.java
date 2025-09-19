@@ -13,9 +13,11 @@ public class VortexSound extends MovingSound {
         super(new ResourceLocation("thaumichorizons:vortex"));
         this.tile = tile;
         this.repeat = true;
-        this.field_147665_h = 0;
+        this.delayBeforeRepeat = 0;
         this.volume = 1.0F;
     }
+
+    // Let me know if update needs to be cached or if thats a good idea or not for performance.
 
     @Override
     public void update() {
