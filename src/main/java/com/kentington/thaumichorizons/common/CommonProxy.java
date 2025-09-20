@@ -6,6 +6,7 @@ package com.kentington.thaumichorizons.common;
 
 import java.awt.Color;
 
+import com.kentington.thaumichorizons.common.tiles.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
@@ -23,18 +24,12 @@ import com.kentington.thaumichorizons.common.container.ContainerSoulforge;
 import com.kentington.thaumichorizons.common.container.ContainerVat;
 import com.kentington.thaumichorizons.common.container.ContainerVisDynamo;
 import com.kentington.thaumichorizons.common.items.WandManagerTH;
-import com.kentington.thaumichorizons.common.tiles.TileBloodInfuser;
-import com.kentington.thaumichorizons.common.tiles.TileInspiratron;
-import com.kentington.thaumichorizons.common.tiles.TileSoulExtractor;
-import com.kentington.thaumichorizons.common.tiles.TileSoulforge;
-import com.kentington.thaumichorizons.common.tiles.TileVat;
-import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
 import thaumcraft.api.wands.IWandTriggerManager;
 
-public class CommonProxy implements IGuiHandler {
+public abstract class CommonProxy implements IGuiHandler {
 
     public IWandTriggerManager wandManager;
 
@@ -135,8 +130,9 @@ public class CommonProxy implements IGuiHandler {
     public void lightningBolt(final World worldObj, final double x, final double y, final double z,
             final int boltLength) {}
 
-    public void playVortexSound(net.minecraft.tileentity.TileEntity tile) {
-        // no-op on server
-    }
+
+    public abstract void playVortexSound(TileVortex tile);
+
+    public abstract void stopVortexSound(TileVortex tile);
 }
 

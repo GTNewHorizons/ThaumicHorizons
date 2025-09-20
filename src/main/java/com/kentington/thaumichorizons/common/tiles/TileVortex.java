@@ -78,6 +78,11 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public void updateEntity() {
         super.updateEntity();
 
+        if (this.worldObj != null && this.worldObj.isRemote && !soundStarted) {
+            ThaumicHorizons.proxy.playVortexSound(this);
+            soundStarted = true;
+        }
+
         if (this.generating) {
             this.worldObj.createExplosion(
                     null,
@@ -572,16 +577,6 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     @Override
     public int containerContains(final Aspect tag) {
         return 0;
-    }
-
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
-
-        if (this.worldObj != null && this.worldObj.isRemote && !soundStarted) {
-            ThaumicHorizons.proxy.playVortexSound(this);
-            soundStarted = true;
-        }
     }
 
     @Override

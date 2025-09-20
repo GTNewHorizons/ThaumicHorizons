@@ -29,8 +29,6 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.client.audio.ISound;
 
 import com.kentington.thaumichorizons.client.fx.FXSonic;
 import com.kentington.thaumichorizons.client.gui.GuiBloodInfuser;
@@ -560,9 +558,6 @@ public class ClientProxy extends CommonProxy {
                 1.0f,
                 0.1f);
     }
-
-    public class ClientProxy extends CommonProxy {
-
     private final Map<TileCoord, VortexSound> activeVortexSounds = new HashMap<>();
 
     @Override
@@ -584,7 +579,7 @@ public class ClientProxy extends CommonProxy {
         TileCoord pos = new TileCoord(tile.xCoord, tile.yCoord, tile.zCoord);
         VortexSound sound = activeVortexSounds.remove(pos);
         if (sound != null) {
-            sound.donePlaying = true;
+            sound.markDone();
         }
     }
 
@@ -610,5 +605,5 @@ public class ClientProxy extends CommonProxy {
             return x * 31 * 31 + y * 31 + z;
         }
     }
-}
+
 }

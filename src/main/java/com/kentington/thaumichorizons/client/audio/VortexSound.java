@@ -13,11 +13,11 @@ public class VortexSound extends MovingSound {
         super(new ResourceLocation("thaumichorizons:vortex"));
         this.tile = tile;
         this.repeat = true;
-        this.delayBeforeRepeat = 0;
+        this.field_147665_h  = 0;
         this.volume = 1.0F;
     }
 
-    // Let me know if update needs to be cached or if thats a good idea or not for performance.
+    // Let me know if update needs to be cached or if that's a good idea or not for performance.
 
     @Override
     public void update() {
@@ -36,8 +36,12 @@ public class VortexSound extends MovingSound {
 
         if (p != null) {
             double dist = p.getDistance(this.xPosF, this.yPosF, this.zPosF);
-            float maxRange = 32.0F;
             this.volume = Math.max(0.0F, 1.0F / (1.0F + (float)(dist / 8.0F)));
         }
     }
+
+    public void markDone() {
+        this.donePlaying = true;
+    }
+
 }
