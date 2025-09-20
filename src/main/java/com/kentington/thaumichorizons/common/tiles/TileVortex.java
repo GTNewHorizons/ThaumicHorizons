@@ -584,13 +584,13 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         super.invalidate();
         stopSound();
     }
-    
+
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
         stopSound();
     }
-    
+
     private void stopSound() {
         if (this.worldObj != null && this.worldObj.isRemote) {
             ThaumicHorizons.proxy.stopVortexSound(this);

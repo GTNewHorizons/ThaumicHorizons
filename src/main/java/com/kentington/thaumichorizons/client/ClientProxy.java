@@ -30,6 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.kentington.thaumichorizons.client.audio.VortexSound;
 import com.kentington.thaumichorizons.client.fx.FXSonic;
 import com.kentington.thaumichorizons.client.gui.GuiBloodInfuser;
 import com.kentington.thaumichorizons.client.gui.GuiCase;
@@ -110,7 +111,6 @@ import com.kentington.thaumichorizons.client.renderer.tile.TileVatSlaveRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVisDynamoRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexStabilizerRender;
-import com.kentington.thaumichorizons.client.audio.VortexSound;
 import com.kentington.thaumichorizons.common.CommonProxy;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityAlchemitePrimed;
@@ -558,6 +558,7 @@ public class ClientProxy extends CommonProxy {
                 1.0f,
                 0.1f);
     }
+
     private final Map<TileCoord, VortexSound> activeVortexSounds = new HashMap<>();
 
     @Override
@@ -585,6 +586,7 @@ public class ClientProxy extends CommonProxy {
 
     // Inner class to replace BlockPos for 1.7.10
     private static class TileCoord {
+
         final int x, y, z;
 
         TileCoord(int x, int y, int z) {

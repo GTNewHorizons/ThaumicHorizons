@@ -6,7 +6,6 @@ package com.kentington.thaumichorizons.common;
 
 import java.awt.Color;
 
-import com.kentington.thaumichorizons.common.tiles.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
@@ -24,6 +23,7 @@ import com.kentington.thaumichorizons.common.container.ContainerSoulforge;
 import com.kentington.thaumichorizons.common.container.ContainerVat;
 import com.kentington.thaumichorizons.common.container.ContainerVisDynamo;
 import com.kentington.thaumichorizons.common.items.WandManagerTH;
+import com.kentington.thaumichorizons.common.tiles.*;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -130,9 +130,7 @@ public abstract class CommonProxy implements IGuiHandler {
     public void lightningBolt(final World worldObj, final double x, final double y, final double z,
             final int boltLength) {}
 
-
     public abstract void playVortexSound(TileVortex tile);
 
     public abstract void stopVortexSound(TileVortex tile);
 }
-

@@ -1,19 +1,20 @@
 package com.kentington.thaumichorizons.client.audio;
 
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.MovingSound;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 public class VortexSound extends MovingSound {
+
     private final TileEntity tile;
 
     public VortexSound(TileEntity tile) {
         super(new ResourceLocation("thaumichorizons:vortex"));
         this.tile = tile;
         this.repeat = true;
-        this.field_147665_h  = 0;
+        this.field_147665_h = 0;
         this.volume = 1.0F;
     }
 
@@ -36,7 +37,7 @@ public class VortexSound extends MovingSound {
 
         if (p != null) {
             double dist = p.getDistance(this.xPosF, this.yPosF, this.zPosF);
-            this.volume = Math.max(0.0F, 1.0F / (1.0F + (float)(dist / 8.0F)));
+            this.volume = Math.max(0.0F, 1.0F / (1.0F + (float) (dist / 8.0F)));
         }
     }
 
