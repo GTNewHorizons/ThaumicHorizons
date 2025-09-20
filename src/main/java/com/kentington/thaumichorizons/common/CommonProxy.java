@@ -23,7 +23,13 @@ import com.kentington.thaumichorizons.common.container.ContainerSoulforge;
 import com.kentington.thaumichorizons.common.container.ContainerVat;
 import com.kentington.thaumichorizons.common.container.ContainerVisDynamo;
 import com.kentington.thaumichorizons.common.items.WandManagerTH;
-import com.kentington.thaumichorizons.common.tiles.*;
+import com.kentington.thaumichorizons.common.tiles.TileBloodInfuser;
+import com.kentington.thaumichorizons.common.tiles.TileInspiratron;
+import com.kentington.thaumichorizons.common.tiles.TileSoulExtractor;
+import com.kentington.thaumichorizons.common.tiles.TileSoulforge;
+import com.kentington.thaumichorizons.common.tiles.TileVat;
+import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
+import com.kentington.thaumichorizons.common.tiles.TileVortex;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
