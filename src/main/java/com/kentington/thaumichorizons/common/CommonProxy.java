@@ -35,7 +35,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
 import thaumcraft.api.wands.IWandTriggerManager;
 
-public abstract class CommonProxy implements IGuiHandler {
+public class CommonProxy implements IGuiHandler {
 
     public IWandTriggerManager wandManager;
 
@@ -136,7 +136,7 @@ public abstract class CommonProxy implements IGuiHandler {
     public void lightningBolt(final World worldObj, final double x, final double y, final double z,
             final int boltLength) {}
 
-    public abstract void playVortexSound(TileVortex tile);
+    public void playVortexSound(TileVortex tile) {}
 
-    public abstract void stopVortexSound(TileVortex tile);
+    public void stopVortexSound(TileVortex tile) {}
 }
