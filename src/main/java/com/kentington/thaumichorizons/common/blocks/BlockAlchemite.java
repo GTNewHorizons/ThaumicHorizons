@@ -29,6 +29,7 @@ public class BlockAlchemite extends BlockTNT {
         this.setBlockName("ThaumicHorizons_alchemite");
         this.setBlockTextureName("ThaumicHorizons:alchemite");
         this.setCreativeTab(ThaumicHorizons.tabTH);
+        this.setStepSound(soundTypeGrass); // same place/break sound as TNT
     }
 
     public void onBlockDestroyedByExplosion(final World p_149723_1_, final int p_149723_2_, final int p_149723_3_,
