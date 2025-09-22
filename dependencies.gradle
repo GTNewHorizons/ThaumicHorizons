@@ -1,9 +1,9 @@
 // Add your dependencies here
 
 dependencies {
-    api('com.github.GTNewHorizons:Baubles-Expanded:2.1.14-GTNH:dev')
+    api('com.github.GTNewHorizons:Baubles-Expanded:2.1.15-GTNH:dev')
 
     api('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
 
-    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.457:dev') {transitive = false}
+    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.51.461:dev') {transitive = false}
 }
