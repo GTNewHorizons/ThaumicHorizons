@@ -29,6 +29,7 @@ import com.kentington.thaumichorizons.common.tiles.TileSoulExtractor;
 import com.kentington.thaumichorizons.common.tiles.TileSoulforge;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
+import com.kentington.thaumichorizons.common.tiles.TileVortex;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -134,4 +135,8 @@ public class CommonProxy implements IGuiHandler {
 
     public void lightningBolt(final World worldObj, final double x, final double y, final double z,
             final int boltLength) {}
+
+    public void playVortexSound(TileVortex tile) {}
+
+    public void stopVortexSound(TileVortex tile) {}
 }
