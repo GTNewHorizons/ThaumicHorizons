@@ -62,6 +62,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public boolean cheat;
     public ArrayList<ItemStack> items;
     Thread ppThread;
+    private boolean soundStarted = false;
 
     public TileVortex() {
         this.aspects = new AspectList();
@@ -76,6 +77,11 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
 
     public void updateEntity() {
         super.updateEntity();
+
+        if (this.worldObj != null && this.worldObj.isRemote && !soundStarted) {
+            ThaumicHorizons.proxy.playVortexSound(this);
+            soundStarted = true;
+        }
 
         if (this.generating) {
             this.worldObj.createExplosion(
@@ -571,5 +577,24 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     @Override
     public int containerContains(final Aspect tag) {
         return 0;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        stopSound();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        stopSound();
+    }
+
+    private void stopSound() {
+        if (this.worldObj != null && this.worldObj.isRemote) {
+            ThaumicHorizons.proxy.stopVortexSound(this);
+        }
+        soundStarted = false;
     }
 }

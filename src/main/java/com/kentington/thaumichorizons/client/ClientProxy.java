@@ -5,6 +5,8 @@
 package com.kentington.thaumichorizons.client;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -28,6 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.kentington.thaumichorizons.client.audio.VortexSound;
 import com.kentington.thaumichorizons.client.fx.FXSonic;
 import com.kentington.thaumichorizons.client.gui.GuiBloodInfuser;
 import com.kentington.thaumichorizons.client.gui.GuiCase;
@@ -555,4 +558,54 @@ public class ClientProxy extends CommonProxy {
                 1.0f,
                 0.1f);
     }
+
+    private final Map<TileCoord, VortexSound> activeVortexSounds = new HashMap<>();
+
+    @Override
+    public void playVortexSound(TileVortex tile) {
+        if (tile == null || tile.isInvalid() || tile.getWorldObj() == null) return;
+
+        TileCoord pos = new TileCoord(tile.xCoord, tile.yCoord, tile.zCoord);
+        if (activeVortexSounds.containsKey(pos)) return;
+
+        VortexSound sound = new VortexSound(tile);
+        Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+        activeVortexSounds.put(pos, sound);
+    }
+
+    @Override
+    public void stopVortexSound(TileVortex tile) {
+        if (tile == null) return;
+
+        TileCoord pos = new TileCoord(tile.xCoord, tile.yCoord, tile.zCoord);
+        VortexSound sound = activeVortexSounds.remove(pos);
+        if (sound != null) {
+            sound.markDone();
+        }
+    }
+
+    // Inner class to replace BlockPos for 1.7.10
+    private static class TileCoord {
+
+        final int x, y, z;
+
+        TileCoord(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof TileCoord)) return false;
+            TileCoord other = (TileCoord) o;
+            return this.x == other.x && this.y == other.y && this.z == other.z;
+        }
+
+        @Override
+        public int hashCode() {
+            return x * 31 * 31 + y * 31 + z;
+        }
+    }
+
 }
