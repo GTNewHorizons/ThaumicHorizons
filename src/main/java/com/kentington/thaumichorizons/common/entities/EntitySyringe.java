@@ -39,6 +39,7 @@ import io.netty.buffer.ByteBuf;
 public class EntitySyringe extends Entity implements IProjectile, IEntityAdditionalSpawnData {
 
     public int color;
+    public int canBePickedUp;
     public NBTTagCompound effects;
     private boolean inGround;
     private int field_145791_d;
@@ -50,7 +51,6 @@ public class EntitySyringe extends Entity implements IProjectile, IEntityAdditio
     private int ticksInAir;
     private int knockbackStrength;
     private EntityLivingBase shootingEntity;
-    private int canBePickedUp;
     private byte arrowShake;
     private double damage;
 
@@ -144,6 +144,13 @@ public class EntitySyringe extends Entity implements IProjectile, IEntityAdditio
                 * MathHelper.cos(this.rotationPitch / 180.0f * (float) Math.PI);
         this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * (float) Math.PI);
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, p_i1756_3_ * 1.5f, 1.0f);
+    }
+
+    public EntitySyringe(World world, double x, double y, double z, NBTTagCompound effects) {
+        this(world, x, y, z);
+        this.effects = effects;
+        this.color = this.effects.getInteger("color");
+        this.canBePickedUp = 1;
     }
 
     public void writeEntityToNBT(final NBTTagCompound p_70014_1_) {
