@@ -1048,7 +1048,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     }
 
     private void inEvZap(final boolean all) {
-        final List<Entity> targets = (List<Entity>) this.worldObj.getEntitiesWithinAABB(
+        final List<EntityLivingBase> targets = this.worldObj.getEntitiesWithinAABB(
                 EntityLivingBase.class,
                 AxisAlignedBB.getBoundingBox(
                         this.xCoord,
@@ -1057,7 +1057,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         this.xCoord + 1,
                         this.yCoord + 1,
                         this.zCoord + 1).expand(10.0, 10.0, 10.0));
-        if (targets != null && targets.size() > 0) {
+        if (targets != null && !targets.isEmpty()) {
             for (final Entity target : targets) {
                 thaumcraft.common.lib.network.PacketHandler.INSTANCE.sendToAllAround(
                         new PacketFXBlockZap(
