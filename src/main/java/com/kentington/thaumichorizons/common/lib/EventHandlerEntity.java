@@ -794,13 +794,7 @@ public class EventHandlerEntity {
                     if (bauble == null) {
                         continue;
                     }
-                    final EntityItem item = new EntityItem(
-                            playerWorld,
-                            player.posX,
-                            player.posY,
-                            player.posZ,
-                            bauble);
-                    playerWorld.spawnEntityInWorld(item);
+                    player.func_146097_a(bauble, true, false);
                 }
                 player.inventory.markDirty();
                 PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
