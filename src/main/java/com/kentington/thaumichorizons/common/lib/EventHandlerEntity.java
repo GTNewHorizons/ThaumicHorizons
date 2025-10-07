@@ -679,7 +679,7 @@ public class EventHandlerEntity {
         }
         if (!event.entity.worldObj.isRemote && event.entity instanceof final EntityPlayer player
                 && event.entityLiving.getHealth() - event.ammount <= 0.0f) {
-            // Player Infusions
+            // Clear player infusions
             if (prop.tumorWarpPermanent > 0 || prop.tumorWarp > 0 || prop.tumorWarpTemp > 0) {
                 Thaumcraft.proxy.getPlayerKnowledge()
                         .addWarpPerm(event.entity.getCommandSenderName(), prop.tumorWarpPermanent);
@@ -690,7 +690,7 @@ public class EventHandlerEntity {
             }
             prop.resetPlayerInfusions();
 
-            // Mirrored Amulet
+            // Mirrored Amulet returning items
             ItemStack amulet = null;
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
                 if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
@@ -715,15 +715,20 @@ public class EventHandlerEntity {
                     }
                 }
                 InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+                int amuletIndex = 0;
                 for (int i = 0; i < baubles.stackList.length; ++i) {
                     final ItemStack item = baubles.stackList[i];
-                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
+                    if (item == amulet) {
+                        amuletIndex = i;
+                    } else if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
                         baubles.stackList[i] = null;
                     }
                 }
                 PlayerHandler.setPlayerBaubles(player, baubles);
                 if (transportedSomething) {
+                    baubles.stackList[amuletIndex] = null;
+                    PlayerHandler.setPlayerBaubles(player, baubles);
                     PacketHandler.INSTANCE.sendToAllAround(
                             new PacketFXContainment(
                                     player.posX,
@@ -754,7 +759,7 @@ public class EventHandlerEntity {
                 }
             }
 
-            // Soul Beacon
+            // Return to Soul Beacon before death
             if (!player.getEntityData().getBoolean("soulBeacon")) return;
 
             final int dim = player.getEntityData().getInteger("soulBeaconDim");
