@@ -796,6 +796,7 @@ public class EventHandlerEntity {
                     }
                     player.func_146097_a(bauble, true, false);
                 }
+                PlayerHandler.clearPlayerBaubles(player);
                 player.inventory.markDirty();
                 PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
                 player.curePotionEffects(new ItemStack(Items.milk_bucket));
