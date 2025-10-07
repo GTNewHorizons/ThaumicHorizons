@@ -679,6 +679,7 @@ public class EventHandlerEntity {
         }
         if (!event.entity.worldObj.isRemote && event.entity instanceof final EntityPlayer player
                 && event.entityLiving.getHealth() - event.ammount <= 0.0f) {
+            // Player Infusions
             if (prop.tumorWarpPermanent > 0 || prop.tumorWarp > 0 || prop.tumorWarpTemp > 0) {
                 Thaumcraft.proxy.getPlayerKnowledge()
                         .addWarpPerm(event.entity.getCommandSenderName(), prop.tumorWarpPermanent);
@@ -688,6 +689,8 @@ public class EventHandlerEntity {
                         .addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp);
             }
             prop.resetPlayerInfusions();
+
+            // Mirrored Amulet
             ItemStack amulet = null;
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
                 if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
@@ -750,9 +753,10 @@ public class EventHandlerEntity {
                     player.worldObj.spawnEntityInWorld(drop);
                 }
             }
-        }
-        if (event.entityLiving instanceof EntityPlayer player && event.entityLiving.getHealth() - event.ammount <= 0.0f
-                && event.entityLiving.getEntityData().getBoolean("soulBeacon")) {
+
+            // Soul Beacon
+            if (!player.getEntityData().getBoolean("soulBeacon")) return;
+
             final int dim = player.getEntityData().getInteger("soulBeaconDim");
             final World beaconWorld = MinecraftServer.getServer().worldServerForDimension(dim);
             final World playerWorld = player.worldObj;
