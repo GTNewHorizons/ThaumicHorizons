@@ -773,12 +773,6 @@ public class EventHandlerEntity {
                     && vat.mode == 4) {
                 event.setCanceled(true);
                 event.ammount = 0.0f;
-                if (event.entity.worldObj.isRemote) {
-                    Arrays.fill(player.inventory.mainInventory, null);
-                    Arrays.fill(player.inventory.armorInventory, null);
-                    PlayerHandler.clearPlayerBaubles(player);
-                    return;
-                }
                 playerWorld.createExplosion(
                         null,
                         player.posX,
