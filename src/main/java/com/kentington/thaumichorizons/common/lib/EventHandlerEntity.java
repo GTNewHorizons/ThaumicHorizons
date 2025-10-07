@@ -5,7 +5,6 @@
 package com.kentington.thaumichorizons.common.lib;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
