@@ -82,6 +82,7 @@ import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.entities.EntityAspectOrb;
 import thaumcraft.common.entities.EntityFollowingItem;
+import thaumcraft.common.entities.EntityPermanentItem;
 import thaumcraft.common.items.relics.ItemHandMirror;
 import thaumcraft.common.lib.network.fx.PacketFXShield;
 import thaumcraft.common.lib.utils.EntityUtils;
@@ -740,13 +741,12 @@ public class EventHandlerEntity {
                             1.0f);
                     player.inventory.markDirty();
                     final ItemStack droppedPearl = new ItemStack(ConfigItems.itemEldritchObject, 1, 3);
-                    final EntityItem drop = new EntityItem(
+                    final EntityPermanentItem drop = new EntityPermanentItem(
                             player.worldObj,
                             player.posX,
                             player.posY,
                             player.posZ,
                             droppedPearl);
-                    drop.lifespan = Integer.MAX_VALUE;
                     player.worldObj.spawnEntityInWorld(drop);
                 }
             }
