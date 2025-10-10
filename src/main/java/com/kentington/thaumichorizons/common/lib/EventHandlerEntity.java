@@ -5,7 +5,6 @@
 package com.kentington.thaumichorizons.common.lib;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -68,6 +67,7 @@ import com.kentington.thaumichorizons.common.lib.networking.PacketPlayerInfusion
 import com.kentington.thaumichorizons.common.tiles.TileSoulBeacon;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
+import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -81,6 +81,7 @@ import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.entities.EntityAspectOrb;
 import thaumcraft.common.entities.EntityFollowingItem;
+import thaumcraft.common.entities.EntityPermanentItem;
 import thaumcraft.common.items.relics.ItemHandMirror;
 import thaumcraft.common.lib.network.fx.PacketFXShield;
 import thaumcraft.common.lib.utils.EntityUtils;
@@ -677,6 +678,7 @@ public class EventHandlerEntity {
         }
         if (!event.entity.worldObj.isRemote && event.entity instanceof final EntityPlayer player
                 && event.entityLiving.getHealth() - event.ammount <= 0.0f) {
+            // Clear player infusions
             if (prop.tumorWarpPermanent > 0 || prop.tumorWarp > 0 || prop.tumorWarpTemp > 0) {
                 Thaumcraft.proxy.getPlayerKnowledge()
                         .addWarpPerm(event.entity.getCommandSenderName(), prop.tumorWarpPermanent);
@@ -686,31 +688,46 @@ public class EventHandlerEntity {
                         .addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp);
             }
             prop.resetPlayerInfusions();
+
+            // Mirrored Amulet returning items
+            ItemStack amulet = null;
             for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                if (bauble == null || !(bauble.getItem() instanceof ItemAmuletMirror)) {
-                    continue;
+                if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
+                    amulet = bauble;
+                    break;
                 }
+            }
+            if (amulet != null) {
                 boolean transportedSomething = false;
-                for (ItemStack item : player.inventory.armorInventory) {
-                    if (item != null && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                for (int i = 0; i < player.inventory.armorInventory.length; ++i) {
+                    final ItemStack item = player.inventory.armorInventory[i];
+                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        player.inventory.armorInventory[i] = null;
                     }
                 }
-                Arrays.fill(player.inventory.armorInventory, null);
-                for (ItemStack item : player.inventory.mainInventory) {
-                    if (item != null && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
+                    final ItemStack item = player.inventory.mainInventory[i];
+                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        player.inventory.mainInventory[i] = null;
                     }
                 }
-                Arrays.fill(player.inventory.mainInventory, null);
-                for (ItemStack item : PlayerHandler.getPlayerBaubles(player).stackList) {
-                    if (item != bauble && item != null
-                            && ItemHandMirror.transport(bauble, item, player, player.worldObj)) {
+                InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
+                int amuletIndex = 0;
+                for (int i = 0; i < baubles.stackList.length; ++i) {
+                    final ItemStack item = baubles.stackList[i];
+                    if (item == amulet) {
+                        amuletIndex = i;
+                    } else if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
                         transportedSomething = true;
+                        baubles.stackList[i] = null;
                     }
                 }
-                PlayerHandler.clearPlayerBaubles(player);
+                PlayerHandler.setPlayerBaubles(player, baubles);
                 if (transportedSomething) {
+                    baubles.stackList[amuletIndex] = null;
+                    PlayerHandler.setPlayerBaubles(player, baubles);
                     PacketHandler.INSTANCE.sendToAllAround(
                             new PacketFXContainment(
                                     player.posX,
@@ -731,20 +748,19 @@ public class EventHandlerEntity {
                             1.0f);
                     player.inventory.markDirty();
                     final ItemStack droppedPearl = new ItemStack(ConfigItems.itemEldritchObject, 1, 3);
-                    final EntityItem drop = new EntityItem(
+                    final EntityPermanentItem drop = new EntityPermanentItem(
                             player.worldObj,
                             player.posX,
                             player.posY,
                             player.posZ,
                             droppedPearl);
-                    drop.lifespan = Integer.MAX_VALUE;
                     player.worldObj.spawnEntityInWorld(drop);
                 }
-                break;
             }
-        }
-        if (event.entityLiving instanceof EntityPlayer player && event.entityLiving.getHealth() - event.ammount <= 0.0f
-                && event.entityLiving.getEntityData().getBoolean("soulBeacon")) {
+
+            // Return to Soul Beacon before death
+            if (!player.getEntityData().getBoolean("soulBeacon")) return;
+
             final int dim = player.getEntityData().getInteger("soulBeaconDim");
             final World beaconWorld = MinecraftServer.getServer().worldServerForDimension(dim);
             final World playerWorld = player.worldObj;
@@ -756,12 +772,6 @@ public class EventHandlerEntity {
                     && vat.mode == 4) {
                 event.setCanceled(true);
                 event.ammount = 0.0f;
-                if (event.entity.worldObj.isRemote) {
-                    Arrays.fill(player.inventory.mainInventory, null);
-                    Arrays.fill(player.inventory.armorInventory, null);
-                    PlayerHandler.clearPlayerBaubles(player);
-                    return;
-                }
                 playerWorld.createExplosion(
                         null,
                         player.posX,
@@ -786,14 +796,9 @@ public class EventHandlerEntity {
                     if (bauble == null) {
                         continue;
                     }
-                    final EntityItem item = new EntityItem(
-                            playerWorld,
-                            player.posX,
-                            player.posY,
-                            player.posZ,
-                            bauble);
-                    playerWorld.spawnEntityInWorld(item);
+                    player.func_146097_a(bauble, true, false);
                 }
+                PlayerHandler.clearPlayerBaubles(player);
                 player.inventory.markDirty();
                 PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
                 player.curePotionEffects(new ItemStack(Items.milk_bucket));
