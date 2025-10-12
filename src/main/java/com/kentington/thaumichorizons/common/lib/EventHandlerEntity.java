@@ -759,63 +759,63 @@ public class EventHandlerEntity {
             }
 
             // Return to Soul Beacon before death
-            if (!player.getEntityData().getBoolean("soulBeacon")) return;
-
-            final int dim = player.getEntityData().getInteger("soulBeaconDim");
-            final World beaconWorld = MinecraftServer.getServer().worldServerForDimension(dim);
-            final World playerWorld = player.worldObj;
-            final int x = player.getEntityData().getIntArray("soulBeaconCoords")[0];
-            final int y = player.getEntityData().getIntArray("soulBeaconCoords")[1];
-            final int z = player.getEntityData().getIntArray("soulBeaconCoords")[2];
-            if (beaconWorld.getTileEntity(x, y, z) instanceof TileSoulBeacon
-                    && beaconWorld.getTileEntity(x, y - 1, z) instanceof TileVat vat
-                    && vat.mode == 4) {
-                event.setCanceled(true);
-                event.ammount = 0.0f;
-                playerWorld.createExplosion(
-                        null,
-                        player.posX,
-                        player.posY + player.getEyeHeight(),
-                        player.posZ,
-                        0.0f,
-                        false);
-                for (int i = 0; i < 25; ++i) {
-                    final int xx = (int) player.posX + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
-                    final int yy = (int) player.posY + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
-                    final int zz = (int) player.posZ + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
-                    if (playerWorld.isAirBlock(xx, yy, zz)) {
-                        if (yy <= (int) player.posY + 1) {
-                            playerWorld.setBlock(xx, yy, zz, ConfigBlocks.blockFluxGoo, 8, 3);
-                        } else {
-                            playerWorld.setBlock(xx, yy, zz, ConfigBlocks.blockFluxGas, 8, 3);
+            if (player.getEntityData().getBoolean("soulBeacon")) {
+                final int dim = player.getEntityData().getInteger("soulBeaconDim");
+                final World beaconWorld = MinecraftServer.getServer().worldServerForDimension(dim);
+                final World playerWorld = player.worldObj;
+                final int x = player.getEntityData().getIntArray("soulBeaconCoords")[0];
+                final int y = player.getEntityData().getIntArray("soulBeaconCoords")[1];
+                final int z = player.getEntityData().getIntArray("soulBeaconCoords")[2];
+                if (beaconWorld.getTileEntity(x, y, z) instanceof TileSoulBeacon
+                        && beaconWorld.getTileEntity(x, y - 1, z) instanceof TileVat vat
+                        && vat.mode == 4) {
+                    event.setCanceled(true);
+                    event.ammount = 0.0f;
+                    playerWorld.createExplosion(
+                            null,
+                            player.posX,
+                            player.posY + player.getEyeHeight(),
+                            player.posZ,
+                            0.0f,
+                            false);
+                    for (int i = 0; i < 25; ++i) {
+                        final int xx = (int) player.posX + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
+                        final int yy = (int) player.posY + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
+                        final int zz = (int) player.posZ + playerWorld.rand.nextInt(8) - playerWorld.rand.nextInt(8);
+                        if (playerWorld.isAirBlock(xx, yy, zz)) {
+                            if (yy <= (int) player.posY + 1) {
+                                playerWorld.setBlock(xx, yy, zz, ConfigBlocks.blockFluxGoo, 8, 3);
+                            } else {
+                                playerWorld.setBlock(xx, yy, zz, ConfigBlocks.blockFluxGas, 8, 3);
+                            }
                         }
                     }
-                }
-                player.inventory.dropAllItems();
-                for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                    if (bauble == null) {
-                        continue;
+                    player.inventory.dropAllItems();
+                    for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
+                        if (bauble == null) {
+                            continue;
+                        }
+                        player.func_146097_a(bauble, true, false);
                     }
-                    player.func_146097_a(bauble, true, false);
+                    PlayerHandler.clearPlayerBaubles(player);
+                    player.inventory.markDirty();
+                    PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
+                    player.curePotionEffects(new ItemStack(Items.milk_bucket));
+                    player.heal(Float.MAX_VALUE);
+                    if (dim != player.worldObj.provider.dimensionId) {
+                        player.travelToDimension(dim);
+                    }
+                    player.setPositionAndUpdate(x + 0.5, y - 2.5, z + 0.5);
+                    Thaumcraft.proxy.blockSparkle(beaconWorld, x, y - 2, z, 16777215, 20);
+                    Thaumcraft.proxy.blockSparkle(beaconWorld, x, y - 3, z, 16777215, 20);
+                    beaconWorld.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "thaumcraft:whispers", 1.0f, beaconWorld.rand.nextFloat());
+                    this.applyPlayerInfusions(player, vat);
+                    vat.selfInfusions = new int[12];
+                    vat.mode = 0;
+                    vat.setEntityContained(player);
+                    beaconWorld.getTileEntity(x, y - 1, z).markDirty();
+                    player.worldObj.markBlockForUpdate(x, y - 1, z);
                 }
-                PlayerHandler.clearPlayerBaubles(player);
-                player.inventory.markDirty();
-                PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
-                player.curePotionEffects(new ItemStack(Items.milk_bucket));
-                player.heal(Float.MAX_VALUE);
-                if (dim != player.worldObj.provider.dimensionId) {
-                    player.travelToDimension(dim);
-                }
-                player.setPositionAndUpdate(x + 0.5, y - 2.5, z + 0.5);
-                Thaumcraft.proxy.blockSparkle(beaconWorld, x, y - 2, z, 16777215, 20);
-                Thaumcraft.proxy.blockSparkle(beaconWorld, x, y - 3, z, 16777215, 20);
-                beaconWorld.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "thaumcraft:whispers", 1.0f, beaconWorld.rand.nextFloat());
-                this.applyPlayerInfusions(player, vat);
-                vat.selfInfusions = new int[12];
-                vat.mode = 0;
-                vat.setEntityContained(player);
-                beaconWorld.getTileEntity(x, y - 1, z).markDirty();
-                player.worldObj.markBlockForUpdate(x, y - 1, z);
             }
         }
     }
