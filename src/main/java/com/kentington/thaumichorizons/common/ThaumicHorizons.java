@@ -3679,12 +3679,14 @@ public class ThaumicHorizons {
             var4 = -1;
         }
 
+        int visBoostPotionId = potionVisBoostID;
         var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionVisBoostID = var4;
-            PotionVisBoost.instance = new PotionVisBoost(potionVisBoostID, true, 6697847);
-            PotionVisBoost.init();
+        if (Potion.potionTypes[visBoostPotionId] != null) {
+            visBoostPotionId = getNextPotionId(visBoostPotionId);
         }
+        potionVisBoostID = visBoostPotionId;
+        PotionVisBoost.instance = new PotionVisBoost(potionVisBoostID, true, 6697847);
+        PotionVisBoost.init();
 
         var4 = getNextPotionId(var4);
         if (var4 >= 0) {
@@ -3921,6 +3923,17 @@ public class ThaumicHorizons {
         visboostPotionProperty.comment = "Potion ID for the VisBoost Potion";
         visboostPotionProperty.setRequiresMcRestart(true);
         potionVisBoostID = visboostPotionProperty.getInt();
+
+
+
+
+
+
+
+
+
+
+
         config.save();
     }
 
