@@ -473,7 +473,7 @@ public class ThaumicHorizons {
         } catch (Exception var8) {
             log.error("Thaumic Horizons could not load its configuration file");
         } finally {
-            if (config != null) {
+            if (config != null && config.hasChanged()) {
                 config.save();
             }
         }
@@ -752,6 +752,7 @@ public class ThaumicHorizons {
         proxy.registerHandlers();
         proxy.registerRenderers();
         FMLCommonHandler.instance().bus().register(instance);
+        initPotions();
     }
 
     @EventHandler
@@ -796,7 +797,6 @@ public class ThaumicHorizons {
         shapelessOreDictRecipe(
                 new ItemStack(ConfigItems.itemTripleMeatTreat),
                 new Object[] { Items.sugar, itemMeatNugget, ConfigItems.itemNuggetBeef, ConfigItems.itemNuggetFish });
-        initPotions();
         ResearchCategories.registerCategory(
                 "ThaumicHorizons",
                 new ResourceLocation("thaumichorizons", "textures/misc/vat.png"),
@@ -3916,6 +3916,11 @@ public class ThaumicHorizons {
         warpedTumorValueProperty.comment = "Points of warp held by warped tumor.";
         warpedTumorValueProperty.setRequiresMcRestart(true);
         warpedTumorValue = warpedTumorValueProperty.getInt();
+
+        Property visboostPotionProperty = config.get("potions", "visboostPotionID", 100);
+        visboostPotionProperty.comment = "Potion ID for the VisBoost Potion";
+        visboostPotionProperty.setRequiresMcRestart(true);
+        potionVisBoostID = visboostPotionProperty.getInt();
         config.save();
     }
 
