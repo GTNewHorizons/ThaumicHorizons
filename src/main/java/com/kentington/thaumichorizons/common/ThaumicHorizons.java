@@ -3930,27 +3930,27 @@ public class ThaumicHorizons {
         warpedTumorValueProperty.setRequiresMcRestart(true);
         warpedTumorValue = warpedTumorValueProperty.getInt();
 
-        Property visboostPotionProperty = config.get("potions", "visboostPotionID", 100);
+        Property visboostPotionProperty = config.get("potions", "visboostPotionID", 24);
         visboostPotionProperty.comment = "Potion ID for the VisBoost Potion";
         visboostPotionProperty.setRequiresMcRestart(true);
         potionVisBoostID = visboostPotionProperty.getInt();
 
-        Property visregenPotionProperty = config.get("potions", "visregenPotionID", 100);
+        Property visregenPotionProperty = config.get("potions", "visregenPotionID", 25);
         visregenPotionProperty.comment = "Potion ID for the VisRegen Potion";
         visregenPotionProperty.setRequiresMcRestart(true);
         potionVisRegenID = visregenPotionProperty.getInt();
 
-        Property vacuumPotionProperty = config.get("potions", "vacuumPotionID", 100);
+        Property vacuumPotionProperty = config.get("potions", "vacuumPotionID", 26);
         vacuumPotionProperty.comment = "Potion ID for the Vacuum";
         vacuumPotionProperty.setRequiresMcRestart(true);
         potionVacuumID = vacuumPotionProperty.getInt();
 
-        Property shockPotionProperty = config.get("potions", "shockPotionID", 100);
+        Property shockPotionProperty = config.get("potions", "shockPotionID", 27);
         shockPotionProperty.comment = "Potion ID for the Shock Potion";
         shockPotionProperty.setRequiresMcRestart(true);
         potionShockID = shockPotionProperty.getInt();
 
-        Property synthesisPotionProperty = config.get("potions", "synthesisPotionID", 100);
+        Property synthesisPotionProperty = config.get("potions", "synthesisPotionID", 28);
         synthesisPotionProperty.comment = "Potion ID for the Sythesis Potion";
         synthesisPotionProperty.setRequiresMcRestart(true);
         potionSynthesisID = synthesisPotionProperty.getInt();
