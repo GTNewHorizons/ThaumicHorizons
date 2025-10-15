@@ -95,6 +95,7 @@ import com.kentington.thaumichorizons.common.blocks.BlockVat;
 import com.kentington.thaumichorizons.common.blocks.BlockVatInterior;
 import com.kentington.thaumichorizons.common.blocks.BlockVatSolid;
 import com.kentington.thaumichorizons.common.blocks.BlockVisDynamo;
+import com.kentington.thaumichorizons.common.blocks.BlockVisweaver;
 import com.kentington.thaumichorizons.common.blocks.BlockVoid;
 import com.kentington.thaumichorizons.common.blocks.BlockVortex;
 import com.kentington.thaumichorizons.common.blocks.BlockVortexItem;
@@ -211,6 +212,7 @@ import com.kentington.thaumichorizons.common.tiles.TileVatConnector;
 import com.kentington.thaumichorizons.common.tiles.TileVatMatrix;
 import com.kentington.thaumichorizons.common.tiles.TileVatSlave;
 import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
+import com.kentington.thaumichorizons.common.tiles.TileVisweaver;
 import com.kentington.thaumichorizons.common.tiles.TileVortex;
 import com.kentington.thaumichorizons.common.tiles.TileVortexStabilizer;
 
@@ -300,6 +302,7 @@ public class ThaumicHorizons {
     public static int blockVortexRI = -1;
     public static int blockSpikeRI = -1;
     public static int blockSlotRI = -1;
+    public static int blockVisweaverRI = -1;
     public static int potionVisBoostID = -1;
     public static int potionVisRegenID = -1;
     public static int potionVacuumID = -1;
@@ -391,6 +394,7 @@ public class ThaumicHorizons {
     public static Block blockSlot;
     public static Block blockPortal;
     public static Block blockGateway;
+    public static Block blockVisweaver;
     public static final Material portal;
     public static ShapedArcaneRecipe recipeSyringe;
     public static ShapedArcaneRecipe recipeLensCase;
@@ -449,7 +453,7 @@ public class ThaumicHorizons {
     public static InfusionRecipe recipeEnchantClay;
     public static InfusionRecipe recipeKeystone;
     public static InfusionRecipe recipeKeystone1;
-
+    public static InfusionRecipe recipeVisweaver;
     public static InfusionRecipe recipeVortexStabilizer;
     public static InfusionRecipe recipeRecombinator;
     public static InfusionRecipe recipeSlot;
@@ -537,6 +541,7 @@ public class ThaumicHorizons {
         blockSlot = new BlockSlot();
         blockPortal = new BlockPortalTH();
         blockGateway = new BlockGatewayPortal();
+        blockVisweaver = new BlockVisweaver();
         itemSpawnerEgg = new ItemSpawnerEgg();
         itemEggIncubated = new ItemEggIncubated();
         itemLensCase = new ItemLensCase();
@@ -623,6 +628,7 @@ public class ThaumicHorizons {
         GameRegistry.registerBlock(blockSlot, "slotTH");
         GameRegistry.registerBlock(blockPortal, "portalTH");
         GameRegistry.registerBlock(blockGateway, "gatewayTH");
+        GameRegistry.registerBlock(blockVisweaver, "visweaverTH");
         GameRegistry.registerItem(itemSpawnerEgg, "spawnerEgg");
         GameRegistry.registerItem(itemEggIncubated, "eggIncubated");
         GameRegistry.registerItem(itemLensFire, "lensFire");
@@ -749,6 +755,7 @@ public class ThaumicHorizons {
         GameRegistry.registerTileEntity(TileSpike.class, "SpikeTH");
         GameRegistry.registerTileEntity(TileCloud.class, "CloudTH");
         GameRegistry.registerTileEntity(TileSlot.class, "KeystoneReceptacleTH");
+        GameRegistry.registerTileEntity(TileVisweaver.class, "TileVisweaverTH");
         proxy.registerHandlers();
         proxy.registerRenderers();
         FMLCommonHandler.instance().bus().register(instance);
@@ -1919,6 +1926,30 @@ public class ThaumicHorizons {
         vortexStabilizer.setParents("planarTheory");
         vortexStabilizer.setConcealed();
         ResearchCategories.addResearch(vortexStabilizer);
+        ResearchItem visweaver = new ResearchItem(
+                "visweaver",
+                "ThaumicHorizons",
+                new AspectList().add(Aspect.MECHANISM, 1).add(Aspect.EXCHANGE, 1).add(Aspect.MAGIC, 1)
+                        .add(Aspect.ENERGY, 1),
+                -1,
+                2,
+                2,
+                new ItemStack(blockVisweaver));
+        recipeVisweaver = ThaumcraftApi.addInfusionCraftingRecipe(
+                "visweaver",
+                new ItemStack(blockVisweaver),
+                7,
+                new AspectList().add(Aspect.EXCHANGE, 40).add(Aspect.MECHANISM, 20).add(Aspect.MAGIC, 20),
+                new ItemStack(ConfigBlocks.blockTable),
+                new ItemStack[] { new ItemStack(ConfigItems.itemShard, 1, 6),
+                        new ItemStack(ConfigItems.itemResource, 1, 2), new ItemStack(ConfigItems.itemShard, 1, 6),
+                        new ItemStack(ConfigItems.itemResource, 1, 15), new ItemStack(ConfigItems.itemShard, 1, 6),
+                        new ItemStack(ConfigItems.itemResource, 1, 3), });
+        ResearchPage visweaver1 = new ResearchPage("visweaver1");
+        ResearchPage visweaver2 = new ResearchPage(recipeVisweaver);
+        visweaver.setPages(visweaver1, visweaver2);
+        visweaver.setParents("shardTrans", "VISPOWER");
+        ResearchCategories.addResearch(visweaver);
         ResearchItem recombinator = new ResearchItem(
                 "recombinator",
                 "ThaumicHorizons",

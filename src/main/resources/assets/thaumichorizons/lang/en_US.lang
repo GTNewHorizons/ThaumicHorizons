@@ -231,6 +231,7 @@ tile.ThaumicHorizons_leviathan.name=Primordial Fossil
 tile.ThaumicHorizons_gateway.name=Planar Gateway
 tile.ThaumicHorizons_evanescent.name=Evanescent
 tile.ThaumicHorizons_vatInterior.name=Vat Interior
+tile.ThaumicHorizons_visweaver.name=Visweaver
 
 ###RESEARCH###
 
@@ -499,6 +500,9 @@ transductionAmplifier2=Pushing a node beyond its natural capacity has risks. A s
 tc.research_name.vortexStabilizer=Vortex Attenuation
 tc.research_text.vortexStabilizer=Putting nodes on a diet
 vortexStabilizer1=The vast amount of vis present in hungry nodes has lured more than one apprentice to an early grave. Such an embarrassing end would not befit a thaumaturge of your stature, so you have developed a method of temporarily neutralizing such a node's pull.<BR>When provided with a redstone signal, the vortex attenuator projects a cerulean beam which suppresses flows in the thaumic field. Any hungry node struck by the beam will cease absorbing nearby material until the beam is removed.<BR>It is possible that the beam may also disrupt certain other phenomena...
+tc.research_name.visweaver=Visweaver
+tc.research_text.visweaver=Transmutation with centivis
+visweaver1=With a deeper understanding of the primal aspects, you have begun to understand that some seemingly distinct items in the world are near identical in physical composition, made different only by a heavy imbalance of primal essentia.<BR>Using concentrated centivis, it should be possible to "nudge" the essential balance and transmute certain items.
 tc.research_name.planarKeystone=Planar Gateways
 tc.research_text.planarKeystone=Thinking with portals
 planarKeystone1=It takes tremendous effort to create a pocket plane, yet it is all too easy to permanently lose access to your creation. Now you have developed a much more robust method of dimensional transport which no longer relies on the original planar breach remaining open.<BR>This method relies on two crucial components: an object tied to the target dimension, known as a planar keystone, and a gateway inside which a stable portal can form.<BR>A newly created keystone must be imprinted before it will function: right-click with the keystone in hand while you occupy a pocket plane.

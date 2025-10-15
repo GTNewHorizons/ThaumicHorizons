@@ -22,6 +22,7 @@ import com.kentington.thaumichorizons.common.container.ContainerSoulExtractor;
 import com.kentington.thaumichorizons.common.container.ContainerSoulforge;
 import com.kentington.thaumichorizons.common.container.ContainerVat;
 import com.kentington.thaumichorizons.common.container.ContainerVisDynamo;
+import com.kentington.thaumichorizons.common.container.ContainerVisweaver;
 import com.kentington.thaumichorizons.common.items.WandManagerTH;
 import com.kentington.thaumichorizons.common.tiles.TileBloodInfuser;
 import com.kentington.thaumichorizons.common.tiles.TileInspiratron;
@@ -29,6 +30,7 @@ import com.kentington.thaumichorizons.common.tiles.TileSoulExtractor;
 import com.kentington.thaumichorizons.common.tiles.TileSoulforge;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
+import com.kentington.thaumichorizons.common.tiles.TileVisweaver;
 import com.kentington.thaumichorizons.common.tiles.TileVortex;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -96,6 +98,9 @@ public class CommonProxy implements IGuiHandler {
             }
             case 9 -> {
                 return new ContainerFingers(player.inventory);
+            }
+            case 10 -> {
+                return new ContainerVisweaver(player.inventory, (TileVisweaver) world.getTileEntity(x, y, z));
             }
             default -> {
                 return null;

@@ -41,6 +41,7 @@ import com.kentington.thaumichorizons.client.gui.GuiSoulExtractor;
 import com.kentington.thaumichorizons.client.gui.GuiSoulforge;
 import com.kentington.thaumichorizons.client.gui.GuiVat;
 import com.kentington.thaumichorizons.client.gui.GuiVisDynamo;
+import com.kentington.thaumichorizons.client.gui.GuiVisweaver;
 import com.kentington.thaumichorizons.client.renderer.block.BlockBloodInfuserRender;
 import com.kentington.thaumichorizons.client.renderer.block.BlockEssentiaDynamoRender;
 import com.kentington.thaumichorizons.client.renderer.block.BlockInspiratronRender;
@@ -59,6 +60,7 @@ import com.kentington.thaumichorizons.client.renderer.block.BlockVatMatrixRender
 import com.kentington.thaumichorizons.client.renderer.block.BlockVatRender;
 import com.kentington.thaumichorizons.client.renderer.block.BlockVatSolidRender;
 import com.kentington.thaumichorizons.client.renderer.block.BlockVisDynamoRender;
+import com.kentington.thaumichorizons.client.renderer.block.BlockVisweaverRender;
 import com.kentington.thaumichorizons.client.renderer.block.BlockVortexStabilizerRender;
 import com.kentington.thaumichorizons.client.renderer.entity.BlastPhialRender;
 import com.kentington.thaumichorizons.client.renderer.entity.RenderAlchemitePrimed;
@@ -109,6 +111,7 @@ import com.kentington.thaumichorizons.client.renderer.tile.TileTransductionAmpli
 import com.kentington.thaumichorizons.client.renderer.tile.TileVatMatrixRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVatSlaveRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVisDynamoRender;
+import com.kentington.thaumichorizons.client.renderer.tile.TileVisweaverRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexRender;
 import com.kentington.thaumichorizons.client.renderer.tile.TileVortexStabilizerRender;
 import com.kentington.thaumichorizons.common.CommonProxy;
@@ -159,6 +162,7 @@ import com.kentington.thaumichorizons.common.tiles.TileVat;
 import com.kentington.thaumichorizons.common.tiles.TileVatMatrix;
 import com.kentington.thaumichorizons.common.tiles.TileVatSlave;
 import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
+import com.kentington.thaumichorizons.common.tiles.TileVisweaver;
 import com.kentington.thaumichorizons.common.tiles.TileVortex;
 import com.kentington.thaumichorizons.common.tiles.TileVortexStabilizer;
 
@@ -217,6 +221,7 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileSpike.class, new TileSpikeRender());
         ClientRegistry.bindTileEntitySpecialRenderer(TileCloud.class, new TileCloudRender());
         ClientRegistry.bindTileEntitySpecialRenderer(TileSlot.class, new TileSlotRender());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileVisweaver.class, new TileVisweaverRender());
         RenderingRegistry.registerEntityRenderingHandler(EntityAlchemitePrimed.class, new RenderAlchemitePrimed());
         RenderingRegistry.registerEntityRenderingHandler(EntitySyringe.class, new RenderSyringe());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlastPhial.class, new BlastPhialRender());
@@ -316,6 +321,9 @@ public class ClientProxy extends CommonProxy {
                 case 9 -> {
                     return new GuiFingers(player.inventory);
                 }
+                case 10 -> {
+                    return new GuiVisweaver(player.inventory, (TileVisweaver) world.getTileEntity(x, y, z));
+                }
             }
         }
         return null;
@@ -364,6 +372,8 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new BlockSpikeRenderer());
         ThaumicHorizons.blockSlotRI = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(new BlockSlotRender());
+        ThaumicHorizons.blockVisweaverRI = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(new BlockVisweaverRender());
     }
 
     @Override
