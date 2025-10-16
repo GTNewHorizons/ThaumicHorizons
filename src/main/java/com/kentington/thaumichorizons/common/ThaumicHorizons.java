@@ -485,7 +485,7 @@ public class ThaumicHorizons {
         } catch (Exception var8) {
             log.error("Thaumic Horizons could not load its configuration file");
         } finally {
-            if (config != null) {
+            if (config != null && config.hasChanged()) {
                 config.save();
             }
         }
@@ -764,6 +764,7 @@ public class ThaumicHorizons {
         proxy.registerHandlers();
         proxy.registerRenderers();
         FMLCommonHandler.instance().bus().register(instance);
+        initPotions();
     }
 
     @EventHandler
@@ -808,7 +809,6 @@ public class ThaumicHorizons {
         shapelessOreDictRecipe(
                 new ItemStack(ConfigItems.itemTripleMeatTreat),
                 new Object[] { Items.sugar, itemMeatNugget, ConfigItems.itemNuggetBeef, ConfigItems.itemNuggetFish });
-        initPotions();
         ResearchCategories.registerCategory(
                 "ThaumicHorizons",
                 new ResourceLocation("thaumichorizons", "textures/misc/vat.png"),
@@ -3680,7 +3680,6 @@ public class ThaumicHorizons {
     public static void initPotions() {
         byte customPotions = 5;
         int potionOffset = Potion.potionTypes.length;
-        boolean start = false;
         int var4;
         if (potionOffset < 128 - customPotions) {
             Potion[] potionTypes = new Potion[potionOffset + customPotions];
@@ -3692,40 +3691,54 @@ public class ThaumicHorizons {
             var4 = -1;
         }
 
+        int visBoostPotionId = potionVisBoostID;
         var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionVisBoostID = var4;
-            PotionVisBoost.instance = new PotionVisBoost(potionVisBoostID, true, 6697847);
-            PotionVisBoost.init();
+        if (Potion.potionTypes[visBoostPotionId] != null) {
+            visBoostPotionId = getNextPotionId(visBoostPotionId);
+        }
+        potionVisBoostID = visBoostPotionId;
+        PotionVisBoost.instance = new PotionVisBoost(potionVisBoostID, true, 6697847);
+        PotionVisBoost.init();
+
+        int visRegenPotionId = potionVisRegenID;
+        var4 = getNextPotionId(var4);
+        if (Potion.potionTypes[visRegenPotionId] != null) {
+            visRegenPotionId = getNextPotionId(visRegenPotionId);
         }
 
-        var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionVisRegenID = var4;
-            PotionVisRegen.instance = new PotionVisRegen(potionVisRegenID, true, 5701759);
-            PotionVisRegen.init();
+        potionVisRegenID = visRegenPotionId;
+        PotionVisRegen.instance = new PotionVisRegen(potionVisRegenID, true, 5701759);
+        PotionVisRegen.init();
+
+        int vacuumPotionId = potionVacuumID;
+
+        if (Potion.potionTypes[vacuumPotionId] != null) {
+            vacuumPotionId = getNextPotionId(vacuumPotionId);
         }
 
-        var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionVacuumID = var4;
-            PotionVacuum.instance = new PotionVacuum(potionVacuumID, true, 4210752);
-            PotionVacuum.init();
+        potionVacuumID = vacuumPotionId;
+        PotionVacuum.instance = new PotionVacuum(potionVacuumID, true, 4210752);
+        PotionVacuum.init();
+
+        int shockPotionId = potionShockID;
+
+        if (Potion.potionTypes[shockPotionId] != null) {
+            shockPotionId = getNextPotionId(shockPotionId);
         }
 
-        var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionShockID = var4;
-            PotionShock.instance = new PotionShock(potionShockID, true, 11513861);
-            PotionShock.init();
+        potionShockID = shockPotionId;
+        PotionShock.instance = new PotionShock(potionShockID, true, 11513861);
+        PotionShock.init();
+
+        int synthesisPotionId = potionSynthesisID;
+
+        if (Potion.potionTypes[synthesisPotionId] != null) {
+            synthesisPotionId = getNextPotionId(synthesisPotionId);
         }
 
-        var4 = getNextPotionId(var4);
-        if (var4 >= 0) {
-            potionSynthesisID = var4;
-            PotionSynthesis.instance = new PotionSynthesis(potionSynthesisID, false, 3253280);
-            PotionSynthesis.init();
-        }
+        potionSynthesisID = synthesisPotionId;
+        PotionSynthesis.instance = new PotionSynthesis(potionSynthesisID, false, 3253280);
+        PotionSynthesis.init();
     }
 
     static int getNextPotionId(int start) {
@@ -4019,6 +4032,32 @@ public class ThaumicHorizons {
         warpedTumorValueProperty.comment = "Points of warp held by warped tumor.";
         warpedTumorValueProperty.setRequiresMcRestart(true);
         warpedTumorValue = warpedTumorValueProperty.getInt();
+
+        Property visboostPotionProperty = config.get("potions", "visboostPotionID", 24);
+        visboostPotionProperty.comment = "Potion ID for the VisBoost Potion";
+        visboostPotionProperty.setRequiresMcRestart(true);
+        potionVisBoostID = visboostPotionProperty.getInt();
+
+        Property visregenPotionProperty = config.get("potions", "visregenPotionID", 25);
+        visregenPotionProperty.comment = "Potion ID for the VisRegen Potion";
+        visregenPotionProperty.setRequiresMcRestart(true);
+        potionVisRegenID = visregenPotionProperty.getInt();
+
+        Property vacuumPotionProperty = config.get("potions", "vacuumPotionID", 26);
+        vacuumPotionProperty.comment = "Potion ID for the Vacuum";
+        vacuumPotionProperty.setRequiresMcRestart(true);
+        potionVacuumID = vacuumPotionProperty.getInt();
+
+        Property shockPotionProperty = config.get("potions", "shockPotionID", 27);
+        shockPotionProperty.comment = "Potion ID for the Shock Potion";
+        shockPotionProperty.setRequiresMcRestart(true);
+        potionShockID = shockPotionProperty.getInt();
+
+        Property synthesisPotionProperty = config.get("potions", "synthesisPotionID", 28);
+        synthesisPotionProperty.comment = "Potion ID for the Sythesis Potion";
+        synthesisPotionProperty.setRequiresMcRestart(true);
+        potionSynthesisID = synthesisPotionProperty.getInt();
+
         config.save();
     }
 
