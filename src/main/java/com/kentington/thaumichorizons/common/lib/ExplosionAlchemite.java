@@ -223,9 +223,9 @@ public class ExplosionAlchemite extends Explosion {
                         continue;
                     }
                     Item item = Item.getItemFromBlock(block);
-                    int meta = this.worldObj.getBlockMetadata(i, j, k);
+                    int meta = worldObj.getBlockMetadata(i, j, k);
                     if (item == null) {
-                        item = block.getItemDropped(meta, new Random(), 0);
+                        item = block.getItemDropped(meta, worldObj.rand, 0);
                     }
                     if (item == null) {
                         continue;
