@@ -8,16 +8,24 @@ package com.kentington.thaumichorizons.common;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
@@ -44,7 +52,9 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -57,6 +67,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.Sets;
 import com.kentington.thaumichorizons.client.lib.RenderEventHandler;
 import com.kentington.thaumichorizons.common.blocks.BlockAlchemite;
 import com.kentington.thaumichorizons.common.blocks.BlockBloodInfuser;
@@ -132,6 +143,7 @@ import com.kentington.thaumichorizons.common.entities.EntitySyringe;
 import com.kentington.thaumichorizons.common.entities.EntityTaintPig;
 import com.kentington.thaumichorizons.common.entities.EntityVoltSlime;
 import com.kentington.thaumichorizons.common.entities.ItemSpawnerEgg;
+import com.kentington.thaumichorizons.common.handlers.BehaviorDispenseBoat;
 import com.kentington.thaumichorizons.common.items.ItemAmuletMirror;
 import com.kentington.thaumichorizons.common.items.ItemBarChocolate;
 import com.kentington.thaumichorizons.common.items.ItemBoatGreatwood;
@@ -3631,6 +3643,7 @@ public class ThaumicHorizons {
                                 new ItemStack(Items.dye, 1, 0), new ItemStack(Items.dye, 1, 15) },
                         10));
         addAspectsToAllTheThings();
+        registerDispenserBehavior();
     }
 
     public static CreatureInfusionRecipe getCreatureInfusion(EntityLivingBase entityContained,
@@ -3900,6 +3913,96 @@ public class ThaumicHorizons {
         ThaumcraftApi.registerObjectTag(
                 new ItemStack(blockSpikeTooth),
                 (new AspectList()).add(Aspect.WEAPON, 3).add(Aspect.BEAST, 3));
+    }
+
+    private static void registerDispenserBehavior() {
+        BlockDispenser.dispenseBehaviorRegistry
+                .putObject(Item.getItemFromBlock(blockAlchemite), new BehaviorDefaultDispenseItem() {
+
+                    @Override
+                    protected ItemStack dispenseStack(IBlockSource dispenser, ItemStack dispensedItem) {
+                        EnumFacing enumfacing = BlockDispenser.func_149937_b(dispenser.getBlockMetadata());
+                        World world = dispenser.getWorld();
+                        int x = dispenser.getXInt() + enumfacing.getFrontOffsetX();
+                        int y = dispenser.getYInt() + enumfacing.getFrontOffsetY();
+                        int z = dispenser.getZInt() + enumfacing.getFrontOffsetZ();
+
+                        EntityAlchemitePrimed primedAlchemite = new EntityAlchemitePrimed(
+                                world,
+                                x + 0.5F,
+                                y + 0.5F,
+                                z + 0.5F,
+                                null);
+                        world.spawnEntityInWorld(primedAlchemite);
+                        world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "game.tnt.primed", 1.0F, 1.0F);
+
+                        dispensedItem.stackSize--;
+                        return dispensedItem;
+                    }
+                });
+        BlockDispenser.dispenseBehaviorRegistry.putObject(itemSyringeInjection, new BehaviorDefaultDispenseItem() {
+
+            @Override
+            public ItemStack dispenseStack(IBlockSource dispenser, ItemStack stack) {
+                if (!(stack.getItem() instanceof ItemSyringeInjection)) {
+                    return super.dispenseStack(dispenser, stack);
+                }
+
+                World world = dispenser.getWorld();
+                EnumFacing facing = BlockDispenser.func_149937_b(dispenser.getBlockMetadata());
+
+                double spawnX = dispenser.getX() + facing.getFrontOffsetX();
+                double spawnY = dispenser.getY() + facing.getFrontOffsetY();
+                double spawnZ = dispenser.getZ() + facing.getFrontOffsetZ();
+
+                IProjectile projectile = createProjectile(
+                        (ItemSyringeInjection) stack.getItem(),
+                        stack,
+                        world,
+                        spawnX,
+                        spawnY,
+                        spawnZ);
+
+                projectile.setThrowableHeading(
+                        facing.getFrontOffsetX(),
+                        facing.getFrontOffsetY() + 0.1F,
+                        facing.getFrontOffsetZ(),
+                        1.1F, // velocity
+                        6F // inaccuracy
+                );
+
+                world.spawnEntityInWorld((Entity) projectile);
+
+                stack.stackSize--;
+                return stack;
+            }
+
+            private IProjectile createProjectile(ItemSyringeInjection item, ItemStack stack, World world, double x,
+                    double y, double z) {
+                if (item.isPhial(stack.getItemDamage())) {
+                    return new EntityBlastPhial(world, x, y, z, stack);
+                } else {
+                    return new EntitySyringe(world, x, y, z, stack.stackTagCompound);
+                }
+            }
+
+            @Override
+            protected void playDispenseSound(IBlockSource source) {
+                source.getWorld().playAuxSFX(1002, source.getXInt(), source.getYInt(), source.getZInt(), 0);
+            }
+        });
+        BlockDispenser.dispenseBehaviorRegistry.putObject(itemEggIncubated, new BehaviorProjectileDispense() {
+
+            protected IProjectile getProjectileEntity(World worldIn, IPosition position) {
+                return new EntityEggIncubated(worldIn, position.getX(), position.getY(), position.getZ());
+            }
+        });
+        BlockDispenser.dispenseBehaviorRegistry.putObject(
+                itemBoatGreatwood,
+                new BehaviorDispenseBoat(Collections.singleton(Material.water), EntityBoatGreatwood::new));
+        BlockDispenser.dispenseBehaviorRegistry.putObject(
+                itemBoatThaumium,
+                new BehaviorDispenseBoat(Sets.newHashSet(Material.water, Material.lava), EntityBoatThaumium::new));
     }
 
     static IRecipe shapelessOreDictRecipe(ItemStack res, Object[] params) {

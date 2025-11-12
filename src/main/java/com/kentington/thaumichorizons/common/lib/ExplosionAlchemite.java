@@ -222,8 +222,16 @@ public class ExplosionAlchemite extends Explosion {
                     if (block.getMaterial() == Material.air) {
                         continue;
                     }
-                    final AspectList aspects = this
-                            .getAspects(Item.getItemFromBlock(block), this.worldObj.getBlockMetadata(i, j, k));
+                    Item item = Item.getItemFromBlock(block);
+                    int meta = worldObj.getBlockMetadata(i, j, k);
+                    if (item == null) {
+                        item = block.getItemDropped(meta, worldObj.rand, 0);
+                    }
+                    if (item == null) {
+                        continue;
+                    }
+
+                    final AspectList aspects = this.getAspects(item, meta);
                     if (aspects != null && aspects.size() > 0) {
                         for (final Aspect asp2 : aspects.getAspects()) {
                             final ItemStack stack = new ItemStack(

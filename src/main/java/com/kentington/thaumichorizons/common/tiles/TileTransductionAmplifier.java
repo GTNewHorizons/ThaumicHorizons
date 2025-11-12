@@ -231,7 +231,7 @@ public class TileTransductionAmplifier extends TileThaumcraft {
                 }
             }
             if (transducers > 1 && this.count % 50 == 0) {
-                final List<Entity> targets = (List<Entity>) this.worldObj.getEntitiesWithinAABB(
+                final List<EntityLivingBase> targets = this.worldObj.getEntitiesWithinAABB(
                         EntityLivingBase.class,
                         AxisAlignedBB.getBoundingBox(
                                 this.xCoord,
@@ -240,7 +240,7 @@ public class TileTransductionAmplifier extends TileThaumcraft {
                                 this.xCoord + 1,
                                 this.yCoord + 1,
                                 this.zCoord + 1).expand(10.0, 10.0, 10.0));
-                if (targets != null && targets.size() > 0) {
+                if (targets != null && !targets.isEmpty()) {
                     for (final Entity target : targets) {
                         PacketHandler.INSTANCE.sendToAllAround(
                                 new PacketFXBlockZap(
