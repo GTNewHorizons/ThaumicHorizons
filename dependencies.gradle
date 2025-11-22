@@ -6,9 +6,4 @@ dependencies {
     api('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
 
     compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.52.69:dev') {transitive = false}
-
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:waila:1.9.15:dev")
-    runtimeOnlyNonPublishable(rfg.deobf("curse.maven:thaumcraft-nei-plugin-225095:2241913"))
-    compileOnly("com.github.GTNewHorizons:ThaumicTinkerer:2.11.15:dev")
-    compileOnly(rfg.deobf("curse.maven:automagy-222153:2285272"))
 }
