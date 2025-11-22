@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -435,16 +434,22 @@ public class TileSyntheticNode extends TileVisNode implements INode, IWandable {
     }
 
     public void addEssence(final EntityPlayer player) {
-        final Item essence = player.getHeldItem().getItem();
-        if (essence == ConfigItems.itemWispEssence
-                && ((ItemWispEssence) essence).getAspects(player.getHeldItem()) != null
-                && ((ItemWispEssence) essence).getAspects(player.getHeldItem()).getAspects().length > 0) {
-            final Aspect asp = ((ItemWispEssence) essence).getAspects(player.getHeldItem()).getAspects()[0];
-            this.aspectsMax.add(asp, 4);
+        final ItemStack heldItem = player.getHeldItem();
+        // just in case
+        if (heldItem == null) return;
+        if (heldItem.stackSize == 0) return;
+
+        if (heldItem.getItem() instanceof ItemWispEssence essence && essence == ConfigItems.itemWispEssence) {
+            if (essence.getAspects(heldItem) == null) return;
+            var aspectList = essence.getAspects(heldItem).getAspects();
+            if (aspectList == null || aspectList.length == 0) return;
+            final Aspect asp = aspectList[0];
+
+            this.aspectsMax.add(asp, 4 * heldItem.stackSize);
             this.aspects.add(asp, 0);
             this.fractionalAspects.add(asp, 0);
-            final ItemStack heldItem = player.getHeldItem();
-            --heldItem.stackSize;
+
+            heldItem.stackSize = 0;
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             this.markDirty();
         }
