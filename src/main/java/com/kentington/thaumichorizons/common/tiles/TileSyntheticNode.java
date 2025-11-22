@@ -440,6 +440,7 @@ public class TileSyntheticNode extends TileVisNode implements INode, IWandable {
         if (heldItem.stackSize == 0) return;
 
         if (heldItem.getItem() instanceof ItemWispEssence essence && essence == ConfigItems.itemWispEssence) {
+            if (essence.getAspects(heldItem) == null) return;
             var aspectList = essence.getAspects(heldItem).getAspects();
             if (aspectList == null || aspectList.length == 0) return;
             final Aspect asp = aspectList[0];
