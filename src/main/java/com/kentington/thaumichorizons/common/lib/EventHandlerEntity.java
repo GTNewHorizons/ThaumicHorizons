@@ -22,7 +22,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +43,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityGolemTH;
@@ -62,13 +62,13 @@ import com.kentington.thaumichorizons.common.items.ItemAmuletMirror;
 import com.kentington.thaumichorizons.common.items.ItemFocusContainment;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFXContainment;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
-import com.kentington.thaumichorizons.common.lib.networking.PacketNoMoreItems;
 import com.kentington.thaumichorizons.common.lib.networking.PacketPlayerInfusionSync;
 import com.kentington.thaumichorizons.common.tiles.TileSoulBeacon;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
 import baubles.common.container.InventoryBaubles;
 import baubles.common.lib.PlayerHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -667,7 +667,11 @@ public class EventHandlerEntity {
         }
     }
 
-    @SubscribeEvent
+    /*
+     * Saves the player only after the Amulet of Life (TwilightForest), the Last Stand enchantment (OpenBlocks) and the
+     * Death Protection Doll (Witchery)
+     */
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerHurt(final LivingHurtEvent event) {
         final EntityInfusionProperties prop = (EntityInfusionProperties) event.entity
                 .getExtendedProperties("CreatureInfusion");
@@ -790,16 +794,26 @@ public class EventHandlerEntity {
                             }
                         }
                     }
-                    player.inventory.dropAllItems();
-                    for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                        if (bauble == null) {
-                            continue;
+
+                    // Takes into account all possible inventories.
+                    if (!player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+                        player.captureDrops = true;
+                        player.capturedDrops.clear();
+
+                        player.inventory.dropAllItems();
+
+                        player.captureDrops = false;
+                        PlayerDropsEvent eventDrop = new PlayerDropsEvent(player, event.source, player.capturedDrops, true);
+                        if (!MinecraftForge.EVENT_BUS.post(eventDrop))
+                        {
+                            for (EntityItem item : player.capturedDrops)
+                            {
+                                player.joinEntityItemWithWorld(item);
+                            }
                         }
-                        player.func_146097_a(bauble, true, false);
+
+                        player.inventory.markDirty();
                     }
-                    PlayerHandler.clearPlayerBaubles(player);
-                    player.inventory.markDirty();
-                    PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
                     player.curePotionEffects(new ItemStack(Items.milk_bucket));
                     player.heal(Float.MAX_VALUE);
                     if (dim != player.worldObj.provider.dimensionId) {
