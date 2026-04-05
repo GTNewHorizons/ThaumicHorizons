@@ -22,7 +22,7 @@ public class GuiInspiratron extends GuiContainer {
     public GuiInspiratron(final InventoryPlayer player, final TileInspiratron tile) {
         super(new ContainerInspiratron(player, tile));
         this.tile = tile;
-        this.xSize = 175;
+        this.xSize = 176;
         this.ySize = 219;
     }
 
