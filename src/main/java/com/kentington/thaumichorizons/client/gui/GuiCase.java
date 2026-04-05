@@ -25,8 +25,8 @@ public class GuiCase extends GuiContainer {
             final int z) {
         super(new ContainerCase(par1InventoryPlayer, world, x, y, z));
         this.blockSlot = par1InventoryPlayer.currentItem;
-        this.xSize = 175;
-        this.ySize = 232;
+        this.xSize = 176;
+        this.ySize = 233;
     }
 
     protected void drawGuiContainerForegroundLayer(final int par1, final int par2) {

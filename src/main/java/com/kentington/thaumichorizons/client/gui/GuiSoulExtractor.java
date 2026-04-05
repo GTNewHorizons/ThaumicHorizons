@@ -22,8 +22,8 @@ public class GuiSoulExtractor extends GuiContainer {
     public GuiSoulExtractor(final InventoryPlayer player, final TileSoulExtractor tile) {
         super(new ContainerSoulExtractor(player, tile));
         this.tile = tile;
-        this.xSize = 175;
-        this.ySize = 165;
+        this.xSize = 176;
+        this.ySize = 166;
     }
 
     protected void drawGuiContainerBackgroundLayer(final float p_146976_1_, final int p_146976_2_,
