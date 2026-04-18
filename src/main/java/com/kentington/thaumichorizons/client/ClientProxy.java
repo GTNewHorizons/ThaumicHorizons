@@ -29,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 
 import com.kentington.thaumichorizons.client.audio.VortexSound;
 import com.kentington.thaumichorizons.client.fx.FXSonic;
@@ -166,6 +167,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import thaumcraft.api.wands.IWandTriggerManager;
 import thaumcraft.client.fx.ParticleEngine;
 import thaumcraft.client.fx.particles.FXBurst;
@@ -184,6 +186,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerHandlers() {
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ThaumicHorizons.instance.renderEventHandler);
         final IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager) {
@@ -529,6 +532,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     private final Map<TileCoord, VortexSound> activeVortexSounds = new HashMap<>();
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event) {
+        if (event.world.isRemote) {
+            activeVortexSounds.clear();
+        }
+    }
 
     @Override
     public void playVortexSound(TileVortex tile) {
