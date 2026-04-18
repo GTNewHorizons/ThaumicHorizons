@@ -537,6 +537,7 @@ public class ClientProxy extends CommonProxy {
     public void onWorldUnload(WorldEvent.Unload event) {
         if (event.world.isRemote) {
             activeVortexSounds.clear();
+            ThaumicHorizons.instance.renderEventHandler.thingsThatSparkle.clear();
         }
     }
 

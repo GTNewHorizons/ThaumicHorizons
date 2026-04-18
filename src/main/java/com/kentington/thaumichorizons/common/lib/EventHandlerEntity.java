@@ -171,7 +171,9 @@ public class EventHandlerEntity {
                         final PotionEffect effect = new PotionEffect(Potion.resistance.id, Integer.MAX_VALUE, 0, true);
                         effect.setCurativeItems(new ArrayList<>());
                         entity.addPotionEffect(effect);
-                        ThaumicHorizons.instance.renderEventHandler.thingsThatSparkle.add(entity);
+                        if (entity.worldObj.isRemote) {
+                            ThaumicHorizons.instance.renderEventHandler.thingsThatSparkle.add(entity);
+                        }
                     } else if (infusions[i] == 8 && !entity.getEntityData().hasKey("runicCharge")) {
                         entity.getEntityData().setInteger("runicCharge", 6);
                     } else if (infusions[i] == 7) {
