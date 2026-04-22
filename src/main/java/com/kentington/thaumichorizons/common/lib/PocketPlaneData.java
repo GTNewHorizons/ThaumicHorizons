@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityChicken;
@@ -78,7 +79,7 @@ public class PocketPlaneData {
     }
 
     public static void generatePocketPlane(final AspectList aspects, final PocketPlaneData data, final World world,
-            final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
+                                           final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
         if (!world.isRemote) {
             final int xCenter = 0;
             final int yCenter = 128;
@@ -111,7 +112,11 @@ public class PocketPlaneData {
                 }
             }
             world.setBlock(xCenter, yCenter + 1, zCenter, ThaumicHorizons.blockVortex);
-            final TileVortex vortex = (TileVortex) world.getTileEntity(xCenter, yCenter + 1, zCenter);
+            TileEntity te = world.getTileEntity(xCenter, yCenter + 1, zCenter);
+            if (!(te instanceof TileVortex)) {
+                te = new TileVortex();
+            }
+            final TileVortex vortex = (TileVortex) te;
             vortex.cheat = true;
             vortex.returnID = returnID;
             vortex.dimensionID = PocketPlaneData.planes.size();
