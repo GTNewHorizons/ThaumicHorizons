@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityChicken;
@@ -33,6 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -79,7 +79,7 @@ public class PocketPlaneData {
     }
 
     public static void generatePocketPlane(final AspectList aspects, final PocketPlaneData data, final World world,
-                                           final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
+            final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
         if (!world.isRemote) {
             final int xCenter = 0;
             final int yCenter = 128;
