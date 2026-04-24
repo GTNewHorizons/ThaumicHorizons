@@ -32,6 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -111,7 +112,11 @@ public class PocketPlaneData {
                 }
             }
             world.setBlock(xCenter, yCenter + 1, zCenter, ThaumicHorizons.blockVortex);
-            final TileVortex vortex = (TileVortex) world.getTileEntity(xCenter, yCenter + 1, zCenter);
+            TileEntity te = world.getTileEntity(xCenter, yCenter + 1, zCenter);
+            if (!(te instanceof TileVortex)) {
+                te = new TileVortex();
+            }
+            final TileVortex vortex = (TileVortex) te;
             vortex.cheat = true;
             vortex.returnID = returnID;
             vortex.dimensionID = PocketPlaneData.planes.size();
