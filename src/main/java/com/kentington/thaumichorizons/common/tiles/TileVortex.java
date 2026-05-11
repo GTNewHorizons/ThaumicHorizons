@@ -321,7 +321,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                             this.xCoord,
                             this.yCoord,
                             this.zCoord,
-                            this.returnID))).run();
+                            this.returnID))).start();
         }
         this.markDirty();
     }

@@ -32,6 +32,7 @@ public class BlockSlot extends BlockContainer {
 
     public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int md) {
         final TileSlot tco = (TileSlot) world.getTileEntity(x, y, z);
+        if (tco == null) return;
         if (tco.portalOpen) {
             tco.destroyPortal();
         }
