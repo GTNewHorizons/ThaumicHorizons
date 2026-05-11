@@ -71,9 +71,13 @@ public class ItemKeystone extends Item {
             float hitX, float hitY, float hitZ) {
         if (stack.getTagCompound() == null && player.dimension == ThaumicHorizons.dimensionPocketId
                 && !world.isRemote) {
-            if (world.getTileEntity(x, y, z) instanceof TileVortex)
-                (stack.stackTagCompound = new NBTTagCompound()).setInteger("dimension", (z + 128) / 256);
-            return true;
+            final net.minecraft.tileentity.TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof TileVortex) {
+                (stack.stackTagCompound = new NBTTagCompound()).setInteger("dimension", ((TileVortex) te).dimensionID);
+                player.inventory.markDirty();
+                return true;
+            }
+            return false;
         }
         return super.onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
