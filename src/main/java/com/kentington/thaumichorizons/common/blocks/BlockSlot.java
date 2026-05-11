@@ -68,11 +68,11 @@ public class BlockSlot extends BlockContainer {
             }
         } else if (theItem != null && theItem.getItem() == ThaumicHorizons.itemKeystone
                 && theItem.stackTagCompound != null) {
-            tco.insertKeystone(theItem.stackTagCompound.getInteger("dimension"));
-            --theItem.stackSize;
-            world.markBlockForUpdate(x, y, z);
-            return true;
-        }
+                    tco.insertKeystone(theItem.stackTagCompound.getInteger("dimension"));
+                    --theItem.stackSize;
+                    world.markBlockForUpdate(x, y, z);
+                    return true;
+                }
         return false;
     }
 
