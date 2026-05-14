@@ -39,7 +39,7 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
     public boolean redstoned;
     public ForgeDirection dir;
     public Object theBeam;
-    public Entity[] sonicFX;
+    private Entity[] sonicFX;
 
     public TileVortexStabilizer() {
         this.xTarget = Integer.MAX_VALUE;
@@ -86,20 +86,19 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
                     if (this.hasTarget) {
                         this.reHungrifyTarget();
                         this.hasTarget = false;
-                    } else if (!this.hasTarget
-                            && this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof INode) {
-                                this.hasTarget = true;
-                                this.target = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-                                this.prevType = ((INode) this.worldObj
-                                        .getTileEntity(mop.blockX, mop.blockY, mop.blockZ)).getNodeType().ordinal();
-                                this.deHungrifyTarget();
-                            } else
-                        if (!this.hasTarget && this.worldObj
-                                .getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof TileVortex) {
-                                    this.hasTarget = true;
-                                    this.target = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-                                    this.deHungrifyTarget();
-                                }
+                    } else {
+                        final TileEntity hit = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+                        if (hit instanceof INode) {
+                            this.hasTarget = true;
+                            this.target = hit;
+                            this.prevType = ((INode) hit).getNodeType().ordinal();
+                            this.deHungrifyTarget();
+                        } else if (hit instanceof TileVortex) {
+                            this.hasTarget = true;
+                            this.target = hit;
+                            this.deHungrifyTarget();
+                        }
+                    }
                     this.xTarget = mop.blockX;
                     this.yTarget = mop.blockY;
                     this.zTarget = mop.blockZ;
