@@ -237,9 +237,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                             if (is == null) {
                                 is = BlockUtils.createStackedBlock(bi, md);
                             }
-                        } catch (Exception e) {
-                            ThaumicHorizons.log.warn("Failed to create stacked block for scan", e);
-                        }
+                        } catch (Exception ignored) {}
                         try {
                             if (is == null) {
                                 sr2 = new ScanResult((byte) 1, Block.getIdFromBlock(bi), md, null, "");
@@ -251,9 +249,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                                         null,
                                         "");
                             }
-                        } catch (Exception e) {
-                            ThaumicHorizons.log.warn("Failed to create scan result for block", e);
-                        }
+                        } catch (Exception ignored) {}
                         if (ScanManager.isValidScanTarget(p, sr2, "@")) {
                             Thaumcraft.proxy.blockRunes(
                                     world,
