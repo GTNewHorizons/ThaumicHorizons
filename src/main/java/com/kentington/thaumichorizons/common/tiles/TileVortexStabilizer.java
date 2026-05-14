@@ -185,10 +185,8 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
         int tz = this.target.zCoord;
         for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
             for (int dist = 1; dist <= 10; dist++) {
-                TileEntity te = this.worldObj.getTileEntity(
-                        tx - d.offsetX * dist,
-                        ty - d.offsetY * dist,
-                        tz - d.offsetZ * dist);
+                TileEntity te = this.worldObj
+                        .getTileEntity(tx - d.offsetX * dist, ty - d.offsetY * dist, tz - d.offsetZ * dist);
                 if (te instanceof TileVortexStabilizer && te != this) {
                     TileVortexStabilizer other = (TileVortexStabilizer) te;
                     if (other.hasTarget && other.target == this.target) {
