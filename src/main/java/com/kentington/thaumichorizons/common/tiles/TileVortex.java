@@ -175,7 +175,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                                 if (player.timeUntilPortal > 0) {
                                     player.timeUntilPortal = 10;
                                 } else if (player.dimension != ThaumicHorizons.dimensionPocketId) {
-                                    player.timeUntilPortal = 10;
+                                    player.timeUntilPortal = 200;
                                     player.mcServer.getConfigurationManager().transferPlayerToDimension(
                                             player,
                                             ThaumicHorizons.dimensionPocketId,
@@ -183,7 +183,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                                                     mServer.worldServerForDimension(ThaumicHorizons.dimensionPocketId),
                                                     this.dimensionID));
                                 } else {
-                                    player.timeUntilPortal = 10;
+                                    player.timeUntilPortal = 200;
                                     player.mcServer.getConfigurationManager().transferPlayerToDimension(
                                             player,
                                             this.returnID,
@@ -321,7 +321,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                             this.xCoord,
                             this.yCoord,
                             this.zCoord,
-                            this.returnID))).run();
+                            this.returnID))).start();
         }
         this.markDirty();
     }

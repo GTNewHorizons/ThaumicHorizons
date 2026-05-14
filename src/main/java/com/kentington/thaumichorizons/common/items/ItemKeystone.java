@@ -50,8 +50,11 @@ public class ItemKeystone extends Item {
 
     public void addInformation(final ItemStack par1ItemStack, final EntityPlayer par2EntityPlayer, final List par3List,
             final boolean par4) {
-        if (par1ItemStack.getTagCompound() != null && par1ItemStack.getTagCompound().getInteger("dimension") != 0) {
-            par3List.add(PocketPlaneData.planes.get(par1ItemStack.getTagCompound().getInteger("dimension")).name);
+        if (par1ItemStack.getTagCompound() != null) {
+            final int dim = par1ItemStack.getTagCompound().getInteger("dimension");
+            if (dim >= 0 && dim < PocketPlaneData.planes.size()) {
+                par3List.add(PocketPlaneData.planes.get(dim).name);
+            }
         }
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
     }
