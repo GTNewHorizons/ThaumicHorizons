@@ -14,6 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.lib.GatewayTeleporter;
@@ -83,12 +84,12 @@ public class BlockPortalTH extends BlockBreakable {
 
     public void onEntityCollidedWithBlock(final World world, final int x, final int y, final int z,
             final Entity player) {
-        if (player.ridingEntity == null && player.riddenByEntity == null && player instanceof EntityPlayerMP) {
-            if (player.timeUntilPortal > 0) {
-                player.timeUntilPortal = 10;
+        if (player.ridingEntity == null && player.riddenByEntity == null && player instanceof final EntityPlayerMP playerMP) {
+            if (playerMP.timeUntilPortal > 0) {
+                playerMP.timeUntilPortal = 10;
                 return;
             }
-            player.timeUntilPortal = 10;
+            playerMP.timeUntilPortal = 10;
             int targetX = 0;
             int targetY = 0;
             int targetZ = 0;
@@ -116,15 +117,21 @@ public class BlockPortalTH extends BlockBreakable {
                 if (portal.length > 3) targetDim = portal[3];
 
                 final MinecraftServer mServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-                ((EntityPlayerMP) player).mcServer.getConfigurationManager().transferPlayerToDimension(
-                        (EntityPlayerMP) player,
+                final WorldServer targetWorld = mServer.worldServerForDimension(targetDim);
+                float exitYaw = playerMP.rotationYaw;
+                // face perpendicular to portal plane, away from portal into the world
+                if (targetWorld.getTileEntity(targetX, targetY + 2, targetZ) instanceof final TileSlot slotTE) {
+                    exitYaw = slotTE.xAligned ? 0.0f : 270.0f;
+                }
+                playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(
+                        playerMP,
                         targetDim,
                         new GatewayTeleporter(
-                                mServer.worldServerForDimension(ThaumicHorizons.dimensionPocketId),
+                                targetWorld,
                                 targetX,
                                 targetY,
                                 targetZ,
-                                player.rotationYaw));
+                                exitYaw));
             } else {
                 int slotY = y;
                 int slotX = x;
@@ -167,8 +174,8 @@ public class BlockPortalTH extends BlockBreakable {
                         }
                     }
                     final MinecraftServer mServer2 = FMLCommonHandler.instance().getMinecraftServerInstance();
-                    ((EntityPlayerMP) player).mcServer.getConfigurationManager().transferPlayerToDimension(
-                            (EntityPlayerMP) player,
+                    playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(
+                            playerMP,
                             ThaumicHorizons.dimensionPocketId,
                             new GatewayTeleporter(
                                     mServer2.worldServerForDimension(ThaumicHorizons.dimensionPocketId),
