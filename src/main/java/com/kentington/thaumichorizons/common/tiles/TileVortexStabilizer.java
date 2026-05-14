@@ -86,20 +86,20 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
                     if (this.hasTarget) {
                         this.reHungrifyTarget();
                         this.hasTarget = false;
-                    } else if (!this.hasTarget
-                            && this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof INode) {
-                                this.hasTarget = true;
-                                this.target = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-                                this.prevType = ((INode) this.worldObj
-                                        .getTileEntity(mop.blockX, mop.blockY, mop.blockZ)).getNodeType().ordinal();
-                                this.deHungrifyTarget();
-                            } else
-                        if (!this.hasTarget && this.worldObj
-                                .getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof TileVortex) {
-                                    this.hasTarget = true;
-                                    this.target = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-                                    this.deHungrifyTarget();
-                                }
+                    }
+                    // Separate if (not else if) so a new valid target is acquired in the same tick,
+                    // preventing a window where beams is decremented but not yet restored.
+                    final TileEntity newTE = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+                    if (!this.hasTarget && newTE instanceof INode) {
+                        this.hasTarget = true;
+                        this.target = newTE;
+                        this.prevType = ((INode) newTE).getNodeType().ordinal();
+                        this.deHungrifyTarget();
+                    } else if (!this.hasTarget && newTE instanceof TileVortex) {
+                        this.hasTarget = true;
+                        this.target = newTE;
+                        this.deHungrifyTarget();
+                    }
                     this.xTarget = mop.blockX;
                     this.yTarget = mop.blockY;
                     this.zTarget = mop.blockZ;
@@ -167,24 +167,22 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
     public void reHungrifyTarget() {
         if (this.target instanceof INode) {
             ((INode) this.target).setNodeType(NodeType.values()[this.prevType]);
-        } else if (this.target instanceof final TileVortex tileVortex) {
-            --tileVortex.beams;
+        } else if (this.target instanceof TileVortex) {
+            --((TileVortex) this.target).beams;
         }
         if (this.target != null) {
             this.target.markDirty();
-            this.worldObj.markBlockForUpdate(this.target.xCoord, this.target.yCoord, this.target.zCoord);
         }
     }
 
     void deHungrifyTarget() {
         if (this.target instanceof INode) {
             ((INode) this.target).setNodeType(NodeType.NORMAL);
-        } else if (this.target instanceof final TileVortex tileVortex) {
-            ++tileVortex.beams;
+        } else if (this.target instanceof TileVortex) {
+            ++((TileVortex) this.target).beams;
         }
         if (this.target != null) {
             this.target.markDirty();
-            this.worldObj.markBlockForUpdate(this.target.xCoord, this.target.yCoord, this.target.zCoord);
         }
     }
 

@@ -18,6 +18,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -63,6 +65,9 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public ArrayList<ItemStack> items;
     Thread ppThread;
     private boolean soundStarted = false;
+    // true once the first S35 description packet has been received on the client
+    public boolean clientSynced = false;
+    private int lastSyncedBeams = -1;
 
     public TileVortex() {
         this.aspects = new AspectList();
@@ -77,6 +82,13 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
 
     public void updateEntity() {
         super.updateEntity();
+
+        // Send one packet per tick when beams changes, so same-tick re/deHungrify
+        // pairs don't produce two packets with an intermediate wrong value.
+        if (!this.worldObj.isRemote && this.beams != this.lastSyncedBeams) {
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            this.lastSyncedBeams = this.beams;
+        }
 
         if (this.worldObj != null && this.worldObj.isRemote && !soundStarted) {
             ThaumicHorizons.proxy.playVortexSound(this);
@@ -149,7 +161,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                     this.handlePocketPlaneStuff();
                 }
                 if (!this.cheat) {
-                    this.count += 6 - this.beams;
+                    this.count += Math.max(0, 6 - this.beams);
                 }
                 if (this.count > MAX_COUNT && !this.cheat
                         && this.worldObj.provider.dimensionId != ThaumicHorizons.dimensionPocketId) {
@@ -577,6 +589,19 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     @Override
     public int containerContains(final Aspect tag) {
         return 0;
+    }
+
+    @Override
+    public net.minecraft.network.Packet getDescriptionPacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        this.writeCustomNBT(nbt);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        this.readCustomNBT(pkt.func_148857_g());
+        this.clientSynced = true;
     }
 
     @Override
