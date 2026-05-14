@@ -166,13 +166,27 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
 
     public void reHungrifyTarget() {
         if (this.target instanceof INode) {
-            ((INode) this.target).setNodeType(NodeType.values()[this.prevType]);
+            if (!isNodeTargetedByOtherStabilizer()) {
+                ((INode) this.target).setNodeType(NodeType.values()[this.prevType]);
+            }
         } else if (this.target instanceof TileVortex) {
             --((TileVortex) this.target).beams;
         }
         if (this.target != null) {
             this.target.markDirty();
         }
+    }
+
+    private boolean isNodeTargetedByOtherStabilizer() {
+        for (Object obj : this.worldObj.loadedTileEntityList) {
+            if (obj instanceof TileVortexStabilizer && obj != this) {
+                TileVortexStabilizer other = (TileVortexStabilizer) obj;
+                if (other.hasTarget && other.target == this.target) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     void deHungrifyTarget() {
