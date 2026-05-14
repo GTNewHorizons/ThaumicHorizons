@@ -39,7 +39,7 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
     public boolean redstoned;
     public ForgeDirection dir;
     public Object theBeam;
-    public Entity[] sonicFX;
+    private Entity[] sonicFX;
 
     public TileVortexStabilizer() {
         this.xTarget = Integer.MAX_VALUE;
@@ -90,12 +90,12 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
                     // Separate if (not else if) so a new valid target is acquired in the same tick,
                     // preventing a window where beams is decremented but not yet restored.
                     final TileEntity newTE = this.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-                    if (!this.hasTarget && newTE instanceof INode) {
+                    if (newTE instanceof INode) {
                         this.hasTarget = true;
                         this.target = newTE;
                         this.prevType = ((INode) newTE).getNodeType().ordinal();
                         this.deHungrifyTarget();
-                    } else if (!this.hasTarget && newTE instanceof TileVortex) {
+                    } else if (newTE instanceof TileVortex) {
                         this.hasTarget = true;
                         this.target = newTE;
                         this.deHungrifyTarget();
