@@ -35,22 +35,17 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
         if (!(tile instanceof final TileVortex node) || !node.clientSynced) {
             return;
         }
-        final float size = 10.0f;
-        final double viewDistance = 64.0;
-        final EntityLivingBase viewer = Minecraft.getMinecraft().renderViewEntity;
-        final boolean condition = true;
-        final boolean depthIgnore = false;
         renderNode(
-                viewer,
-                viewDistance,
-                condition,
-                depthIgnore,
-                size,
+                Minecraft.getMinecraft().renderViewEntity,
+                64.0,
+                true,
+                false,
+                10.0f,
                 tile.xCoord,
                 tile.yCoord,
                 tile.zCoord,
                 partialTicks,
-                ((TileVortex) tile).aspects,
+                node.aspects,
                 node.count,
                 node.collapsing,
                 node.beams,
@@ -102,7 +97,6 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 GL11.glPushMatrix();
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, aspect.getBlend());
-                scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                 scale = 0.4f;
                 scale *= size;
                 final long periodNs = (5000L + 500L * count) * 5_000_000L;
@@ -192,7 +186,6 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                     GL11.glPushMatrix();
                     GL11.glEnable(GL11.GL_BLEND);
                     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                    scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                     scale = 0.4f;
                     scale *= size;
                     final long periodNs2 = (5000L + 500L * count) * 5_000_000L;

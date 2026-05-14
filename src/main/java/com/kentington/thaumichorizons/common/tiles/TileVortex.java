@@ -51,7 +51,7 @@ import thaumcraft.common.items.wands.ItemWandCasting;
 
 public class TileVortex extends TileThaumcraft implements IWandable, IAspectContainer {
 
-    final int MAX_COUNT = 2400;
+    private static final int MAX_COUNT = 2400;
     public int count;
     public int beams;
     public int dimensionID;
@@ -250,14 +250,15 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                 } else
             if (item.getEntityItem().getItem() == ThaumicHorizons.itemCrystalWand) {
                 final ItemStack theWand = new ItemStack(ThaumicHorizons.itemWandCastingDisposable);
-                ((ItemWandCasting) theWand.getItem()).setRod(theWand, ThaumicHorizons.ROD_CRYSTAL);
-                ((ItemWandCasting) theWand.getItem()).setCap(theWand, ThaumicHorizons.CAP_CRYSTAL);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.EARTH, 25000);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.AIR, 25000);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.FIRE, 25000);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.WATER, 25000);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.ORDER, 25000);
-                ((ItemWandCasting) theWand.getItem()).storeVis(theWand, Aspect.ENTROPY, 25000);
+                final ItemWandCasting wand = (ItemWandCasting) theWand.getItem();
+                wand.setRod(theWand, ThaumicHorizons.ROD_CRYSTAL);
+                wand.setCap(theWand, ThaumicHorizons.CAP_CRYSTAL);
+                wand.storeVis(theWand, Aspect.EARTH, 25000);
+                wand.storeVis(theWand, Aspect.AIR, 25000);
+                wand.storeVis(theWand, Aspect.FIRE, 25000);
+                wand.storeVis(theWand, Aspect.WATER, 25000);
+                wand.storeVis(theWand, Aspect.ORDER, 25000);
+                wand.storeVis(theWand, Aspect.ENTROPY, 25000);
                 this.items.add(theWand);
                 item.setDead();
             } else
@@ -387,24 +388,25 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                             }
                         }
                     }
-                    final double var3 = (this.xCoord + 0.5 - eo.posX) / 15.0;
-                    final double var4 = (this.yCoord + 0.5 - eo.posY) / 15.0;
-                    final double var5 = (this.zCoord + 0.5 - eo.posZ) / 15.0;
-                    final double var6 = Math.sqrt(var3 * var3 + var4 * var4 + var5 * var5);
-                    double var7 = 1.0 - var6;
+                    final double dx = (this.xCoord + 0.5 - eo.posX) / 15.0;
+                    final double dy = (this.yCoord + 0.5 - eo.posY) / 15.0;
+                    final double dz = (this.zCoord + 0.5 - eo.posZ) / 15.0;
+                    final double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    double var7 = 1.0 - dist;
                     final double modifier = 2.0 - this.beams / 3.0;
                     if (var7 <= 0.0) {
                         continue;
                     }
                     var7 *= var7;
-                    eo.motionX += var3 / var6 * var7 * 0.15 * modifier;
-                    eo.motionY += var4 / var6 * var7 * 0.25 * modifier;
-                    eo.motionZ += var5 / var6 * var7 * 0.15 * modifier;
+                    eo.motionX += dx / dist * var7 * 0.15 * modifier;
+                    eo.motionY += dy / dist * var7 * 0.25 * modifier;
+                    eo.motionZ += dz / dist * var7 * 0.15 * modifier;
                 }
             }
         }
         for (int i = 0; i < 3; ++i) {
-            if (!this.worldObj.isRemote && (this.beams <= 0 || this.worldObj.rand.nextInt(this.beams) == 0)) {
+            if (!this.worldObj.isRemote
+                    && (this.beams <= 0 || this.worldObj.rand.nextInt(Math.max(1, this.beams)) == 0)) {
                 int tx2 = this.xCoord + this.worldObj.rand.nextInt(16) - this.worldObj.rand.nextInt(16);
                 int ty2 = this.yCoord + this.worldObj.rand.nextInt(16) - this.worldObj.rand.nextInt(16);
                 int tz2 = this.zCoord + this.worldObj.rand.nextInt(16) - this.worldObj.rand.nextInt(16);

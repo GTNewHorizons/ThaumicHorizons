@@ -232,78 +232,72 @@ public class BlockGatewayPortal extends Block {
                 }
                 case 5 -> {
                     switch (side) {
-                        case 0: {
+                        case 0 -> {
                             return this.lapiz;
                         }
-                        case 1: {
+                        case 1 -> {
                             return this.stone;
                         }
-                        case 2: {
-                            if (isXAligned) {
-                                return this.topR;
-                            }
+                        case 2 -> {
+                            if (isXAligned) return this.topR;
+                            return this.stone;
                         }
-                        case 3: {
-                            if (isXAligned) {
-                                return this.topL;
-                            }
+                        case 3 -> {
+                            if (isXAligned) return this.topL;
+                            return this.stone;
                         }
-                        case 4: {
-                            if (!isXAligned) {
-                                return this.topL;
-                            }
+                        case 4 -> {
+                            if (!isXAligned) return this.topL;
+                            return this.stone;
                         }
-                        case 5: {
-                            if (!isXAligned) {
-                                return this.topR;
-                            }
-                            break;
+                        case 5 -> {
+                            if (!isXAligned) return this.topR;
+                            return this.stone;
+                        }
+                        default -> {
+                            return this.lapiz;
                         }
                     }
-                    return this.lapiz;
                 }
                 case 6, 7, 9 -> {
                     return this.bottomSide(isXAligned, side);
                 }
                 case 8 -> {
                     switch (side) {
-                        case 0: {
+                        case 0 -> {
                             return this.lapiz;
                         }
-                        case 1: {
+                        case 1 -> {
                             return this.stone;
                         }
-                        case 2: {
-                            if (isXAligned) {
-                                return this.topL;
-                            }
+                        case 2 -> {
+                            if (isXAligned) return this.topL;
+                            return this.stone;
                         }
-                        case 3: {
-                            if (isXAligned) {
-                                return this.topR;
-                            }
+                        case 3 -> {
+                            if (isXAligned) return this.topR;
+                            return this.stone;
                         }
-                        case 4: {
-                            if (!isXAligned) {
-                                return this.topR;
-                            }
+                        case 4 -> {
+                            if (!isXAligned) return this.topR;
+                            return this.stone;
                         }
-                        case 5: {
-                            if (!isXAligned) {
-                                return this.topL;
-                            }
-                            break;
+                        case 5 -> {
+                            if (!isXAligned) return this.topL;
+                            return this.stone;
+                        }
+                        default -> {
+                            return this.lapiz;
                         }
                     }
-                    return this.lapiz;
                 }
                 case 10 -> {
                     switch (side) {
                         case 0 -> {
-                            return this.stone;
+                            return this.lapiz;
                         }
                         case 1 -> {
-                            return this.lapiz;
+                            return this.stone;
                         }
                         case 2 -> {
                             if (isXAligned) {
