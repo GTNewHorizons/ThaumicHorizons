@@ -31,6 +31,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.kentington.thaumichorizons.client.lib.GolemTHTexture;
+import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.ai.EntityAIFollowPlayer;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFXBlocksplosion;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
@@ -165,7 +166,9 @@ public class EntityGolemTH extends EntityGolemBase {
         int bonus = 0;
         try {
             bonus = (this.getGolemDecoration().contains("H") ? 5 : 0);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            ThaumicHorizons.log.error("Failed to read golem decoration for health bonus", e);
+        }
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.getGolemTHType().health + bonus);
         return true;
     }
@@ -670,7 +673,9 @@ public class EntityGolemTH extends EntityGolemBase {
             int bonus = 0;
             try {
                 bonus = (this.getGolemDecoration().contains("H") ? 5 : 0);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                ThaumicHorizons.log.error("Failed to read golem decoration for health bonus on upgrade", e);
+            }
             this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.type.health + bonus);
         } else if (par1 == 6) {
             this.leftArm = 5;

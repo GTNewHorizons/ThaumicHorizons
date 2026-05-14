@@ -84,11 +84,15 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                     if (stack.getItem() != null) {
                         try {
                             text = stack.getDisplayName();
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            ThaumicHorizons.log.warn("Failed to get display name for scan target", e);
+                        }
                     } else if (stack.getItem() != null) {
                         try {
                             text = stack.getItem().getItemStackDisplayName(stack);
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            ThaumicHorizons.log.warn("Failed to get item stack display name for scan target", e);
+                        }
                     }
                 }
                 if (scan.type == 2) {
@@ -233,7 +237,9 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                             if (is == null) {
                                 is = BlockUtils.createStackedBlock(bi, md);
                             }
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            ThaumicHorizons.log.warn("Failed to create stacked block for scan", e);
+                        }
                         try {
                             if (is == null) {
                                 sr2 = new ScanResult((byte) 1, Block.getIdFromBlock(bi), md, null, "");
@@ -245,7 +251,9 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                                         null,
                                         "");
                             }
-                        } catch (Exception ignored) {}
+                        } catch (Exception e) {
+                            ThaumicHorizons.log.warn("Failed to create scan result for block", e);
+                        }
                         if (ScanManager.isValidScanTarget(p, sr2, "@")) {
                             Thaumcraft.proxy.blockRunes(
                                     world,

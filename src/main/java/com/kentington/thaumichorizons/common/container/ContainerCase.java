@@ -12,6 +12,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.items.lenses.ILens;
 import com.kentington.thaumichorizons.common.items.lenses.ItemLensCase;
 
@@ -48,7 +49,9 @@ public class ContainerCase extends Container {
         if (!par2World.isRemote) {
             try {
                 ((InventoryCase) this.input).stackList = ((ItemLensCase) this.pouch.getItem()).getInventory(this.pouch);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                ThaumicHorizons.log.error("Failed to load lens case inventory", e);
+            }
         }
         this.onCraftMatrixChanged(this.input);
     }

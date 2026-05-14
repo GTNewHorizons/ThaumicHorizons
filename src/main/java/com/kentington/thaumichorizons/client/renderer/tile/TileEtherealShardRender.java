@@ -20,6 +20,7 @@ import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.tiles.TileSyntheticNode;
 
 import thaumcraft.api.aspects.Aspect;
@@ -159,7 +160,7 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            ThaumicHorizons.log.error("Error rendering ethereal shard", e);
         } finally {
             GL11.glPopMatrix();
         }
