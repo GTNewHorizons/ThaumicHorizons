@@ -35,16 +35,12 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
         if (!(tile instanceof final TileVortex node) || !node.clientSynced) {
             return;
         }
-        final float size = 10.0f;
-        final double viewDistance = 64.0;
-        final EntityLivingBase viewer = Minecraft.getMinecraft().renderViewEntity;
-        final boolean depthIgnore = false;
         renderNode(
-                viewer,
-                viewDistance,
+                Minecraft.getMinecraft().renderViewEntity,
+                64.0,
                 true,
-                depthIgnore,
-                size,
+                false,
+                10.0f,
                 tile.xCoord,
                 tile.yCoord,
                 tile.zCoord,
