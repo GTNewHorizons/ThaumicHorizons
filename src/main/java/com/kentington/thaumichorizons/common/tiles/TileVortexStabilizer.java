@@ -178,11 +178,22 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
     }
 
     private boolean isNodeTargetedByOtherStabilizer() {
-        for (Object obj : this.worldObj.loadedTileEntityList) {
-            if (obj instanceof TileVortexStabilizer && obj != this) {
-                TileVortexStabilizer other = (TileVortexStabilizer) obj;
-                if (other.hasTarget && other.target == this.target) {
-                    return true;
+        // A stabilizer can only reach a node from up to 10 blocks away in one of 6 directions,
+        // so check those 60 positions instead of scanning all loaded tile entities.
+        int tx = this.target.xCoord;
+        int ty = this.target.yCoord;
+        int tz = this.target.zCoord;
+        for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
+            for (int dist = 1; dist <= 10; dist++) {
+                TileEntity te = this.worldObj.getTileEntity(
+                        tx - d.offsetX * dist,
+                        ty - d.offsetY * dist,
+                        tz - d.offsetZ * dist);
+                if (te instanceof TileVortexStabilizer && te != this) {
+                    TileVortexStabilizer other = (TileVortexStabilizer) te;
+                    if (other.hasTarget && other.target == this.target) {
+                        return true;
+                    }
                 }
             }
         }
