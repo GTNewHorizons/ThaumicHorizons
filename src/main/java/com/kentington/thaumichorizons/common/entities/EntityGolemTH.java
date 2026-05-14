@@ -31,7 +31,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.kentington.thaumichorizons.client.lib.GolemTHTexture;
-import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.ai.EntityAIFollowPlayer;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFXBlocksplosion;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
@@ -163,12 +162,8 @@ public class EntityGolemTH extends EntityGolemBase {
         this.getNavigator().setAvoidsWater(
                 this.getGolemTHType() != EnumGolemTHType.ROCK && this.getGolemTHType() != EnumGolemTHType.METAL
                         && this.getGolemTHType() != EnumGolemTHType.REDSTONE);
-        int bonus = 0;
-        try {
-            bonus = (this.getGolemDecoration().contains("H") ? 5 : 0);
-        } catch (Exception e) {
-            ThaumicHorizons.log.error("Failed to read golem decoration for health bonus", e);
-        }
+        final String decor = this.getGolemDecoration();
+        final int bonus = decor == null ? 0 : (decor.contains("H") ? 5 : 0);
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.getGolemTHType().health + bonus);
         return true;
     }
@@ -670,12 +665,8 @@ public class EntityGolemTH extends EntityGolemBase {
             this.action = 6;
         } else if (par1 == 5) {
             this.healing = 5;
-            int bonus = 0;
-            try {
-                bonus = (this.getGolemDecoration().contains("H") ? 5 : 0);
-            } catch (Exception e) {
-                ThaumicHorizons.log.error("Failed to read golem decoration for health bonus on upgrade", e);
-            }
+            final String decor = this.getGolemDecoration();
+            final int bonus = decor == null ? 0 : (decor.contains("H") ? 5 : 0);
             this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(this.type.health + bonus);
         } else if (par1 == 6) {
             this.leftArm = 5;
