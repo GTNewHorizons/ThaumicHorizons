@@ -74,9 +74,9 @@ public class ItemKeystone extends Item {
             float hitX, float hitY, float hitZ) {
         if (stack.getTagCompound() == null && player.dimension == ThaumicHorizons.dimensionPocketId
                 && !world.isRemote) {
-            final net.minecraft.tileentity.TileEntity te = world.getTileEntity(x, y, z);
-            if (te instanceof TileVortex) {
-                (stack.stackTagCompound = new NBTTagCompound()).setInteger("dimension", ((TileVortex) te).dimensionID);
+            if (world.getTileEntity(x, y, z) instanceof final TileVortex vortex) {
+                stack.stackTagCompound = new NBTTagCompound();
+                stack.stackTagCompound.setInteger("dimension", vortex.dimensionID);
                 player.inventory.markDirty();
                 return true;
             }
