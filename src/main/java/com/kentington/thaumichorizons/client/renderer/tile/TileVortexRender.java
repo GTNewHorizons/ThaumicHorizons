@@ -7,13 +7,12 @@ package com.kentington.thaumichorizons.client.renderer.tile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 
 import org.lwjgl.opengl.GL11;
 
@@ -23,7 +22,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.client.lib.QuadHelper;
 import thaumcraft.client.lib.UtilsFX;
 
 @SideOnly(Side.CLIENT)
@@ -34,7 +32,7 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
 
     public void renderTileEntityAt(final TileEntity tile, final double x, final double y, final double z,
             final float partialTicks) {
-        if (!(tile instanceof final TileVortex node)) {
+        if (!(tile instanceof final TileVortex node) || !node.clientSynced) {
             return;
         }
         final float size = 10.0f;
@@ -72,6 +70,10 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 return;
             }
             float alpha = (float) ((viewDistance - distance) / viewDistance);
+            // Camera-relative center — avoids float precision loss at large world coords.
+            final double cx = x + 0.5 - RenderManager.renderPosX;
+            final double cy = y + 0.5 - RenderManager.renderPosY;
+            final double cz = z + 0.5 - RenderManager.renderPosZ;
             GL11.glPushMatrix();
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
             GL11.glDepthMask(false);
@@ -79,7 +81,6 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 GL11.glDisable(GL11.GL_DEPTH_TEST);
             }
             GL11.glDisable(GL11.GL_CULL_FACE);
-            final long time = nt / 5000000L;
             final float bscale = 0.25f;
             GL11.glPushMatrix();
             final float rad = ((float) Math.PI * 2F);
@@ -104,7 +105,8 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                 scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                 scale = 0.4f;
                 scale *= size;
-                angle = time % (5000 + 500 * count) / (5000.0f + 500 * count) * rad;
+                final long periodNs = (5000L + 500L * count) * 5_000_000L;
+                angle = (float) ((double) (nt % periodNs) / periodNs) * rad;
                 if (beams < 6 || timeOpen < 50) {
                     UtilsFX.renderFacingStrip(
                             x + 0.5,
@@ -153,9 +155,9 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
             if (!cheat && (beams < 6 || timeOpen < 50)) {
                 UtilsFX.bindTexture(TileVortexRender.vortextex);
                 renderVortex(
-                        x + 0.5,
-                        y + 0.5,
-                        z + 0.5,
+                        cx,
+                        cy,
+                        cz,
                         angle * 20.0f * corescale / (1 + 2 * beams),
                         scale / 5.0f * corescale,
                         0.8f,
@@ -193,7 +195,8 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
                     scale = MathHelper.sin(viewer.ticksExisted / (14.0f - count)) * bscale + bscale * 2.0f;
                     scale = 0.4f;
                     scale *= size;
-                    angle = time % (5000 + 500 * count) / (5000.0f + 500 * count) * rad;
+                    final long periodNs2 = (5000L + 500L * count) * 5_000_000L;
+                    angle = (float) ((double) (nt % periodNs2) / periodNs2) * rad;
                     UtilsFX.renderFacingStrip(
                             x + 0.5,
                             y + 0.5,
@@ -233,37 +236,29 @@ public class TileVortexRender extends TileEntitySpecialRenderer {
         final float arYZ = ActiveRenderInfo.rotationYZ;
         final float arXY = ActiveRenderInfo.rotationXY;
         final float arXZ = ActiveRenderInfo.rotationXZ;
-        final EntityPlayer player = (EntityPlayer) Minecraft.getMinecraft().renderViewEntity;
-        final double iPX = player.prevPosX + (player.posX - player.prevPosX) * partialTicks;
-        final double iPY = player.prevPosY + (player.posY - player.prevPosY) * partialTicks;
-        final double iPZ = player.prevPosZ + (player.posZ - player.prevPosZ) * partialTicks;
-        GL11.glTranslated(-iPX, -iPY, -iPZ);
+
+        // Rotate screen-plane basis vectors (H = right, V = up) by angle.
+        // This avoids Rodrigues rotation around a qvec that shifts with every head movement,
+        // which caused the vortex to jerk whenever the player moved the camera.
+        final float cos = MathHelper.cos(angle);
+        final float sin = MathHelper.sin(angle);
+        final float hX = cos * arX + sin * arYZ;
+        final float hY = sin * arXZ;
+        final float hZ = cos * arZ + sin * arXY;
+        final float vX = cos * arYZ - sin * arX;
+        final float vY = cos * arXZ;
+        final float vZ = cos * arXY - sin * arZ;
+
         tessellator.startDrawingQuads();
         tessellator.setBrightness(220);
         tessellator.setColorRGBA_I(color, (int) (alpha * 255.0f));
-        final Vec3 v1 = Vec3
-                .createVectorHelper(-arX * scale - arYZ * scale, -arXZ * scale, -arZ * scale - arXY * scale);
-        final Vec3 v2 = Vec3.createVectorHelper(-arX * scale + arYZ * scale, arXZ * scale, -arZ * scale + arXY * scale);
-        final Vec3 v3 = Vec3.createVectorHelper(arX * scale + arYZ * scale, arXZ * scale, arZ * scale + arXY * scale);
-        final Vec3 v4 = Vec3.createVectorHelper(arX * scale - arYZ * scale, -arXZ * scale, arZ * scale - arXY * scale);
-        if (angle != 0.0f) {
-            final Vec3 pvec = Vec3.createVectorHelper(iPX, iPY, iPZ);
-            final Vec3 tvec = Vec3.createVectorHelper(px, py, pz);
-            final Vec3 qvec = pvec.subtract(tvec).normalize();
-            QuadHelper.setAxis(qvec, angle).rotate(v1);
-            QuadHelper.setAxis(qvec, angle).rotate(v2);
-            QuadHelper.setAxis(qvec, angle).rotate(v3);
-            QuadHelper.setAxis(qvec, angle).rotate(v4);
-        }
-        final float f2 = 0.0f;
-        final float f3 = 1.0f;
-        final float f4 = 0.0f;
-        final float f5 = 1.0f;
         tessellator.setNormal(0.0f, 0.0f, -1.0f);
-        tessellator.addVertexWithUV(px + v1.xCoord, py + v1.yCoord, pz + v1.zCoord, f2, f5);
-        tessellator.addVertexWithUV(px + v2.xCoord, py + v2.yCoord, pz + v2.zCoord, f3, f5);
-        tessellator.addVertexWithUV(px + v3.xCoord, py + v3.yCoord, pz + v3.zCoord, f3, f4);
-        tessellator.addVertexWithUV(px + v4.xCoord, py + v4.yCoord, pz + v4.zCoord, f2, f4);
+        tessellator
+                .addVertexWithUV(px + (-hX - vX) * scale, py + (-hY - vY) * scale, pz + (-hZ - vZ) * scale, 0.0, 1.0);
+        tessellator
+                .addVertexWithUV(px + (-hX + vX) * scale, py + (-hY + vY) * scale, pz + (-hZ + vZ) * scale, 1.0, 1.0);
+        tessellator.addVertexWithUV(px + (hX + vX) * scale, py + (hY + vY) * scale, pz + (hZ + vZ) * scale, 1.0, 0.0);
+        tessellator.addVertexWithUV(px + (hX - vX) * scale, py + (hY - vY) * scale, pz + (hZ - vZ) * scale, 0.0, 0.0);
         tessellator.draw();
     }
 

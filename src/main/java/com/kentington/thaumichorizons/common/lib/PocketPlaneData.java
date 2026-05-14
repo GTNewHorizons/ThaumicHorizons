@@ -128,7 +128,7 @@ public class PocketPlaneData {
             data.portalD = new int[4];
             PocketPlaneData.planes.add(data);
             PocketPlaneData.positions.put(pocketPlaneMAXID, Vec3.createVectorHelper(vortexX, vortexY, vortexZ));
-            world.getChunkFromBlockCoords(vortexX, vortexZ).isModified = true;
+            world.getChunkFromBlockCoords(xCenter, zCenter).isModified = true;
             creatures = 0;
             ++pocketPlaneMAXID;
         }

@@ -117,7 +117,7 @@ public class BlockGatewayPortal extends Block {
             }
         }
         final TileEntity te = world.getTileEntity(slotX, slotY, slotZ);
-        if (te instanceof TileSlot) {
+        if (te instanceof TileSlot && ((TileSlot) te).portalOpen) {
             ((TileSlot) te).destroyPortal();
         }
     }

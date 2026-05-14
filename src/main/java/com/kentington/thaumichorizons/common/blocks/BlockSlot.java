@@ -32,6 +32,7 @@ public class BlockSlot extends BlockContainer {
 
     public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int md) {
         final TileSlot tco = (TileSlot) world.getTileEntity(x, y, z);
+        if (tco == null) return;
         if (tco.portalOpen) {
             tco.destroyPortal();
         }
@@ -59,15 +60,20 @@ public class BlockSlot extends BlockContainer {
                 if (tco.portalOpen) {
                     tco.destroyPortal();
                 }
+                world.markBlockForUpdate(x, y, z);
+                return true;
             } else if (!tco.portalOpen && player.getHeldItem().getItem() instanceof ItemWandCasting) {
                 tco.makePortal(player);
+                world.markBlockForUpdate(x, y, z);
+                return true;
             }
         } else if (theItem != null && theItem.getItem() == ThaumicHorizons.itemKeystone
                 && theItem.stackTagCompound != null) {
                     tco.insertKeystone(theItem.stackTagCompound.getInteger("dimension"));
                     --theItem.stackSize;
+                    world.markBlockForUpdate(x, y, z);
+                    return true;
                 }
-        world.markBlockForUpdate(x, y, z);
         return false;
     }
 
