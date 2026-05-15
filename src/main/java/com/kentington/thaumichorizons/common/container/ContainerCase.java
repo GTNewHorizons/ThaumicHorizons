@@ -45,8 +45,10 @@ public class ContainerCase extends Container {
                     new SlotLimitedByClass(ILens.class, this.input, a, 37 + a % 6 * 18, 51 + a / 6 * 18));
         }
         this.bindPlayerInventory(iinventory);
-        if (!par2World.isRemote && this.pouch != null && this.pouch.getItem() instanceof ItemLensCase) {
-            ((InventoryCase) this.input).stackList = ((ItemLensCase) this.pouch.getItem()).getInventory(this.pouch);
+        if (!par2World.isRemote && this.pouch != null
+                && this.pouch.getItem() instanceof ItemLensCase lensCase
+                && this.input instanceof InventoryCase inv) {
+            inv.stackList = lensCase.getInventory(this.pouch);
         }
         this.onCraftMatrixChanged(this.input);
     }

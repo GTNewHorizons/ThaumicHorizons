@@ -89,7 +89,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
     public void addSoulBits(final int bits) {
         this.progress += bits;
         this.essentia -= bits;
-        if (this.progress >= PROGRESS_MAX) {
+        while (this.progress >= PROGRESS_MAX) {
             this.progress -= PROGRESS_MAX;
             ++this.souls;
         }
