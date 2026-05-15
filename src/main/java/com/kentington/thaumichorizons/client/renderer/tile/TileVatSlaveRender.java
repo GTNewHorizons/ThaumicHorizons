@@ -74,7 +74,7 @@ public class TileVatSlaveRender extends TileEntitySpecialRenderer {
                         (float) z + 0.5f);
                 UtilsFX.bindTexture("thaumichorizons", TileVatSlaveRender.tx1);
                 this.corpse.render(null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f);
-            } else if (tco.mode == 4 || (tco.mode == 2 && tco.recipeType == 1)) {
+            } else if (tco.mode == 4) {
                 GL11.glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
                 GL11.glTranslatef(
                         (float) (-x) - 0.5f,
