@@ -26,6 +26,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -398,6 +399,12 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                                     this.worldObj));
                     if (this.getEntityContained() instanceof EntityTameable) {
                         ((EntityTameable) this.getEntityContained()).setTamed(false);
+                    }
+                    if (this.getEntityContained() instanceof IInventory) {
+                        final IInventory inv = (IInventory) this.getEntityContained();
+                        for (int s = 0; s < inv.getSizeInventory(); ++s) {
+                            inv.setInventorySlotContents(s, null);
+                        }
                     }
                 } else {
                     this.setEntityContained(
