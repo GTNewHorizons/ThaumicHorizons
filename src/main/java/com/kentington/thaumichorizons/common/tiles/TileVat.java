@@ -392,13 +392,10 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
             }
             if (this.getEntityContained() == null && this.myEssentia.getAmount(Aspect.LIFE) >= 4) {
                 if (this.sample.getItem() == ThaumicHorizons.itemSyringeBloodSample) {
-                    final NBTTagCompound critterNbt = (NBTTagCompound) this.sample.getTagCompound()
-                            .getCompoundTag("critter").copy();
-                    critterNbt.removeTag("Items");
-                    critterNbt.removeTag("ArmorItem");
-                    critterNbt.removeTag("SaddleItem");
                     this.setEntityContained(
-                            (EntityLivingBase) EntityList.createEntityFromNBT(critterNbt, this.worldObj));
+                            (EntityLivingBase) EntityList.createEntityFromNBT(
+                                    this.sample.getTagCompound().getCompoundTag("critter"),
+                                    this.worldObj));
                     if (this.getEntityContained() instanceof EntityTameable) {
                         ((EntityTameable) this.getEntityContained()).setTamed(false);
                     }

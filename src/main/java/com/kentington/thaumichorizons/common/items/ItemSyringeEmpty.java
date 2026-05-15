@@ -60,6 +60,11 @@ public class ItemSyringeEmpty extends Item {
                 final NBTTagCompound critterTag = new NBTTagCompound();
                 critter.writeToNBT(critterTag);
                 critterTag.setString("id", EntityList.getEntityString(ent));
+                // Strip inventory-related tags - a blood sample should only carry genetic data
+                critterTag.removeTag("Items");
+                critterTag.removeTag("ArmorItem");
+                critterTag.removeTag("SaddleItem");
+                critterTag.removeTag("ChestedHorse");
                 bloodSample.stackTagCompound.setString("critterName", ent.getCommandSenderName());
                 bloodSample.stackTagCompound.setTag("critter", critterTag);
                 if (p.inventory.addItemStackToInventory(bloodSample)) {
