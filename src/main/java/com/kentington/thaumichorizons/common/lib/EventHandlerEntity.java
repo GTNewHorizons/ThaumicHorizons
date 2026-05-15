@@ -767,25 +767,6 @@ public class EventHandlerEntity {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onPlayerDropSearchAmulet(final PlayerDropsEvent event) {
-        if (!event.entityPlayer.worldObj.isRemote) {
-            // Mirrored Amulet returning items
-            ItemStack amulet = null;
-            for (ItemStack bauble : PlayerHandler.getPlayerBaubles(event.entityPlayer).stackList) {
-                if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
-                    amulet = bauble;
-                    break;
-                }
-            }
-
-            // Mark amulet
-            if (amulet != null && amulet.hasTagCompound()) {
-                amulet.stackTagCompound.setBoolean("isActivateTransport", true);
-            }
-        }
-    }
-
     @SubscribeEvent
     public void onPlayerDropTransport(final PlayerDropsEvent event) {
         if (!event.entityPlayer.worldObj.isRemote) {
@@ -798,11 +779,6 @@ public class EventHandlerEntity {
                     EntityItem baubleEntity = iterator.next();
                     ItemStack bauble = baubleEntity.getEntityItem();
 
-                    /*
-                     * TODO: If this event is interrupted by someone for the first time, then after that the mirror will
-                     * work from any slot where the item drops. This event is unlikely, but it can occur. Return when
-                     * such a problem occurs.
-                     */
                     if (bauble.getItem() instanceof ItemAmuletMirror && bauble.hasTagCompound()
                             && bauble.stackTagCompound.hasKey("isActivateTransport")) {
                         amuletEntity = baubleEntity;
