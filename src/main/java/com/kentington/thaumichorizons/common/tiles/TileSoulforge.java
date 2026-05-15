@@ -30,8 +30,14 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
     int progress;
     static final int PROGRESS_MAX = 9600;
     public int souls;
+    static final int MAX_SOULS = 16;
     int essentia;
     static final int ESSENTIA_MAX = 4000;
+    // Threshold for drawing more essentia (3 MIND aspects * 1000 each)
+    static final int ESSENTIA_DRAW_THRESHOLD = 3000;
+    static final int ESSENTIA_PER_ASPECT = 1000;
+    static final int SUCTION_PRESSURE = 128;
+    static final double PLAYER_REACH_SQ = 64.0;
     public float rota;
     public int forging;
 
@@ -83,8 +89,8 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
     public void addSoulBits(final int bits) {
         this.progress += bits;
         this.essentia -= bits;
-        if (this.progress >= 9600) {
-            this.progress -= 9600;
+        while (this.progress >= PROGRESS_MAX) {
+            this.progress -= PROGRESS_MAX;
             ++this.souls;
         }
         this.forging = 3;
@@ -94,12 +100,12 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     @Override
     public boolean canAcceptSouls() {
-        return this.essentia > 0 && this.souls < 16;
+        return this.essentia > 0 && this.souls < MAX_SOULS;
     }
 
     public void updateEntity() {
         super.updateEntity();
-        if (this.essentia < 3000) {
+        if (this.essentia < ESSENTIA_DRAW_THRESHOLD) {
             this.drawEssentia();
         }
         if (this.forging > 0) {
@@ -113,7 +119,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     public boolean isUseableByPlayer(final EntityPlayer p_70300_1_) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) == this
-                && p_70300_1_.getDistanceSq(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5) <= 64.0;
+                && p_70300_1_.getDistanceSq(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5) <= PLAYER_REACH_SQ;
     }
 
     void drawEssentia() {
@@ -158,12 +164,12 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
         if (this.essentia <= 0) {
             return null;
         }
-        return new AspectList().add(Aspect.MIND, (int) Math.ceil(this.essentia / 1000.0f));
+        return new AspectList().add(Aspect.MIND, (int) Math.ceil(this.essentia / (float) ESSENTIA_PER_ASPECT));
     }
 
     @Override
     public void setAspects(final AspectList aspects) {
-        this.essentia = aspects.getAmount(Aspect.MIND) * 1000;
+        this.essentia = aspects.getAmount(Aspect.MIND) * ESSENTIA_PER_ASPECT;
     }
 
     @Override
@@ -188,7 +194,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     @Override
     public boolean doesContainerContainAmount(final Aspect tag, final int amount) {
-        return tag.getTag().equals(Aspect.MIND.getTag()) && this.essentia / 1000 >= amount;
+        return tag.getTag().equals(Aspect.MIND.getTag()) && this.essentia / ESSENTIA_PER_ASPECT >= amount;
     }
 
     @Override
@@ -199,7 +205,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
     @Override
     public int containerContains(final Aspect tag) {
         if (tag.getTag().equals(Aspect.MIND.getTag())) {
-            return this.essentia / 1000;
+            return this.essentia / ESSENTIA_PER_ASPECT;
         }
         return 0;
     }
@@ -229,7 +235,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     @Override
     public int getSuctionAmount(final ForgeDirection face) {
-        return (this.essentia < 3000) ? 128 : 0;
+        return (this.essentia < ESSENTIA_DRAW_THRESHOLD) ? SUCTION_PRESSURE : 0;
     }
 
     @Override
@@ -239,8 +245,8 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     @Override
     public int addEssentia(final Aspect aspect, final int amount, final ForgeDirection face) {
-        if (this.essentia < 3000) {
-            this.essentia += 1000;
+        if (this.essentia < ESSENTIA_DRAW_THRESHOLD) {
+            this.essentia += ESSENTIA_PER_ASPECT;
             this.markDirty();
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             return 1;
@@ -255,7 +261,7 @@ public class TileSoulforge extends TileThaumcraft implements ISoulReceiver, IEss
 
     @Override
     public int getEssentiaAmount(final ForgeDirection face) {
-        return this.essentia / 1000;
+        return this.essentia / ESSENTIA_PER_ASPECT;
     }
 
     @Override
