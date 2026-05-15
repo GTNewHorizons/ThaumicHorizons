@@ -84,15 +84,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                     if (stack.getItem() != null) {
                         try {
                             text = stack.getDisplayName();
-                        } catch (Exception e) {
-                            ThaumicHorizons.log.warn("Failed to get display name for scan target", e);
-                        }
-                    } else if (stack.getItem() != null) {
-                        try {
-                            text = stack.getItem().getItemStackDisplayName(stack);
-                        } catch (Exception e) {
-                            ThaumicHorizons.log.warn("Failed to get item stack display name for scan target", e);
-                        }
+                        } catch (Exception ignored) {}
                     }
                 }
                 if (scan.type == 2) {
