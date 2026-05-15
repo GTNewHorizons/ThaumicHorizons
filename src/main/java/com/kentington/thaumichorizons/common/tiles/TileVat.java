@@ -400,8 +400,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                     if (this.getEntityContained() instanceof EntityTameable) {
                         ((EntityTameable) this.getEntityContained()).setTamed(false);
                     }
-                    if (this.getEntityContained() instanceof IInventory) {
-                        final IInventory inv = (IInventory) this.getEntityContained();
+                    if (this.getEntityContained() instanceof IInventory inv) {
                         for (int s = 0; s < inv.getSizeInventory(); ++s) {
                             inv.setInventorySlotContents(s, null);
                         }
