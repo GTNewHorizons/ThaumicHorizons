@@ -710,80 +710,75 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     private void getSurroundings() {
         final ArrayList<ChunkCoordinates> stuff = new ArrayList<>();
         this.pedestals.clear();
-        try {
-            for (int xx = -PEDESTAL_SEARCH_HORIZONTAL; xx <= PEDESTAL_SEARCH_HORIZONTAL; ++xx) {
-                for (int zz = -PEDESTAL_SEARCH_HORIZONTAL; zz <= PEDESTAL_SEARCH_HORIZONTAL; ++zz) {
-                    boolean skip = false;
-                    for (int yy = -PEDESTAL_SEARCH_Y_DOWN; yy <= PEDESTAL_SEARCH_Y_UP; ++yy) {
-                        if (xx != 0 || zz != 0) {
-                            final int x = this.xCoord + xx;
-                            final int y = this.yCoord - yy;
-                            final int z = this.zCoord + zz;
-                            final TileEntity te = this.worldObj.getTileEntity(x, y, z);
-                            if (!skip && yy > 0
-                                    && Math.abs(xx) <= PEDESTAL_SYMMETRY_RANGE
-                                    && Math.abs(zz) <= PEDESTAL_SYMMETRY_RANGE
-                                    && te instanceof TilePedestal) {
-                                this.pedestals.add(new ChunkCoordinates(x, y, z));
-                                skip = true;
-                            } else {
-                                final Block bi = this.worldObj.getBlock(x, y, z);
-                                if (bi == Blocks.skull
-                                        || (bi instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi)
-                                                .canStabaliseInfusion(this.getWorldObj(), x, y, z))) {
-                                    stuff.add(new ChunkCoordinates(x, y, z));
-                                }
+        for (int xx = -PEDESTAL_SEARCH_HORIZONTAL; xx <= PEDESTAL_SEARCH_HORIZONTAL; ++xx) {
+            for (int zz = -PEDESTAL_SEARCH_HORIZONTAL; zz <= PEDESTAL_SEARCH_HORIZONTAL; ++zz) {
+                boolean skip = false;
+                for (int yy = -PEDESTAL_SEARCH_Y_DOWN; yy <= PEDESTAL_SEARCH_Y_UP; ++yy) {
+                    if (xx != 0 || zz != 0) {
+                        final int x = this.xCoord + xx;
+                        final int y = this.yCoord - yy;
+                        final int z = this.zCoord + zz;
+                        final TileEntity te = this.worldObj.getTileEntity(x, y, z);
+                        if (!skip && yy > 0
+                                && Math.abs(xx) <= PEDESTAL_SYMMETRY_RANGE
+                                && Math.abs(zz) <= PEDESTAL_SYMMETRY_RANGE
+                                && te instanceof TilePedestal) {
+                            this.pedestals.add(new ChunkCoordinates(x, y, z));
+                            skip = true;
+                        } else {
+                            final Block bi = this.worldObj.getBlock(x, y, z);
+                            if (bi == Blocks.skull || (bi instanceof IInfusionStabiliser
+                                    && ((IInfusionStabiliser) bi).canStabaliseInfusion(this.getWorldObj(), x, y, z))) {
+                                stuff.add(new ChunkCoordinates(x, y, z));
                             }
                         }
                     }
                 }
             }
-            this.symmetry = 0;
-            for (final ChunkCoordinates cc : this.pedestals) {
-                boolean items = false;
-                final int x2 = this.xCoord - cc.posX;
-                final int z2 = this.zCoord - cc.posZ;
-                TileEntity te2 = this.worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
-                if (te2 instanceof TilePedestal) {
-                    this.symmetry += 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) != null) {
-                        ++this.symmetry;
-                        items = true;
-                    }
-                }
-                final int xx2 = this.xCoord + x2;
-                final int zz2 = this.zCoord + z2;
-                te2 = this.worldObj.getTileEntity(xx2, cc.posY, zz2);
-                if (te2 instanceof TilePedestal) {
-                    this.symmetry -= 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) == null || !items) {
-                        continue;
-                    }
-                    --this.symmetry;
-                }
-            }
-            float sym = 0.0f;
-            for (final ChunkCoordinates cc2 : stuff) {
-                final boolean items2 = false;
-                final int x = this.xCoord - cc2.posX;
-                final int z3 = this.zCoord - cc2.posZ;
-                Block bi2 = this.worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
-                        .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
-                    sym += 0.1f;
-                }
-                final int xx3 = this.xCoord + x;
-                final int zz3 = this.zCoord + z3;
-                bi2 = this.worldObj.getBlock(xx3, cc2.posY, zz3);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
-                        .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
-                    sym -= 0.2f;
-                }
-            }
-            this.symmetry += (int) sym;
-        } catch (Exception e) {
-            ThaumicHorizons.log.error("Error calculating vat symmetry", e);
         }
+        this.symmetry = 0;
+        for (final ChunkCoordinates cc : this.pedestals) {
+            boolean items = false;
+            final int x2 = this.xCoord - cc.posX;
+            final int z2 = this.zCoord - cc.posZ;
+            TileEntity te2 = this.worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
+            if (te2 instanceof TilePedestal) {
+                this.symmetry += 2;
+                if (((TilePedestal) te2).getStackInSlot(0) != null) {
+                    ++this.symmetry;
+                    items = true;
+                }
+            }
+            final int xx2 = this.xCoord + x2;
+            final int zz2 = this.zCoord + z2;
+            te2 = this.worldObj.getTileEntity(xx2, cc.posY, zz2);
+            if (te2 instanceof TilePedestal) {
+                this.symmetry -= 2;
+                if (((TilePedestal) te2).getStackInSlot(0) == null || !items) {
+                    continue;
+                }
+                --this.symmetry;
+            }
+        }
+        float sym = 0.0f;
+        for (final ChunkCoordinates cc2 : stuff) {
+            final boolean items2 = false;
+            final int x = this.xCoord - cc2.posX;
+            final int z3 = this.zCoord - cc2.posZ;
+            Block bi2 = this.worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
+                    .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
+                sym += 0.1f;
+            }
+            final int xx3 = this.xCoord + x;
+            final int zz3 = this.zCoord + z3;
+            bi2 = this.worldObj.getBlock(xx3, cc2.posY, zz3);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
+                    .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
+                sym -= 0.2f;
+            }
+        }
+        this.symmetry += (int) sym;
     }
 
     private void doEffects() {
