@@ -766,7 +766,7 @@ public class EventHandlerEntity {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDropTransport(final PlayerDropsEvent event) {
         if (!event.entityPlayer.worldObj.isRemote) {
             // Mirrored Amulet returning items
