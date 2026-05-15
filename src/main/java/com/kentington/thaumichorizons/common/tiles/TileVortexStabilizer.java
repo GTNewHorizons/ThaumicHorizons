@@ -166,13 +166,36 @@ public class TileVortexStabilizer extends TileThaumcraft implements IWandable {
 
     public void reHungrifyTarget() {
         if (this.target instanceof INode) {
-            ((INode) this.target).setNodeType(NodeType.values()[this.prevType]);
+            if (!isNodeTargetedByOtherStabilizer()) {
+                ((INode) this.target).setNodeType(NodeType.values()[this.prevType]);
+            }
         } else if (this.target instanceof TileVortex) {
             --((TileVortex) this.target).beams;
         }
         if (this.target != null) {
             this.target.markDirty();
         }
+    }
+
+    private boolean isNodeTargetedByOtherStabilizer() {
+        // A stabilizer can only reach a node from up to 10 blocks away in one of 6 directions,
+        // so check those 60 positions instead of scanning all loaded tile entities.
+        int tx = this.target.xCoord;
+        int ty = this.target.yCoord;
+        int tz = this.target.zCoord;
+        for (ForgeDirection d : ForgeDirection.VALID_DIRECTIONS) {
+            for (int dist = 1; dist <= 10; dist++) {
+                TileEntity te = this.worldObj
+                        .getTileEntity(tx - d.offsetX * dist, ty - d.offsetY * dist, tz - d.offsetZ * dist);
+                if (te instanceof TileVortexStabilizer && te != this) {
+                    TileVortexStabilizer other = (TileVortexStabilizer) te;
+                    if (other.hasTarget && other.target == this.target) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     void deHungrifyTarget() {
