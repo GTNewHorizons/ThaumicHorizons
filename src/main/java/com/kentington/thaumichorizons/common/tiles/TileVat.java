@@ -78,6 +78,45 @@ import thaumcraft.common.tiles.TilePedestal;
 
 public class TileVat extends TileThaumcraft implements IAspectContainer, IEssentiaTransport, ISidedInventory {
 
+    // Timers and progress values (in ticks)
+    private static final int CLONE_PROGRESS = 800;
+    private static final int COUNT_DELAY = 10;
+    private static final int HEAL_ASPECT_COOLDOWN = 40;
+    private static final int LIFE_ASPECT_COOLDOWN = 50;
+    private static final int EFFIGY_PROGRESS = 80;
+    private static final int BLOOD_SAMPLE_INITIAL_PROGRESS = 40;
+    private static final int INFUSER_SOUND_INTERVAL = 65;
+    private static final int CRAFTCOUNT_WIND_DOWN_MAX = 50;
+    private static final int INSTABILITY_EFFECT_CHANCE = 200;
+    private static final int INSTABILITY_CRAFT_CHANCE = 500;
+    private static final int INSTABILITY_INCREASE_CHANCE_BASE = 100;
+    private static final int MAX_INSTABILITY = 25;
+
+    // Healing amounts
+    private static final float STRONG_HEAL_AMOUNT = 8.0f;
+    private static final float WEAK_HEAL_AMOUNT = 4.0f;
+
+    // Essentia costs
+    private static final int EFFIGY_ESSENTIA_AMOUNT = 8;
+    private static final int BLOOD_SAMPLE_LIFE_COST = 4;
+    private static final int VIS_DRAIN_AMOUNT = 100;
+
+    // Instability damage divisor
+    private static final float INSTABILITY_DAMAGE_DIVISOR = 10.0f;
+
+    // Pedestal search radius
+    private static final int PEDESTAL_SEARCH_HORIZONTAL = 12;
+    private static final int PEDESTAL_SEARCH_Y_DOWN = 5;
+    private static final int PEDESTAL_SEARCH_Y_UP = 10;
+    private static final int PEDESTAL_SYMMETRY_RANGE = 8;
+
+    // Self-infusion slots
+    private static final int SELF_INFUSION_SLOTS = 12;
+    private static final float SELF_INFUSION_INITIAL_HEALTH = 20.0f;
+
+    // Particle count for infuser effects
+    private static final int INFUSER_PARTICLE_COUNT = 25;
+
     public int mode;
     AspectList myEssentia;
     AspectList essentiaDemanded;
@@ -86,7 +125,6 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     public ItemStack nutrients;
     public int progress;
     private EntityLivingBase entityContained;
-    public final int CLONE_TIME = 800;
     public int[] selfInfusions;
     public float selfInfusionHealth;
     private final ArrayList<ChunkCoordinates> pedestals;
@@ -105,7 +143,6 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     public int count;
     public int craftCount;
     public float startUp;
-    private final int countDelay;
     ArrayList<ItemStack> ingredients;
     public HashMap<String, SourceFX> sourceFX;
     private NBTTagCompound entityNBTObj = null;
@@ -119,8 +156,8 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         this.sample = null;
         this.nutrients = null;
         this.entityContained = null;
-        this.selfInfusions = new int[12];
-        this.selfInfusionHealth = 20.0f;
+        this.selfInfusions = new int[SELF_INFUSION_SLOTS];
+        this.selfInfusionHealth = SELF_INFUSION_INITIAL_HEALTH;
         this.pedestals = new ArrayList<>();
         this.dangerCount = 0;
         this.checkSurroundings = true;
@@ -136,7 +173,6 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         this.itemCount = 0;
         this.count = 0;
         this.craftCount = 0;
-        this.countDelay = 10;
         this.ingredients = new ArrayList<>();
         this.sourceFX = new HashMap<>();
     }
@@ -196,7 +232,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                             this.mode = 0;
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.selfInfusions = new int[12];
+                            this.selfInfusions = new int[SELF_INFUSION_SLOTS];
                             --possibleJar.stackSize;
                         }
                     } else {
@@ -273,22 +309,22 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()) {
                     if (this.getEntityContained().getCreatureAttribute() != EnumCreatureAttribute.UNDEAD) {
                         if (this.myEssentia.getAmount(Aspect.HEAL) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(8.0f);
+                            this.getEntityContained().heal(STRONG_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.HEAL, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 40;
+                            this.progress += HEAL_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.HEAL) < 1) {
                             this.essentiaDemanded.add(Aspect.HEAL, 1);
                         }
                         if (this.myEssentia.getAmount(Aspect.LIFE) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(4.0f);
+                            this.getEntityContained().heal(WEAK_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.LIFE, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 50;
+                            this.progress += LIFE_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.LIFE) < 1) {
@@ -296,22 +332,22 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         }
                     } else {
                         if (this.myEssentia.getAmount(Aspect.UNDEAD) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(8.0f);
+                            this.getEntityContained().heal(STRONG_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.UNDEAD, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 40;
+                            this.progress += HEAL_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.UNDEAD) < 1) {
                             this.essentiaDemanded.add(Aspect.UNDEAD, 1);
                         }
                         if (this.myEssentia.getAmount(Aspect.DEATH) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(4.0f);
+                            this.getEntityContained().heal(WEAK_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.DEATH, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 50;
+                            this.progress += LIFE_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.DEATH) < 1) {
@@ -355,13 +391,14 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 }
             } else if (this.sample != null && this.sample.getItem() == ThaumicHorizons.itemCorpseEffigy) {
                 this.mode = 3;
-                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, 8).add(Aspect.HEAL, 8);
-                this.progress = 80;
+                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, EFFIGY_ESSENTIA_AMOUNT)
+                        .add(Aspect.HEAL, EFFIGY_ESSENTIA_AMOUNT);
+                this.progress = EFFIGY_PROGRESS;
                 this.markDirty();
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             } else if (this.sample != null && this.nutrients != null) {
                 this.mode = 1;
-                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, 4);
+                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, BLOOD_SAMPLE_LIFE_COST);
                 if (this.sample.getItem() == ThaumicHorizons.itemSyringeBloodSample && this.sample.hasTagCompound()
                         && this.sample.stackTagCompound.getCompoundTag("critter") != null
                         && this.sample.stackTagCompound.getCompoundTag("critter").getCompoundTag("ForgeData") != null) {
@@ -378,7 +415,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         }
                     }
                 }
-                this.progress = 40;
+                this.progress = BLOOD_SAMPLE_INITIAL_PROGRESS;
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                 this.markDirty();
             }
@@ -415,7 +452,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 if (this.nutrients.stackSize <= 0) {
                     this.nutrients = null;
                 }
-                this.progress = 800;
+                this.progress = CLONE_PROGRESS;
                 this.essentiaDemanded = new AspectList();
                 this.myEssentia = new AspectList();
                 if (this.getEntityContained() == null) {
@@ -437,7 +474,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
             if (this.checkSurroundings) {
                 this.checkSurroundings = false;
                 this.getSurroundings();
-            } else if (this.count % this.countDelay == 0) {
+            } else if (this.count % COUNT_DELAY == 0) {
                 this.craftCycle();
                 this.markDirty();
             }
@@ -463,7 +500,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 Thaumcraft.proxy.blockSparkle(this.worldObj, this.xCoord, this.yCoord - 2, this.zCoord, 16720418, 20);
                 Thaumcraft.proxy.blockSparkle(this.worldObj, this.xCoord, this.yCoord - 1, this.zCoord, 16720418, 20);
                 this.mode = 4;
-                this.selfInfusionHealth = 20.0f;
+                this.selfInfusionHealth = SELF_INFUSION_INITIAL_HEALTH;
                 this.sample = null;
                 this.essentiaDemanded = new AspectList();
                 this.myEssentia = new AspectList();
@@ -673,78 +710,75 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     private void getSurroundings() {
         final ArrayList<ChunkCoordinates> stuff = new ArrayList<>();
         this.pedestals.clear();
-        try {
-            for (int xx = -12; xx <= 12; ++xx) {
-                for (int zz = -12; zz <= 12; ++zz) {
-                    boolean skip = false;
-                    for (int yy = -5; yy <= 10; ++yy) {
-                        if (xx != 0 || zz != 0) {
-                            final int x = this.xCoord + xx;
-                            final int y = this.yCoord - yy;
-                            final int z = this.zCoord + zz;
-                            final TileEntity te = this.worldObj.getTileEntity(x, y, z);
-                            if (!skip && yy > 0
-                                    && Math.abs(xx) <= 8
-                                    && Math.abs(zz) <= 8
-                                    && te instanceof TilePedestal) {
-                                this.pedestals.add(new ChunkCoordinates(x, y, z));
-                                skip = true;
-                            } else {
-                                final Block bi = this.worldObj.getBlock(x, y, z);
-                                if (bi == Blocks.skull
-                                        || (bi instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi)
-                                                .canStabaliseInfusion(this.getWorldObj(), x, y, z))) {
-                                    stuff.add(new ChunkCoordinates(x, y, z));
-                                }
+        for (int xx = -PEDESTAL_SEARCH_HORIZONTAL; xx <= PEDESTAL_SEARCH_HORIZONTAL; ++xx) {
+            for (int zz = -PEDESTAL_SEARCH_HORIZONTAL; zz <= PEDESTAL_SEARCH_HORIZONTAL; ++zz) {
+                boolean skip = false;
+                for (int yy = -PEDESTAL_SEARCH_Y_DOWN; yy <= PEDESTAL_SEARCH_Y_UP; ++yy) {
+                    if (xx != 0 || zz != 0) {
+                        final int x = this.xCoord + xx;
+                        final int y = this.yCoord - yy;
+                        final int z = this.zCoord + zz;
+                        final TileEntity te = this.worldObj.getTileEntity(x, y, z);
+                        if (!skip && yy > 0
+                                && Math.abs(xx) <= PEDESTAL_SYMMETRY_RANGE
+                                && Math.abs(zz) <= PEDESTAL_SYMMETRY_RANGE
+                                && te instanceof TilePedestal) {
+                            this.pedestals.add(new ChunkCoordinates(x, y, z));
+                            skip = true;
+                        } else {
+                            final Block bi = this.worldObj.getBlock(x, y, z);
+                            if (bi == Blocks.skull || (bi instanceof IInfusionStabiliser
+                                    && ((IInfusionStabiliser) bi).canStabaliseInfusion(this.getWorldObj(), x, y, z))) {
+                                stuff.add(new ChunkCoordinates(x, y, z));
                             }
                         }
                     }
                 }
             }
-            this.symmetry = 0;
-            for (final ChunkCoordinates cc : this.pedestals) {
-                boolean items = false;
-                final int x2 = this.xCoord - cc.posX;
-                final int z2 = this.zCoord - cc.posZ;
-                TileEntity te2 = this.worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
-                if (te2 instanceof TilePedestal) {
-                    this.symmetry += 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) != null) {
-                        ++this.symmetry;
-                        items = true;
-                    }
-                }
-                final int xx2 = this.xCoord + x2;
-                final int zz2 = this.zCoord + z2;
-                te2 = this.worldObj.getTileEntity(xx2, cc.posY, zz2);
-                if (te2 instanceof TilePedestal) {
-                    this.symmetry -= 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) == null || !items) {
-                        continue;
-                    }
-                    --this.symmetry;
+        }
+        this.symmetry = 0;
+        for (final ChunkCoordinates cc : this.pedestals) {
+            boolean items = false;
+            final int x2 = this.xCoord - cc.posX;
+            final int z2 = this.zCoord - cc.posZ;
+            TileEntity te2 = this.worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
+            if (te2 instanceof TilePedestal) {
+                this.symmetry += 2;
+                if (((TilePedestal) te2).getStackInSlot(0) != null) {
+                    ++this.symmetry;
+                    items = true;
                 }
             }
-            float sym = 0.0f;
-            for (final ChunkCoordinates cc2 : stuff) {
-                final boolean items2 = false;
-                final int x = this.xCoord - cc2.posX;
-                final int z3 = this.zCoord - cc2.posZ;
-                Block bi2 = this.worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
-                        .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
-                    sym += 0.1f;
+            final int xx2 = this.xCoord + x2;
+            final int zz2 = this.zCoord + z2;
+            te2 = this.worldObj.getTileEntity(xx2, cc.posY, zz2);
+            if (te2 instanceof TilePedestal) {
+                this.symmetry -= 2;
+                if (((TilePedestal) te2).getStackInSlot(0) == null || !items) {
+                    continue;
                 }
-                final int xx3 = this.xCoord + x;
-                final int zz3 = this.zCoord + z3;
-                bi2 = this.worldObj.getBlock(xx3, cc2.posY, zz3);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
-                        .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
-                    sym -= 0.2f;
-                }
+                --this.symmetry;
             }
-            this.symmetry += (int) sym;
-        } catch (Exception ignored) {}
+        }
+        float sym = 0.0f;
+        for (final ChunkCoordinates cc2 : stuff) {
+            final boolean items2 = false;
+            final int x = this.xCoord - cc2.posX;
+            final int z3 = this.zCoord - cc2.posZ;
+            Block bi2 = this.worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
+                    .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
+                sym += 0.1f;
+            }
+            final int xx3 = this.xCoord + x;
+            final int zz3 = this.zCoord + z3;
+            bi2 = this.worldObj.getBlock(xx3, cc2.posY, zz3);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser && ((IInfusionStabiliser) bi2)
+                    .canStabaliseInfusion(this.getWorldObj(), cc2.posX, cc2.posY, cc2.posZ))) {
+                sym -= 0.2f;
+            }
+        }
+        this.symmetry += (int) sym;
     }
 
     private void doEffects() {
@@ -752,7 +786,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
             if (this.craftCount == 0) {
                 this.worldObj
                         .playSound(this.xCoord, this.yCoord, this.zCoord, "thaumcraft:infuserstart", 0.5f, 1.0f, false);
-            } else if (this.craftCount % 65 == 0) {
+            } else if (this.craftCount % INFUSER_SOUND_INTERVAL == 0) {
                 this.worldObj.playSound(this.xCoord, this.yCoord, this.zCoord, "thaumcraft:infuser", 0.5f, 1.0f, false);
             }
             ++this.craftCount;
@@ -764,15 +798,15 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                     0.5f + this.worldObj.rand.nextFloat() * 0.2f,
                     0.1f,
                     0.7f + this.worldObj.rand.nextFloat() * 0.3f,
-                    25,
+                    INFUSER_PARTICLE_COUNT,
                     -0.03f);
         } else if (this.craftCount > 0) {
             this.craftCount -= 2;
             if (this.craftCount < 0) {
                 this.craftCount = 0;
             }
-            if (this.craftCount > 50) {
-                this.craftCount = 50;
+            if (this.craftCount > CRAFTCOUNT_WIND_DOWN_MAX) {
+                this.craftCount = CRAFTCOUNT_WIND_DOWN_MAX;
             }
         }
         if (this.mode == 2 && this.startUp != 1.0f) {
@@ -858,7 +892,8 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 this.sourceFX.put(fxk, fx);
             }
         }
-        if (this.mode == 2 && this.instability > 0 && this.worldObj.rand.nextInt(200) <= this.instability) {
+        if (this.mode == 2 && this.instability > 0
+                && this.worldObj.rand.nextInt(INSTABILITY_EFFECT_CHANCE) <= this.instability) {
             Thaumcraft.proxy.nodeBolt(
                     this.worldObj,
                     this.xCoord + 0.5f,
@@ -871,7 +906,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     }
 
     public void craftCycle() {
-        if (this.instability > 0 && this.worldObj.rand.nextInt(500) <= this.instability) {
+        if (this.instability > 0 && this.worldObj.rand.nextInt(INSTABILITY_CRAFT_CHANCE) <= this.instability) {
             switch (this.worldObj.rand.nextInt(21)) {
                 case 0, 2, 10, 13 -> {
                     this.inEvEjectItem(0);
@@ -920,24 +955,40 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         if (this.instability > 0 && this.entityContained != null) {
             float visDrawn = 999.0f;
             if (!this.worldObj.isRemote) {
-                float temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.EARTH, 100);
+                float temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.EARTH,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
-                temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.WATER, 100);
+                temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.WATER,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
-                temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.ORDER, 100);
+                temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.ORDER,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
             }
-            this.getEntityContained()
-                    .setHealth(this.getEntityContained().getHealth() - this.instability / 10.0f / (5.0f + visDrawn));
+            this.getEntityContained().setHealth(
+                    this.getEntityContained().getHealth()
+                            - this.instability / INSTABILITY_DAMAGE_DIVISOR / (5.0f + visDrawn));
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             if (this.getEntityContained().getHealth() <= 0.0f) {
                 this.killSubject();
@@ -946,23 +997,38 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         } else if (this.instability > 0) {
             float visDrawn = 999.0f;
             if (!this.worldObj.isRemote) {
-                float temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.EARTH, 100);
+                float temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.EARTH,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
-                temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.WATER, 100);
+                temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.WATER,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
-                temp = VisNetHandler
-                        .drainVis(this.worldObj, this.xCoord, this.yCoord + 1, this.zCoord, Aspect.ORDER, 100);
+                temp = VisNetHandler.drainVis(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord + 1,
+                        this.zCoord,
+                        Aspect.ORDER,
+                        VIS_DRAIN_AMOUNT);
                 if (temp < visDrawn) {
                     visDrawn = temp;
                 }
             }
-            this.selfInfusionHealth -= this.instability / 10.0f / (5.0f + visDrawn);
+            this.selfInfusionHealth -= this.instability / INSTABILITY_DAMAGE_DIVISOR / (5.0f + visDrawn);
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             if (this.selfInfusionHealth <= 0.0f) {
                 this.killSubject();
@@ -982,11 +1048,12 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         this.markDirty();
                         return;
                     }
-                    if (this.worldObj.rand.nextInt(100 - this.recipeInstability * 3) == 0) {
+                    if (this.worldObj.rand.nextInt(INSTABILITY_INCREASE_CHANCE_BASE - this.recipeInstability * 3)
+                            == 0) {
                         ++this.instability;
                     }
-                    if (this.instability > 25) {
-                        this.instability = 25;
+                    if (this.instability > MAX_INSTABILITY) {
+                        this.instability = MAX_INSTABILITY;
                     }
                     this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                     this.markDirty();
@@ -1354,7 +1421,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         this.nutrients = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag("nutrients"));
         this.selfInfusions = nbttagcompound.getIntArray("selfInfusions");
         if (this.selfInfusions.length == 0) {
-            this.selfInfusions = new int[12];
+            this.selfInfusions = new int[SELF_INFUSION_SLOTS];
         }
         this.selfInfusionHealth = nbttagcompound.getFloat("selfInfusionHealth");
     }
@@ -1515,7 +1582,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 }
             }
         }
-        this.selfInfusions = new int[12];
+        this.selfInfusions = new int[SELF_INFUSION_SLOTS];
         this.setEntityContained(null);
         this.mode = 0;
         this.currentlySucking = null;
