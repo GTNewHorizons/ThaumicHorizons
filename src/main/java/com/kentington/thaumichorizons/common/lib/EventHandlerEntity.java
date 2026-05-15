@@ -67,7 +67,6 @@ import com.kentington.thaumichorizons.common.lib.networking.PacketPlayerInfusion
 import com.kentington.thaumichorizons.common.tiles.TileSoulBeacon;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
-import baubles.common.lib.PlayerHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -773,30 +772,28 @@ public class EventHandlerEntity {
             // Mirrored Amulet returning items
             EntityItem amuletEntity = null;
             ItemStack amulet = null;
-            {
-                Iterator<EntityItem> iterator = event.drops.iterator();
-                while (iterator.hasNext()) {
-                    EntityItem baubleEntity = iterator.next();
-                    ItemStack bauble = baubleEntity.getEntityItem();
+            Iterator<EntityItem> iteratorSearchAmulet = event.drops.iterator();
+            while (iteratorSearchAmulet.hasNext()) {
+                EntityItem baubleEntity = iteratorSearchAmulet.next();
+                ItemStack bauble = baubleEntity.getEntityItem();
 
-                    if (bauble.getItem() instanceof ItemAmuletMirror && bauble.hasTagCompound()
-                            && bauble.stackTagCompound.hasKey("isActivateTransport")) {
-                        amuletEntity = baubleEntity;
-                        amulet = bauble;
-                        iterator.remove();
-                        break;
-                    }
+                if (bauble.getItem() instanceof ItemAmuletMirror && bauble.hasTagCompound()
+                        && bauble.stackTagCompound.hasKey("isActivateTransport")) {
+                    amuletEntity = baubleEntity;
+                    amulet = bauble;
+                    iteratorSearchAmulet.remove();
+                    break;
                 }
             }
 
             if (amulet != null) {
                 boolean transportedSomething = false;
-                Iterator<EntityItem> iterator = event.drops.iterator();
-                while (iterator.hasNext()) {
-                    ItemStack item = iterator.next().getEntityItem();
+                Iterator<EntityItem> iteratorDrops = event.drops.iterator();
+                while (iteratorDrops.hasNext()) {
+                    ItemStack item = iteratorDrops.next().getEntityItem();
                     if (ItemHandMirror.transport(amulet, item, event.entityPlayer, event.entityPlayer.worldObj)) {
                         transportedSomething = true;
-                        iterator.remove();
+                        iteratorDrops.remove();
                     }
                 }
                 if (transportedSomething) {
