@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import com.kentington.thaumichorizons.common.container.ContainerVat;
 import com.kentington.thaumichorizons.common.lib.EntityInfusionProperties;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
+import com.kentington.thaumichorizons.common.tiles.TileVatMatrix;
 
 import thaumcraft.client.lib.UtilsFX;
 import thaumcraft.common.lib.research.ResearchManager;
@@ -62,7 +63,9 @@ public class GuiVat extends GuiContainer {
                 }
             }
         } else if (this.tile.mode == 4 || this.tile.mode == 2) {
-            final float adjustedSelfInfusionHealth = this.tile.selfInfusionHealth / 2.0f;
+            final TileVatMatrix matrix = this.tile.getMatrix();
+            final float selfInfusionHealth = (matrix != null) ? matrix.selfInfusionHealth : 20f;
+            final float adjustedSelfInfusionHealth = selfInfusionHealth / 2.0f;
             final float max2 = 10.0f;
             for (int j = 0; j < (int) max2; ++j) {
                 int x = var5 + 56 + 7 * j - 63 * (j / 9);
