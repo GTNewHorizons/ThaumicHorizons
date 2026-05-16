@@ -77,28 +77,16 @@ public class BlockGatewayPortal extends Block {
             if (world.getBlock(x + 1, y, z) == ThaumicHorizons.blockGateway) {
                 slotZ = z;
                 switch (md) {
-                    case 6 -> {
-                        slotX = x + 1;
-                    }
-                    case 7 -> {
-                        slotX = x;
-                    }
-                    case 9 -> {
-                        slotX = x - 1;
-                    }
+                    case 6 -> slotX = x + 1;
+                    case 7 -> slotX = x;
+                    case 9 -> slotX = x - 1;
                 }
             } else {
                 slotX = x;
                 switch (md) {
-                    case 6 -> {
-                        slotZ = z + 1;
-                    }
-                    case 7 -> {
-                        slotZ = z;
-                    }
-                    case 9 -> {
-                        slotZ = z - 1;
-                    }
+                    case 6 -> slotZ = z + 1;
+                    case 7 -> slotZ = z;
+                    case 9 -> slotZ = z - 1;
                 }
             }
         } else {
