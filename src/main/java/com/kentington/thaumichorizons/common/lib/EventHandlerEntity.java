@@ -957,8 +957,11 @@ public class EventHandlerEntity {
 
     @SubscribeEvent
     public void golemDies(final LivingDeathEvent event) {
-        if (event.entity instanceof EntityGolemTH) {
-            ((EntityGolemTH) event.entity).die();
+        if (event.entity.worldObj.isRemote) {
+            return;
+        }
+        if (event.entity instanceof EntityGolemTH golem) {
+            golem.die();
         }
     }
 
