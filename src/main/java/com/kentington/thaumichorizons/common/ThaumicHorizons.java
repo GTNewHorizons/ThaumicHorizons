@@ -503,10 +503,10 @@ public class ThaumicHorizons {
         ROD_CRYSTAL = new WandRod(
                 "disposable",
                 250,
-                null,
+                new ItemStack(Blocks.bedrock),
                 99,
                 new ResourceLocation("thaumichorizons", "textures/models/crystalRod.png"));
-        CAP_CRYSTAL = new WandCap("disposable", 0.9F, null, 99);
+        CAP_CRYSTAL = new WandCap("disposable", 0.9F, new ItemStack(Blocks.bedrock), 99);
         CAP_CRYSTAL.setTexture(new ResourceLocation("thaumichorizons", "textures/models/crystalCap.png"));
         ROD_CRYSTAL.setGlowing(true);
         blockSynthNode = new BlockSyntheticNode();
