@@ -63,6 +63,11 @@ public class ItemLensOrderEntropy extends Item implements ILens {
         return "LensOrderEntropy";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     @SideOnly(Side.CLIENT)
     public void handleRender(final Minecraft mc, final float partialTicks) {
         if (Minecraft.getMinecraft().thePlayer.worldObj.isRemote) {

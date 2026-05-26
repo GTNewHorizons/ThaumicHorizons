@@ -34,6 +34,11 @@ public class ItemLensWater extends Item implements ILens {
         return "LensWater";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     public void handleRender(final Minecraft mc, final float partialTicks) {
         final boolean inWater = mc.thePlayer.isInsideOfMaterial(Material.water);
         if (inWater

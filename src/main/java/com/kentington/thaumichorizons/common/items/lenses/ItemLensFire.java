@@ -34,6 +34,11 @@ public class ItemLensFire extends Item implements ILens {
         return "LensFire";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     public void handleRender(final Minecraft mc, final float partialTicks) {
         final boolean inWater = mc.thePlayer.isInsideOfMaterial(Material.water);
         final PotionEffect effect = mc.thePlayer.getActivePotionEffect(Potion.nightVision);

@@ -87,6 +87,7 @@ public class ContainerCase extends Container {
             } else {
                 slotObject.onSlotChanged();
             }
+            this.detectAndSendChanges();
         }
         return stack;
     }
