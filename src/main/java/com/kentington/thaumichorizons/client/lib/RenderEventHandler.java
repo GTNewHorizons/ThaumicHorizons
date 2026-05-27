@@ -97,11 +97,9 @@ public class RenderEventHandler {
         }
 
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-        final boolean hasRevealerGoggles = goggles != null
-                && goggles.getItem() instanceof IRevealer;
+        final boolean hasRevealerGoggles = goggles != null && goggles.getItem() instanceof IRevealer;
 
-        if (LensManager.nightVisionOffTime > 0L
-                && (!hasRevealerGoggles || goggles.stackTagCompound == null)
+        if (LensManager.nightVisionOffTime > 0L && (!hasRevealerGoggles || goggles.stackTagCompound == null)
                 && ItemLensFire.isEffectGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
             mc.thePlayer.removePotionEffect(Potion.nightVision.id);
             LensManager.nightVisionOffTime = 0L;
@@ -122,9 +120,9 @@ public class RenderEventHandler {
         }
     }
 
-
     @SideOnly(Side.CLIENT)
-    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event, final ItemStack goggles) {
+    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event,
+            final ItemStack goggles) {
         if (THKeyHandler.radialActive || RenderEventHandler.radialHudScale > 0.0f) {
             if (THKeyHandler.radialActive) {
                 if (mc.currentScreen != null) {
@@ -252,7 +250,8 @@ public class RenderEventHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks, final ItemStack goggles) {
+    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks,
+            final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
         ILens lens = null;
