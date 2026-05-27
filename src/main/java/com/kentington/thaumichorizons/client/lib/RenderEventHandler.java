@@ -142,6 +142,9 @@ public class RenderEventHandler {
                     this.fociScale.clear();
                     int pouchcount = 0;
                     ItemStack item = null;
+                    final String currentLensName = goggles.stackTagCompound != null
+                            ? goggles.stackTagCompound.getString("Lens")
+                            : null;
                     final IInventory baubles = BaublesApi.getBaubles(mc.thePlayer);
                     for (int a = 0; a < 4; ++a) {
                         if (baubles.getStackInSlot(a) != null
@@ -152,10 +155,12 @@ public class RenderEventHandler {
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
                                 if (item != null && item.getItem() instanceof ILens) {
-                                    this.foci.put(((ILens) item.getItem()).lensName(), q + pouchcount * 1000);
-                                    this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                                    this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                                    this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                                    final String lensName = ((ILens) item.getItem()).lensName();
+                                    if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
+                                    this.foci.put(lensName, q + pouchcount * 1000);
+                                    this.fociItem.put(lensName, item.copy());
+                                    this.fociScale.put(lensName, 1.0f);
+                                    this.fociHover.put(lensName, false);
                                 }
                             }
                         }
@@ -163,10 +168,13 @@ public class RenderEventHandler {
                     for (int a = 0; a < 36; ++a) {
                         item = mc.thePlayer.inventory.mainInventory[a];
                         if (item != null && item.getItem() instanceof ILens) {
-                            this.foci.put(((ILens) item.getItem()).lensName(), a);
-                            this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                            this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                            this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                            final String lensName = ((ILens) item.getItem()).lensName();
+                            if (!lensName.equals(currentLensName) && !this.foci.containsKey(lensName)) {
+                                this.foci.put(lensName, a);
+                                this.fociItem.put(lensName, item.copy());
+                                this.fociScale.put(lensName, 1.0f);
+                                this.fociHover.put(lensName, false);
+                            }
                         }
                         if (item != null && item.getItem() instanceof ItemLensCase) {
                             ++pouchcount;
@@ -174,10 +182,12 @@ public class RenderEventHandler {
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
                                 if (item != null && item.getItem() instanceof ILens) {
-                                    this.foci.put(((ILens) item.getItem()).lensName(), q + pouchcount * 1000);
-                                    this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                                    this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                                    this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                                    final String lensName = ((ILens) item.getItem()).lensName();
+                                    if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
+                                    this.foci.put(lensName, q + pouchcount * 1000);
+                                    this.fociItem.put(lensName, item.copy());
+                                    this.fociScale.put(lensName, 1.0f);
+                                    this.fociHover.put(lensName, false);
                                 }
                             }
                         }
