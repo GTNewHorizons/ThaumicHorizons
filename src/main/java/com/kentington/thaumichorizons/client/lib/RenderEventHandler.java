@@ -92,30 +92,39 @@ public class RenderEventHandler {
     public void renderOverlay(final RenderGameOverlayEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final long time = System.nanoTime() / 1000000L;
-        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
-            this.handleFociRadial(mc, time, event);
-            final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-            if (LensManager.nightVisionOffTime > 0L
-                    && (goggles == null || !(goggles.getItem() instanceof IRevealer)
-                            || goggles.stackTagCompound == null)
-                    && ItemLensFire.isEffectGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
-                mc.thePlayer.removePotionEffect(Potion.nightVision.id);
-                LensManager.nightVisionOffTime = 0L;
-            }
-            if (goggles != null && goggles.getItem() instanceof IRevealer
-                    && goggles.stackTagCompound != null
-                    && goggles.stackTagCompound.getString("Lens") != null
-                    && !goggles.stackTagCompound.getString("Lens").equals("")) {
-                final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-                if (theLens != null) {
-                    theLens.handleRender(mc, event.partialTicks);
-                }
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) {
+            return;
+        }
+
+        final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
+        final boolean hasRevealerGoggles = goggles != null
+                && goggles.getItem() instanceof IRevealer;
+
+        if (LensManager.nightVisionOffTime > 0L
+                && (!hasRevealerGoggles || goggles.stackTagCompound == null)
+                && ItemLensFire.isEffectGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
+            mc.thePlayer.removePotionEffect(Potion.nightVision.id);
+            LensManager.nightVisionOffTime = 0L;
+        }
+
+        if (!hasRevealerGoggles) {
+            return;
+        }
+
+        this.handleFociRadial(mc, time, event, goggles);
+
+        if (goggles.stackTagCompound != null && goggles.stackTagCompound.getString("Lens") != null
+                && !goggles.stackTagCompound.getString("Lens").equals("")) {
+            final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
+            if (theLens != null) {
+                theLens.handleRender(mc, event.partialTicks);
             }
         }
     }
 
+
     @SideOnly(Side.CLIENT)
-    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event) {
+    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event, final ItemStack goggles) {
         if (THKeyHandler.radialActive || RenderEventHandler.radialHudScale > 0.0f) {
             final long timeDiff = System.currentTimeMillis() - THKeyHandler.lastPressV;
             if (THKeyHandler.radialActive) {
@@ -189,7 +198,8 @@ public class RenderEventHandler {
                     event.resolution.getScaledWidth_double(),
                     event.resolution.getScaledHeight_double(),
                     time,
-                    event.partialTicks);
+                    event.partialTicks,
+                    goggles);
             if (time > this.lastTime) {
                 for (final String key : this.fociHover.keySet()) {
                     if (this.fociHover.get(key)) {
@@ -231,14 +241,9 @@ public class RenderEventHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks) {
+    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks, final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer.inventory.armorItemInSlot(3) == null
-                || !(mc.thePlayer.inventory.armorItemInSlot(3).getItem() instanceof IRevealer)) {
-            return;
-        }
-        final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         ILens lens = null;
         if (goggles.stackTagCompound != null) {
             lens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
