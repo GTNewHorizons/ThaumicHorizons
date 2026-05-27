@@ -128,6 +128,7 @@ public class RenderEventHandler {
                 if (mc.currentScreen != null) {
                     THKeyHandler.radialActive = false;
                     THKeyHandler.radialLock = true;
+                    THKeyHandler.radialSelectionMade = true;
                     mc.setIngameFocus();
                     mc.setIngameNotInFocus();
                     return;
@@ -361,6 +362,7 @@ public class RenderEventHandler {
                     if (k == 0) {
                         THKeyHandler.radialActive = false;
                         THKeyHandler.radialLock = true;
+                        THKeyHandler.radialSelectionMade = true;
                         PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
                         if (Display.isActive() && !mc.inGameHasFocus) {
                             mc.inGameHasFocus = true;
