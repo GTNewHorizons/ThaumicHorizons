@@ -140,6 +140,7 @@ public class RenderEventHandler {
                     this.fociItem.clear();
                     this.fociHover.clear();
                     this.fociScale.clear();
+                    THKeyHandler.radialLock = true;
                     int pouchcount = 0;
                     ItemStack item = null;
                     final String currentLensName = goggles.stackTagCompound != null
@@ -239,6 +240,7 @@ public class RenderEventHandler {
                 }
                 if (RenderEventHandler.radialHudScale > 1.0f) {
                     RenderEventHandler.radialHudScale = 1.0f;
+                    THKeyHandler.radialLock = false;
                 }
                 if (RenderEventHandler.radialHudScale < 0.0f) {
                     RenderEventHandler.radialHudScale = 0.0f;
