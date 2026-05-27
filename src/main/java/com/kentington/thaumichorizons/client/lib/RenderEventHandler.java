@@ -114,7 +114,7 @@ public class RenderEventHandler {
         this.handleFociRadial(mc, time, event, goggles);
 
         if (goggles.stackTagCompound != null && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").equals("")) {
+                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
             final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
             if (theLens != null) {
                 theLens.handleRender(mc, event.partialTicks);
@@ -126,7 +126,6 @@ public class RenderEventHandler {
     @SideOnly(Side.CLIENT)
     public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event, final ItemStack goggles) {
         if (THKeyHandler.radialActive || RenderEventHandler.radialHudScale > 0.0f) {
-            final long timeDiff = System.currentTimeMillis() - THKeyHandler.lastPressV;
             if (THKeyHandler.radialActive) {
                 if (mc.currentScreen != null) {
                     THKeyHandler.radialActive = false;
@@ -142,21 +141,21 @@ public class RenderEventHandler {
                     this.fociScale.clear();
                     THKeyHandler.radialLock = true;
                     int pouchcount = 0;
-                    ItemStack item = null;
+                    ItemStack item;
                     final String currentLensName = goggles.stackTagCompound != null
                             ? goggles.stackTagCompound.getString("Lens")
                             : null;
                     final IInventory baubles = BaublesApi.getBaubles(mc.thePlayer);
                     for (int a = 0; a < 4; ++a) {
                         if (baubles.getStackInSlot(a) != null
-                                && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase) {
+                                && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
                             ++pouchcount;
                             item = baubles.getStackInSlot(a);
-                            final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
+                            final ItemStack[] inv = lensCase.getInventory(item);
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
-                                if (item != null && item.getItem() instanceof ILens) {
-                                    final String lensName = ((ILens) item.getItem()).lensName();
+                                if (item != null && item.getItem() instanceof ILens lens) {
+                                    final String lensName = lens.lensName();
                                     if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
                                     this.foci.put(lensName, q + pouchcount * 1000);
                                     this.fociItem.put(lensName, item.copy());
@@ -168,8 +167,8 @@ public class RenderEventHandler {
                     }
                     for (int a = 0; a < 36; ++a) {
                         item = mc.thePlayer.inventory.mainInventory[a];
-                        if (item != null && item.getItem() instanceof ILens) {
-                            final String lensName = ((ILens) item.getItem()).lensName();
+                        if (item != null && item.getItem() instanceof ILens lens) {
+                            final String lensName = lens.lensName();
                             if (!lensName.equals(currentLensName) && !this.foci.containsKey(lensName)) {
                                 this.foci.put(lensName, a);
                                 this.fociItem.put(lensName, item.copy());
@@ -177,13 +176,13 @@ public class RenderEventHandler {
                                 this.fociHover.put(lensName, false);
                             }
                         }
-                        if (item != null && item.getItem() instanceof ItemLensCase) {
+                        if (item != null && item.getItem() instanceof ItemLensCase lensCase) {
                             ++pouchcount;
-                            final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
+                            final ItemStack[] inv = lensCase.getInventory(item);
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
-                                if (item != null && item.getItem() instanceof ILens) {
-                                    final String lensName = ((ILens) item.getItem()).lensName();
+                                if (item != null && item.getItem() instanceof ILens lens) {
+                                    final String lensName = lens.lensName();
                                     if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
                                     this.foci.put(lensName, q + pouchcount * 1000);
                                     this.fociItem.put(lensName, item.copy());
@@ -193,7 +192,7 @@ public class RenderEventHandler {
                             }
                         }
                     }
-                    if (this.foci.size() > 0 && mc.inGameHasFocus) {
+                    if (!this.foci.isEmpty() && mc.inGameHasFocus) {
                         mc.inGameHasFocus = false;
                         mc.mouseHelper.ungrabMouseCursor();
                     }
@@ -235,7 +234,7 @@ public class RenderEventHandler {
                 }
                 if (!THKeyHandler.radialActive) {
                     RenderEventHandler.radialHudScale -= 0.05f;
-                } else if (THKeyHandler.radialActive && RenderEventHandler.radialHudScale < 1.0f) {
+                } else if (RenderEventHandler.radialHudScale < 1.0f) {
                     RenderEventHandler.radialHudScale += 0.05f;
                 }
                 if (RenderEventHandler.radialHudScale > 1.0f) {
@@ -263,7 +262,7 @@ public class RenderEventHandler {
         final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
         final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
-        if (this.fociItem.size() == 0) {
+        if (this.fociItem.isEmpty()) {
             return;
         }
         GL11.glPushMatrix();
