@@ -126,7 +126,7 @@ public class RenderEventHandler {
                     mc.setIngameNotInFocus();
                     return;
                 }
-                if (RenderEventHandler.radialHudScale == 0.0f) {
+                if (RenderEventHandler.radialHudScale == 0.0f && !THKeyHandler.radialLock) {
                     this.foci.clear();
                     this.fociItem.clear();
                     this.fociHover.clear();
@@ -196,6 +196,10 @@ public class RenderEventHandler {
                         if (!THKeyHandler.radialActive && !THKeyHandler.radialLock) {
                             PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
                             THKeyHandler.radialLock = true;
+                            if (Display.isActive() && !mc.inGameHasFocus) {
+                                mc.inGameHasFocus = true;
+                                mc.mouseHelper.grabMouseCursor();
+                            }
                         }
                         if (this.fociScale.get(key) >= 1.3f) {
                             continue;
@@ -239,8 +243,8 @@ public class RenderEventHandler {
         if (goggles.stackTagCompound != null) {
             lens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
         }
-        final int i = (int) (Mouse.getEventX() * sw / mc.displayWidth);
-        final int j = (int) (sh - Mouse.getEventY() * sh / mc.displayHeight - 1.0);
+        final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
+        final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
         if (this.fociItem.size() == 0) {
             return;
@@ -332,8 +336,10 @@ public class RenderEventHandler {
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
             if (!THKeyHandler.radialLock && THKeyHandler.radialActive) {
-                final int mx2 = (int) (i - sw / 2.0 - xx);
-                final int my2 = (int) (j - sh / 2.0 - yy);
+                final double scaledXX = xx * RenderEventHandler.radialHudScale;
+                final double scaledYY = yy * RenderEventHandler.radialHudScale;
+                final int mx2 = (int) (i - sw / 2.0 - scaledXX);
+                final int my2 = (int) (j - sh / 2.0 - scaledYY);
                 if (mx2 >= -10 && mx2 <= 10 && my2 >= -10 && my2 <= 10) {
                     this.fociHover.put(key, true);
                     tt = this.fociItem.get(key);
@@ -341,6 +347,10 @@ public class RenderEventHandler {
                         THKeyHandler.radialActive = false;
                         THKeyHandler.radialLock = true;
                         PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
+                        if (Display.isActive() && !mc.inGameHasFocus) {
+                            mc.inGameHasFocus = true;
+                            mc.mouseHelper.grabMouseCursor();
+                        }
                         break;
                     }
                 } else {
