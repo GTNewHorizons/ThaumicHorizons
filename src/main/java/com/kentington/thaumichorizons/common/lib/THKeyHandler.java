@@ -48,10 +48,19 @@ public class THKeyHandler {
     public static long lastPressV;
 
     public THKeyHandler() {
-        this.keyV = new KeyBinding("Change Arcane Lens", Keyboard.KEY_NONE, "Thaumcraft");
-        this.keyM = new KeyBinding("Activate Morphic Fingers", Keyboard.KEY_NONE, "Thaumcraft");
-        this.keyC = new KeyBinding("Toggle Spider Climb", Keyboard.KEY_NONE, "Thaumcraft");
-        this.keyX = new KeyBinding("Toggle Chameleon Skin", Keyboard.KEY_NONE, "Thaumcraft");
+        this.keyV = new KeyBinding(
+                "thaumichorizons.key.arcane_lens",
+                Keyboard.KEY_NONE,
+                "thaumichorizons.keybind_group");
+        this.keyM = new KeyBinding(
+                "thaumichorizons.key.morphic_fingers",
+                Keyboard.KEY_NONE,
+                "thaumichorizons.keybind_group");
+        this.keyC = new KeyBinding(
+                "thaumichorizons.key.spider_climb",
+                Keyboard.KEY_NONE,
+                "thaumichorizons.keybind_group");
+        this.keyX = new KeyBinding("thaumichorizons.key.chameleon", Keyboard.KEY_NONE, "thaumichorizons.keybind_group");
         this.keyPressedM = false;
         this.keyPressedC = false;
         this.keyPressedX = false;
@@ -209,14 +218,5 @@ public class THKeyHandler {
                 this.keyPressedX = false;
             }
         }
-    }
-
-    static {
-        THKeyHandler.lastPressM = 0L;
-        THKeyHandler.lastPressC = 0L;
-        THKeyHandler.lastPressX = 0L;
-        THKeyHandler.radialActive = false;
-        THKeyHandler.radialLock = false;
-        THKeyHandler.lastPressV = 0L;
     }
 }

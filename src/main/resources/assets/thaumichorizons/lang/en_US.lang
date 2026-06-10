@@ -1,5 +1,11 @@
 itemGroup.thaumichorizons=Thaumic Horizons
 
+thaumichorizons.keybind_group=Thaumic Horizons
+thaumichorizons.key.arcane_lens=Change Arcane Lens
+thaumichorizons.key.morphic_fingers=Activate Morphic Fingers
+thaumichorizons.key.spider_climb=Toggle Spider Climb
+thaumichorizons.key.chameleon=Toggle Chameleon Skin
+
 thaumichorizons.noJar=You need an empty warded jar to capture a creature!
 thaumichorizons.setBeacon=Soul beacon set!
 thaumichorizons.startSitting=is waiting.
