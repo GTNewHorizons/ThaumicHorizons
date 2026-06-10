@@ -61,6 +61,11 @@ selfInfusions.warpedTumor=Self: Warped Tumor
 selfInfusions.spiderClimb=Self: Spider Climb
 selfInfusions.chameleonSkin=Self: Chameleon Skin
 
+selfInfusions.spiderClimb.enable=Spider Climb enabled.
+selfInfusions.spiderClimb.disable=Spider Climb disabled.
+selfInfusions.chameleonSkin.enable=Chameleon Skin enabled.
+selfInfusions.chameleonSkin.disable=Chameleon Skin disabled.
+
 ###ENTITIES###
 
 entity.ThaumicHorizons.PrimedAlchemite.name=Primed Alchemite

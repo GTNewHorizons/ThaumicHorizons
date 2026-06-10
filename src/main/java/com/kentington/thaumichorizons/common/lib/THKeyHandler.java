@@ -10,7 +10,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
@@ -31,6 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import thaumcraft.api.nodes.IRevealer;
 
 public class THKeyHandler {
+
+    private static final ChatStyle INFUSION_MESSAGE = new ChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(true);
 
     public KeyBinding keyV;
     public KeyBinding keyM;
@@ -137,16 +140,12 @@ public class THKeyHandler {
                     infusions.toggleClimb = !infusions.toggleClimb;
                     if (infusions.toggleClimb) {
                         player.addChatMessage(
-                                new ChatComponentText(
-                                        EnumChatFormatting.ITALIC + ""
-                                                + EnumChatFormatting.GRAY
-                                                + "Spider Climb disabled."));
+                                new ChatComponentTranslation("selfInfusions.spiderClimb.disable")
+                                        .setChatStyle(INFUSION_MESSAGE));
                     } else {
                         player.addChatMessage(
-                                new ChatComponentText(
-                                        EnumChatFormatting.ITALIC + ""
-                                                + EnumChatFormatting.GRAY
-                                                + "Spider Climb enabled."));
+                                new ChatComponentTranslation("selfInfusions.spiderClimb.enable")
+                                        .setChatStyle(INFUSION_MESSAGE));
                     }
                     PacketHandler.INSTANCE.sendToServer(new PacketToggleClimbToServer(player, player.dimension));
                 }
@@ -170,10 +169,8 @@ public class THKeyHandler {
                         player.removePotionEffectClient(Potion.invisibility.id);
                         player.setInvisible(false);
                         player.addChatMessage(
-                                new ChatComponentText(
-                                        EnumChatFormatting.ITALIC + ""
-                                                + EnumChatFormatting.GRAY
-                                                + "Chameleon Skin disabled."));
+                                new ChatComponentTranslation("selfInfusions.chameleonSkin.disable")
+                                        .setChatStyle(INFUSION_MESSAGE));
                     } else {
                         final PotionEffect effect = new PotionEffect(
                                 Potion.invisibility.id,
@@ -184,10 +181,8 @@ public class THKeyHandler {
                         player.addPotionEffect(effect);
                         player.setInvisible(true);
                         player.addChatMessage(
-                                new ChatComponentText(
-                                        EnumChatFormatting.ITALIC + ""
-                                                + EnumChatFormatting.GRAY
-                                                + "Chameleon Skin enabled."));
+                                new ChatComponentTranslation("selfInfusions.chameleonSkin.enable")
+                                        .setChatStyle(INFUSION_MESSAGE));
                     }
                     PacketHandler.INSTANCE.sendToServer(new PacketToggleInvisibleToServer(player, player.dimension));
                 }
