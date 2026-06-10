@@ -74,149 +74,149 @@ public class THKeyHandler {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void playerTick(final TickEvent.PlayerTickEvent event) {
-        if (event.side == Side.SERVER) {
-            return;
+        if (event.side != Side.CLIENT || event.phase != TickEvent.Phase.START) return;
+
+        if (this.keyV.getIsKeyPressed()) {
+            if (FMLClientHandler.instance().getClient().inGameHasFocus) {
+                final EntityPlayer player = event.player;
+                if (player != null) {
+                    if (!this.keyPressedV) {
+                        THKeyHandler.lastPressV = System.currentTimeMillis();
+                        THKeyHandler.radialLock = false;
+                    }
+                    if (!THKeyHandler.radialLock && player.inventory.armorItemInSlot(3) != null
+                            && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
+                        if (player.isSneaking()) {
+                            PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(player, "REMOVE"));
+                        } else {
+                            THKeyHandler.radialActive = true;
+                        }
+                    }
+                }
+                this.keyPressedV = true;
+            }
+        } else {
+            THKeyHandler.radialActive = false;
+            if (this.keyPressedV) {
+                THKeyHandler.lastPressV = System.currentTimeMillis();
+            }
+            this.keyPressedV = false;
         }
-        if (event.phase == TickEvent.Phase.START) {
-            if (this.keyV.getIsKeyPressed()) {
-                if (FMLClientHandler.instance().getClient().inGameHasFocus) {
-                    final EntityPlayer player = event.player;
-                    if (player != null) {
-                        if (!this.keyPressedV) {
-                            THKeyHandler.lastPressV = System.currentTimeMillis();
-                            THKeyHandler.radialLock = false;
-                        }
-                        if (!THKeyHandler.radialLock && player.inventory.armorItemInSlot(3) != null
-                                && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
-                            if (player.isSneaking()) {
-                                PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(player, "REMOVE"));
-                            } else {
-                                THKeyHandler.radialActive = true;
-                            }
-                        }
+
+        if (this.keyM.getIsKeyPressed()) {
+            if (FMLClientHandler.instance().getClient().inGameHasFocus) {
+                final EntityPlayer player = event.player;
+                if (player != null) {
+                    if (!this.keyPressedM) {
+                        THKeyHandler.lastPressM = System.currentTimeMillis();
                     }
-                    this.keyPressedV = true;
-                }
-            } else {
-                THKeyHandler.radialActive = false;
-                if (this.keyPressedV) {
-                    THKeyHandler.lastPressV = System.currentTimeMillis();
-                }
-                this.keyPressedV = false;
-            }
-            if (this.keyM.getIsKeyPressed()) {
-                if (FMLClientHandler.instance().getClient().inGameHasFocus) {
-                    final EntityPlayer player = event.player;
-                    if (player != null) {
-                        if (!this.keyPressedM) {
-                            THKeyHandler.lastPressM = System.currentTimeMillis();
-                        }
-                        if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
-                                .hasPlayerInfusion(2) && !this.keyPressedM) {
-                            player.openGui(
-                                    ThaumicHorizons.instance,
-                                    9,
-                                    player.worldObj,
-                                    (int) player.posX,
-                                    (int) player.posY,
-                                    (int) player.posZ);
-                            PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer(player, player.dimension));
-                        }
+                    if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
+                            .hasPlayerInfusion(2) && !this.keyPressedM) {
+                        player.openGui(
+                                ThaumicHorizons.instance,
+                                9,
+                                player.worldObj,
+                                (int) player.posX,
+                                (int) player.posY,
+                                (int) player.posZ);
+                        PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer(player, player.dimension));
                     }
-                    this.keyPressedM = true;
                 }
-            } else {
-                if (this.keyPressedM) {
-                    THKeyHandler.lastPressM = System.currentTimeMillis();
-                }
-                this.keyPressedM = false;
+                this.keyPressedM = true;
             }
-            if (this.keyC.getIsKeyPressed()) {
-                if (FMLClientHandler.instance().getClient().inGameHasFocus) {
-                    final EntityPlayer player = event.player;
-                    if (player != null) {
-                        if (!this.keyPressedC) {
-                            THKeyHandler.lastPressC = System.currentTimeMillis();
-                        }
-                        if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
-                                .hasPlayerInfusion(9) && !this.keyPressedC) {
-                            ((EntityInfusionProperties) player.getExtendedProperties(
-                                    "CreatureInfusion")).toggleClimb = !((EntityInfusionProperties) player
-                                            .getExtendedProperties("CreatureInfusion")).toggleClimb;
-                            if (((EntityInfusionProperties) player
-                                    .getExtendedProperties("CreatureInfusion")).toggleClimb) {
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.GRAY
-                                                        + "Spider Climb disabled."));
-                            } else {
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.GRAY
-                                                        + "Spider Climb enabled."));
-                            }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleClimbToServer(player, player.dimension));
-                        }
+        } else {
+            if (this.keyPressedM) {
+                THKeyHandler.lastPressM = System.currentTimeMillis();
+            }
+            this.keyPressedM = false;
+        }
+
+        if (this.keyC.getIsKeyPressed()) {
+            if (FMLClientHandler.instance().getClient().inGameHasFocus) {
+                final EntityPlayer player = event.player;
+                if (player != null) {
+                    if (!this.keyPressedC) {
+                        THKeyHandler.lastPressC = System.currentTimeMillis();
                     }
-                    this.keyPressedC = true;
-                }
-            } else {
-                if (this.keyPressedC) {
-                    THKeyHandler.lastPressC = System.currentTimeMillis();
-                }
-                this.keyPressedC = false;
-            }
-            if (this.keyX.getIsKeyPressed()) {
-                if (FMLClientHandler.instance().getClient().inGameHasFocus) {
-                    final EntityPlayer player = event.player;
-                    if (player != null) {
-                        if (!this.keyPressedX) {
-                            THKeyHandler.lastPressX = System.currentTimeMillis();
+                    if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
+                            .hasPlayerInfusion(9) && !this.keyPressedC) {
+                        ((EntityInfusionProperties) player.getExtendedProperties(
+                                "CreatureInfusion")).toggleClimb = !((EntityInfusionProperties) player
+                                        .getExtendedProperties("CreatureInfusion")).toggleClimb;
+                        if (((EntityInfusionProperties) player
+                                .getExtendedProperties("CreatureInfusion")).toggleClimb) {
+                            player.addChatMessage(
+                                    new ChatComponentText(
+                                            EnumChatFormatting.ITALIC + ""
+                                                    + EnumChatFormatting.GRAY
+                                                    + "Spider Climb disabled."));
+                        } else {
+                            player.addChatMessage(
+                                    new ChatComponentText(
+                                            EnumChatFormatting.ITALIC + ""
+                                                    + EnumChatFormatting.GRAY
+                                                    + "Spider Climb enabled."));
                         }
-                        if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
-                                .hasPlayerInfusion(10) && !this.keyPressedX) {
-                            ((EntityInfusionProperties) player.getExtendedProperties(
-                                    "CreatureInfusion")).toggleInvisible = !((EntityInfusionProperties) player
-                                            .getExtendedProperties("CreatureInfusion")).toggleInvisible;
-                            if (((EntityInfusionProperties) player
-                                    .getExtendedProperties("CreatureInfusion")).toggleInvisible) {
-                                player.removePotionEffectClient(Potion.invisibility.id);
-                                player.setInvisible(false);
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.GRAY
-                                                        + "Chameleon Skin disabled."));
-                            } else {
-                                final PotionEffect effect = new PotionEffect(
-                                        Potion.invisibility.id,
-                                        Integer.MAX_VALUE,
-                                        0,
-                                        true);
-                                effect.setCurativeItems(new ArrayList<>());
-                                player.addPotionEffect(effect);
-                                player.setInvisible(true);
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.GRAY
-                                                        + "Chameleon Skin enabled."));
-                            }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleInvisibleToServer(player, player.dimension));
-                        }
+                        PacketHandler.INSTANCE
+                                .sendToServer(new PacketToggleClimbToServer(player, player.dimension));
                     }
-                    this.keyPressedX = true;
                 }
-            } else {
-                if (this.keyPressedX) {
-                    THKeyHandler.lastPressX = System.currentTimeMillis();
-                }
-                this.keyPressedX = false;
+                this.keyPressedC = true;
             }
+        } else {
+            if (this.keyPressedC) {
+                THKeyHandler.lastPressC = System.currentTimeMillis();
+            }
+            this.keyPressedC = false;
+        }
+
+        if (this.keyX.getIsKeyPressed()) {
+            if (FMLClientHandler.instance().getClient().inGameHasFocus) {
+                final EntityPlayer player = event.player;
+                if (player != null) {
+                    if (!this.keyPressedX) {
+                        THKeyHandler.lastPressX = System.currentTimeMillis();
+                    }
+                    if (((EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion"))
+                            .hasPlayerInfusion(10) && !this.keyPressedX) {
+                        ((EntityInfusionProperties) player.getExtendedProperties(
+                                "CreatureInfusion")).toggleInvisible = !((EntityInfusionProperties) player
+                                        .getExtendedProperties("CreatureInfusion")).toggleInvisible;
+                        if (((EntityInfusionProperties) player
+                                .getExtendedProperties("CreatureInfusion")).toggleInvisible) {
+                            player.removePotionEffectClient(Potion.invisibility.id);
+                            player.setInvisible(false);
+                            player.addChatMessage(
+                                    new ChatComponentText(
+                                            EnumChatFormatting.ITALIC + ""
+                                                    + EnumChatFormatting.GRAY
+                                                    + "Chameleon Skin disabled."));
+                        } else {
+                            final PotionEffect effect = new PotionEffect(
+                                    Potion.invisibility.id,
+                                    Integer.MAX_VALUE,
+                                    0,
+                                    true);
+                            effect.setCurativeItems(new ArrayList<>());
+                            player.addPotionEffect(effect);
+                            player.setInvisible(true);
+                            player.addChatMessage(
+                                    new ChatComponentText(
+                                            EnumChatFormatting.ITALIC + ""
+                                                    + EnumChatFormatting.GRAY
+                                                    + "Chameleon Skin enabled."));
+                        }
+                        PacketHandler.INSTANCE
+                                .sendToServer(new PacketToggleInvisibleToServer(player, player.dimension));
+                    }
+                }
+                this.keyPressedX = true;
+            }
+        } else {
+            if (this.keyPressedX) {
+                THKeyHandler.lastPressX = System.currentTimeMillis();
+            }
+            this.keyPressedX = false;
         }
     }
 }
