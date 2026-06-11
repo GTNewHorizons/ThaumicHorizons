@@ -19,7 +19,7 @@ import net.minecraft.util.IIcon;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
-import com.kentington.thaumichorizons.common.lib.networking.PacketRemoveNightvision;
+import com.kentington.thaumichorizons.common.lib.networking.PacketRemoveLensNightvision;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -76,9 +76,6 @@ public class ItemLensFire extends Item implements ILens {
     }
 
     public void handleRemoval(final EntityPlayer p) {
-        if (isNightVisionGrantedByLens(p.getActivePotionEffect(Potion.nightVision))) {
-            p.removePotionEffect(Potion.nightVision.id);
-            PacketHandler.INSTANCE.sendTo(new PacketRemoveNightvision(), (EntityPlayerMP) p);
-        }
+        PacketHandler.INSTANCE.sendTo(new PacketRemoveLensNightvision(), (EntityPlayerMP) p);
     }
 }
