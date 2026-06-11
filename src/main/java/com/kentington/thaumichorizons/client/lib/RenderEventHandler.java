@@ -4,6 +4,8 @@
 
 package com.kentington.thaumichorizons.client.lib;
 
+import static com.kentington.thaumichorizons.common.items.lenses.LensPotionEffects.isNightVisionGrantedByLens;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -36,7 +38,6 @@ import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityBoatThaumium;
 import com.kentington.thaumichorizons.common.items.lenses.ILens;
 import com.kentington.thaumichorizons.common.items.lenses.ItemLensCase;
-import com.kentington.thaumichorizons.common.items.lenses.ItemLensFire;
 import com.kentington.thaumichorizons.common.items.lenses.LensManager;
 import com.kentington.thaumichorizons.common.lib.THKeyHandler;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
@@ -100,7 +101,7 @@ public class RenderEventHandler {
         final boolean hasRevealerGoggles = goggles != null && goggles.getItem() instanceof IRevealer;
 
         if (LensManager.nightVisionOffTime > 0L && (!hasRevealerGoggles || goggles.stackTagCompound == null)
-                && ItemLensFire.isEffectGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
+                && isNightVisionGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
             mc.thePlayer.removePotionEffect(Potion.nightVision.id);
             LensManager.nightVisionOffTime = 0L;
         }

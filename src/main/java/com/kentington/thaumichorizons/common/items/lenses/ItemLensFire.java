@@ -4,6 +4,8 @@
 
 package com.kentington.thaumichorizons.common.items.lenses;
 
+import static com.kentington.thaumichorizons.common.items.lenses.LensPotionEffects.isNightVisionGrantedByLens;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -45,14 +47,15 @@ public class ItemLensFire extends Item implements ILens {
 
         if (!inWater) {
             // Apply effect.
-            if ((effect == null || (isEffectGrantedByLens(effect) && effect.getDuration() < 242))
+            if ((effect == null || (isNightVisionGrantedByLens(effect) && effect.getDuration() < 242))
                     && Minecraft.getSystemTime() > LensManager.nightVisionOffTime) {
                 LensManager.nightVisionOffTime = Minecraft.getSystemTime();
-                mc.thePlayer.addPotionEffect(new IlluminePotionEffect(Potion.nightVision.id, 255, -1, true));
+                mc.thePlayer
+                        .addPotionEffect(new LensPotionEffects.LensNightVision(Potion.nightVision.id, 255, -1, true));
             }
         } else {
             // Remove effect.
-            if (isEffectGrantedByLens(effect)) {
+            if (isNightVisionGrantedByLens(effect)) {
                 mc.thePlayer.removePotionEffect(Potion.nightVision.id);
             }
         }
@@ -73,30 +76,9 @@ public class ItemLensFire extends Item implements ILens {
     }
 
     public void handleRemoval(final EntityPlayer p) {
-        if (isEffectGrantedByLens(p.getActivePotionEffect(Potion.nightVision))) {
+        if (isNightVisionGrantedByLens(p.getActivePotionEffect(Potion.nightVision))) {
             p.removePotionEffect(Potion.nightVision.id);
             PacketHandler.INSTANCE.sendTo(new PacketRemoveNightvision(), (EntityPlayerMP) p);
-        }
-    }
-
-    public static boolean isEffectGrantedByLens(PotionEffect effect) {
-        return effect instanceof IlluminePotionEffect illumineEffect && illumineEffect.isGrantedByLens;
-    }
-
-    private static class IlluminePotionEffect extends PotionEffect {
-
-        public boolean isGrantedByLens;
-
-        public IlluminePotionEffect(int potionID, int duration, int amplifier, boolean isAmbient) {
-            super(potionID, duration, amplifier, isAmbient);
-            isGrantedByLens = true;
-        }
-
-        public void combine(PotionEffect effect) {
-            // If this is replaced by another night vision effect, for example from drinking a potion, it should not be
-            // turned off by the lens.
-            super.combine(effect);
-            isGrantedByLens = effect instanceof IlluminePotionEffect;
         }
     }
 }

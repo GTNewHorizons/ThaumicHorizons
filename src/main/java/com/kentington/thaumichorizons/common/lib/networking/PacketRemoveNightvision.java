@@ -21,7 +21,6 @@ public class PacketRemoveNightvision implements IMessage, IMessageHandler<Packet
     @SideOnly(Side.CLIENT)
     public IMessage onMessage(final PacketRemoveNightvision message, final MessageContext ctx) {
         Minecraft.getMinecraft().thePlayer.removePotionEffect(Potion.nightVision.id);
-        Minecraft.getMinecraft();
         LensManager.nightVisionOffTime = Minecraft.getSystemTime() + 100L;
         return null;
     }
