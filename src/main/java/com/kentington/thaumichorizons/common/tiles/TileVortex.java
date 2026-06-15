@@ -33,7 +33,6 @@ import net.minecraftforge.common.DimensionManager;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityGolemTH;
 import com.kentington.thaumichorizons.common.lib.PocketPlaneData;
-import com.kentington.thaumichorizons.common.lib.PocketPlaneThread;
 import com.kentington.thaumichorizons.common.lib.VortexTeleporter;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -63,7 +62,6 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
     public boolean generating;
     public boolean cheat;
     public ArrayList<ItemStack> items;
-    Thread ppThread;
     private boolean soundStarted = false;
     // true once the first S35 description packet has been received on the client
     public boolean clientSynced = false;
@@ -77,7 +75,6 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.generating = false;
         this.cheat = false;
         this.items = new ArrayList<ItemStack>();
-        this.ppThread = null;
     }
 
     public void updateEntity() {
@@ -103,16 +100,12 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                     this.zCoord + this.worldObj.rand.nextFloat(),
                     1.0f,
                     false);
-            if (this.ppThread == null) {
-                this.createDimension(null);
-                return;
-            }
-            if (!this.ppThread.isAlive()) {
-                this.generating = false;
-                this.createdDimension = true;
-                this.markDirty();
-                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-            }
+
+            this.generating = false;
+            this.createdDimension = true;
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+
         } else {
             if (this.collapsing) {
                 ++this.count;
@@ -325,16 +318,16 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.generating = true;
         if (!this.worldObj.isRemote) {
             this.returnID = this.worldObj.provider.dimensionId;
-            (this.ppThread = new Thread(
-                    new PocketPlaneThread(
-                            data,
-                            this.aspects,
-                            (World) MinecraftServer.getServer()
-                                    .worldServerForDimension(ThaumicHorizons.dimensionPocketId),
-                            this.xCoord,
-                            this.yCoord,
-                            this.zCoord,
-                            this.returnID))).start();
+            World world = (World) MinecraftServer.getServer()
+                    .worldServerForDimension(ThaumicHorizons.dimensionPocketId);
+            PocketPlaneData.generatePocketPlane(
+                    this.aspects,
+                    data,
+                    world,
+                    this.xCoord,
+                    this.yCoord,
+                    this.zCoord,
+                    this.returnID);
         }
         this.markDirty();
     }
