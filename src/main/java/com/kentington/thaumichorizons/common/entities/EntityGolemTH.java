@@ -22,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
@@ -278,7 +277,7 @@ public class EntityGolemTH extends EntityGolemBase {
             if (this.regenTimer <= 0) {
                 this.regenTimer = this.type.regenDelay;
                 if (this.decoration.contains("F")) {
-                    this.regenTimer *= (int) 0.66f;
+                    this.regenTimer = (this.regenTimer * 2) / 3;
                 }
                 if (!this.worldObj.isRemote && this.getHealth() < this.getMaxHealth()) {
                     this.worldObj.setEntityState(this, (byte) 5);
@@ -307,7 +306,6 @@ public class EntityGolemTH extends EntityGolemBase {
         nbt.setByte("GolemType", (byte) EnumGolemType.FLESH.ordinal());
         if (this.blocky != null) {
             final String s = "block";
-            final Block blocky = this.blocky;
             nbt.setInteger(s, Block.getIdFromBlock(this.blocky));
         } else {
             nbt.setInteger("block", 0);
