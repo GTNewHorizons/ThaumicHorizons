@@ -249,8 +249,10 @@ public class EntityGolemTH extends EntityGolemBase {
                     switch (this.voidCount) {
                         case 0, 1, 2 -> {
                             if (player != null) {
-                                final ChatComponentTranslation message = new ChatComponentTranslation("thaumichorizons.golemWarning" + this.voidCount);
-                                message.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_PURPLE).setItalic(true));
+                                final ChatComponentTranslation message = new ChatComponentTranslation(
+                                        "thaumichorizons.golemWarning" + this.voidCount);
+                                message.setChatStyle(
+                                        new ChatStyle().setColor(EnumChatFormatting.DARK_PURPLE).setItalic(true));
                                 player.addChatMessage(message);
                             }
                         }
