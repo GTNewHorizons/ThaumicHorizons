@@ -48,7 +48,7 @@ public class EntityFamiliar extends EntityOcelot {
     public void updateAITick() {
         super.updateAITick();
         if (this.ticksExisted % 10 == 0) {
-            final List<EntityPlayer> players = (List<EntityPlayer>) this.worldObj.getEntitiesWithinAABB(
+            final List<EntityPlayer> players = this.worldObj.getEntitiesWithinAABB(
                     EntityPlayer.class,
                     AxisAlignedBB.getBoundingBox(
                             this.posX - 5.0,

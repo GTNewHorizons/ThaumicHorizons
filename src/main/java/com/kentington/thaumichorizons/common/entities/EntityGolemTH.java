@@ -24,6 +24,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -247,37 +248,11 @@ public class EntityGolemTH extends EntityGolemBase {
                 if (this.ticksExisted % 10 == 0 && this.worldObj.rand.nextInt(500) == 0) {
                     final EntityPlayer player = this.worldObj.getPlayerEntityByName(this.getOwnerName());
                     switch (this.voidCount) {
-                        case 0 -> {
+                        case 0, 1, 2 -> {
                             if (player != null) {
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.DARK_PURPLE
-                                                        + StatCollector
-                                                                .translateToLocal("thaumichorizons.golemWarning1")));
-                                break;
-                            }
-                        }
-                        case 1 -> {
-                            if (player != null) {
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.DARK_PURPLE
-                                                        + StatCollector
-                                                                .translateToLocal("thaumichorizons.golemWarning2")));
-                                break;
-                            }
-                        }
-                        case 2 -> {
-                            if (player != null) {
-                                player.addChatMessage(
-                                        new ChatComponentText(
-                                                EnumChatFormatting.ITALIC + ""
-                                                        + EnumChatFormatting.DARK_PURPLE
-                                                        + StatCollector
-                                                                .translateToLocal("thaumichorizons.golemWarning3")));
-                                break;
+                                final ChatComponentTranslation message = new ChatComponentTranslation("thaumichorizons.golemWarning" + this.voidCount);
+                                message.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_PURPLE).setItalic(true));
+                                player.addChatMessage(message);
                             }
                         }
                         case 3 -> {
@@ -349,21 +324,17 @@ public class EntityGolemTH extends EntityGolemBase {
     public void readEntityFromNBT(final NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
         this.type = EnumGolemTHType.getType(nbt.getByte("GolemTypeTH"));
-        this.upgrades = new byte[this.type.upgrades + (this.advanced ? 1 : 0)];
-        final int ul = this.upgrades.length;
+
+        final int upgradeSlots = this.type.upgrades + (this.advanced ? 1 : 0);
         this.upgrades = nbt.getByteArray("upgrades");
-        if (ul != this.upgrades.length) {
-            final byte[] tt = new byte[ul];
-            for (int a = 0; a < ul; ++a) {
-                tt[a] = -1;
-            }
-            for (int a = 0; a < this.upgrades.length; ++a) {
-                if (a < ul) {
-                    tt[a] = this.upgrades[a];
-                }
+        if (upgradeSlots != this.upgrades.length) {
+            byte[] tt = Arrays.copyOf(this.upgrades, upgradeSlots);
+            if (this.upgrades.length < upgradeSlots) {
+                Arrays.fill(tt, this.upgrades.length, upgradeSlots, (byte) -1);
             }
             this.upgrades = tt;
         }
+
         StringBuilder st = new StringBuilder();
         for (final byte c : this.upgrades) {
             st.append(Integer.toHexString(c));
@@ -498,7 +469,6 @@ public class EntityGolemTH extends EntityGolemBase {
                         this.md,
                         3);
                 final SimpleNetworkWrapper instance = PacketHandler.INSTANCE;
-                final Block blocky = this.blocky;
                 instance.sendToAllAround(
                         new PacketFXBlocksplosion(
                                 Block.getIdFromBlock(this.blocky),
@@ -530,7 +500,6 @@ public class EntityGolemTH extends EntityGolemBase {
                                 this.md,
                                 3);
                         final SimpleNetworkWrapper instance2 = PacketHandler.INSTANCE;
-                        final Block blocky2 = this.blocky;
                         instance2.sendToAllAround(
                                 new PacketFXBlocksplosion(
                                         Block.getIdFromBlock(this.blocky),
@@ -564,7 +533,6 @@ public class EntityGolemTH extends EntityGolemBase {
                                 this.md,
                                 3);
                         final SimpleNetworkWrapper instance3 = PacketHandler.INSTANCE;
-                        final Block blocky3 = this.blocky;
                         instance3.sendToAllAround(
                                 new PacketFXBlocksplosion(
                                         Block.getIdFromBlock(this.blocky),
@@ -598,7 +566,6 @@ public class EntityGolemTH extends EntityGolemBase {
                                 this.md,
                                 3);
                         final SimpleNetworkWrapper instance4 = PacketHandler.INSTANCE;
-                        final Block blocky4 = this.blocky;
                         instance4.sendToAllAround(
                                 new PacketFXBlocksplosion(
                                         Block.getIdFromBlock(this.blocky),
@@ -623,7 +590,6 @@ public class EntityGolemTH extends EntityGolemBase {
     public void writeSpawnData(final ByteBuf data) {
         super.writeSpawnData(data);
         if (this.blocky != null) {
-            final Block blocky = this.blocky;
             data.writeInt(Block.getIdFromBlock(this.blocky));
         } else {
             data.writeInt(0);
