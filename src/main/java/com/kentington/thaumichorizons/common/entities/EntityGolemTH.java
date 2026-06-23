@@ -23,8 +23,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -128,6 +130,7 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     public boolean isValidTarget(final Entity target) {
         if (!this.berserk) {
             return super.isValidTarget(target) || target instanceof EntityCreeper;
@@ -137,6 +140,7 @@ public class EntityGolemTH extends EntityGolemBase {
                 && !target.getCommandSenderName().equals(this.getCommandSenderName());
     }
 
+    @Override
     public boolean setupGolem() {
         super.setupGolem();
         if (this.getCore() == -1) {
@@ -168,6 +172,7 @@ public class EntityGolemTH extends EntityGolemBase {
         return true;
     }
 
+    @Override
     public boolean attackEntityFrom(final DamageSource ds, float par2) {
         this.paused = false;
         if (ds == DamageSource.cactus) {
@@ -192,6 +197,7 @@ public class EntityGolemTH extends EntityGolemBase {
         return super.attackEntityFrom(ds, par2);
     }
 
+    @Override
     public int getCarryLimit() {
         int base = this.type.carry;
         if (this.worldObj.isRemote) {
@@ -201,6 +207,7 @@ public class EntityGolemTH extends EntityGolemBase {
         return base;
     }
 
+    @Override
     public float getAIMoveSpeed() {
         if (this.paused || this.inactive) {
             return 0.0f;
@@ -221,6 +228,7 @@ public class EntityGolemTH extends EntityGolemBase {
         return speed;
     }
 
+    @Override
     public void onLivingUpdate() {
         super.onLivingUpdate();
         if (!this.worldObj.isRemote) {
@@ -305,16 +313,19 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     public boolean isWithinHomeDistance(final int par1, final int par2, final int par3) {
         return this.getCore() == -1 || super.isWithinHomeDistance(par1, par2, par3);
     }
 
+    @Override
     public void setFire(final int par1) {
         if (!this.type.fireResist) {
             super.setFire(par1);
         }
     }
 
+    @Override
     public void writeEntityToNBT(final NBTTagCompound nbt) {
         super.writeEntityToNBT(nbt);
         nbt.setByte("GolemTypeTH", (byte) this.type.ordinal());
@@ -334,6 +345,7 @@ public class EntityGolemTH extends EntityGolemBase {
         nbt.setBoolean("explosive", this.kaboom);
     }
 
+    @Override
     public void readEntityFromNBT(final NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
         this.type = EnumGolemTHType.getType(nbt.getByte("GolemTypeTH"));
@@ -368,6 +380,7 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     protected void damageEntity(final DamageSource ds, final float par2) {
         if (ds.isFireDamage() && this.type.fireResist) {
             return;
@@ -375,6 +388,7 @@ public class EntityGolemTH extends EntityGolemBase {
         super.damageEntity(ds, par2);
     }
 
+    @Override
     public int getTotalArmorValue() {
         int var1 = super.getTotalArmorValue() + this.type.armor;
         if (this.decoration.contains("V")) {
@@ -605,6 +619,7 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     public void writeSpawnData(final ByteBuf data) {
         super.writeSpawnData(data);
         if (this.blocky != null) {
@@ -620,6 +635,7 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     public void readSpawnData(final ByteBuf data) {
         super.readSpawnData(data);
         this.blocky = Block.getBlockById(data.readInt());
@@ -630,18 +646,38 @@ public class EntityGolemTH extends EntityGolemBase {
         }
     }
 
+    @Override
     public String getCommandSenderName() {
         if (this.hasCustomNameTag()) {
             return this.getCustomNameTag();
         }
+
+        if (this.blocky == null || this.blocky == Blocks.air) {
+            return StatCollector.translateToLocal("entity.ThaumicHorizons.GolemTH.voidling.name");
+        }
+
+        return StatCollector.translateToLocalFormatted("entity.ThaumicHorizons.GolemTH.name", getBlockLangKey());
+    }
+
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag()) {
+            return super.func_145748_c_();
+        }
+
+        if (this.blocky == null || this.blocky == Blocks.air) {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.GolemTH.voidling.name");
+        }
+
+        return new ChatComponentTranslation("entity.ThaumicHorizons.GolemTH.name", getBlockLangKey());
+    }
+
+    private String getBlockLangKey() {
         final ItemStack stack = new ItemStack(this.blocky, 1, this.md);
         if (stack.getItem() != null) {
-            return stack.getDisplayName() + " Golem";
+            return stack.getUnlocalizedName();
         }
-        if (this.blocky == null || this.blocky == Blocks.air) {
-            return "Voidling Golem";
-        }
-        return this.blocky.getLocalizedName() + " Golem";
+        return this.blocky.getUnlocalizedName();
     }
 
     public EnumGolemType getGolemType() {
