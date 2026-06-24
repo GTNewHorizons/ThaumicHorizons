@@ -318,6 +318,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         this.generating = true;
         if (!this.worldObj.isRemote) {
             this.returnID = this.worldObj.provider.dimensionId;
+            //TODO Implement Asynchronous Pocket Plane generation (see: https://github.com/GTNewHorizons/ThaumicHorizons/pull/129)
             World world = (World) MinecraftServer.getServer()
                     .worldServerForDimension(ThaumicHorizons.dimensionPocketId);
             PocketPlaneData.generatePocketPlane(
