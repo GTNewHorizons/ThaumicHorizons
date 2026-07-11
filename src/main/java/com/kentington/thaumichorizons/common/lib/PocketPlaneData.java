@@ -90,6 +90,7 @@ public class PocketPlaneData {
         chunk.setChunkModified();
     }
 
+    // TODO: Make pocket planes generate chunk-by-chunk using normal chunk generation
     public static void generatePocketPlane(final AspectList aspects, final PocketPlaneData data, final World world,
             final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
         if (!world.isRemote) {
