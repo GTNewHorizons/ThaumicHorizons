@@ -302,7 +302,7 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
         }
         if (!this.worldObj.isRemote) {
             this.returnID = this.worldObj.provider.dimensionId;
-            World world = MinecraftServer.getServer().worldServerForDimension(ThaumicHorizons.dimensionPocketId);
+            World world = server.worldServerForDimension(ThaumicHorizons.dimensionPocketId);
             PocketPlaneData.generatePocketPlane(
                     this.aspects,
                     data,
