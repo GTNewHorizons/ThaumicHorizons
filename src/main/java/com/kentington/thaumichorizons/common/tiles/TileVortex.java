@@ -312,7 +312,6 @@ public class TileVortex extends TileThaumcraft implements IWandable, IAspectCont
                     this.zCoord,
                     this.returnID);
             this.createdDimension = true;
-            this.markDirty();
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
         this.markDirty();
