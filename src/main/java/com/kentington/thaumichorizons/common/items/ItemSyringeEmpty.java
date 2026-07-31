@@ -4,6 +4,8 @@
 
 package com.kentington.thaumichorizons.common.items;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -19,8 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 
