@@ -5,6 +5,7 @@
 package com.kentington.thaumichorizons.common.items;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 
@@ -41,6 +44,11 @@ public class ItemSyringeEmpty extends Item {
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(final int par1) {
         return this.icon;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(final Item par1, final CreativeTabs par2CreativeTabs, final List par3List) {
+        par3List.add(new ItemStack(this, 1, 2));
     }
 
     public String getUnlocalizedName(final ItemStack par1ItemStack) {
