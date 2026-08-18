@@ -4,7 +4,7 @@ dependencies {
     api('com.github.GTNewHorizons:Baubles-Expanded:2.2.21-GTNH:dev')
     api('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev')
 
-    api("com.github.GTNewHorizons:GT5-Unofficial:5.99.99-mu2:dev") {transitive = false}
+    api("com.github.GTNewHorizons:GT5-Unofficial:5.99.99-mu4:dev") {transitive = false}
     api("com.ruling_0:MaterialLib:0.9.0-mu:dev")
 
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:AspectRecipeIndex:1.1.3:dev')
