@@ -24,6 +24,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.items.ItemWispEssence;
+import thaumcraft.common.tiles.TileJarNode;
 
 public class BlockSyntheticNode extends BlockContainer {
 
@@ -84,6 +85,10 @@ public class BlockSyntheticNode extends BlockContainer {
 
     public void breakBlock(final World p_149749_1_, final int p_149749_2_, final int p_149749_3_, final int p_149749_4_,
             final Block p_149749_5_, final int p_149749_6_) {
+        if (p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_) instanceof TileJarNode) {
+            super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
+            return;
+        }
         final TileSyntheticNode tile = (TileSyntheticNode) p_149749_1_
                 .getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
         if (tile != null) {
