@@ -83,24 +83,24 @@ public class BlockSyntheticNode extends BlockContainer {
         return false;
     }
 
-    public void breakBlock(final World p_149749_1_, final int p_149749_2_, final int p_149749_3_, final int p_149749_4_,
-            final Block p_149749_5_, final int p_149749_6_) {
-        if (p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_) instanceof TileJarNode) {
-            super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
+    public void breakBlock(final World world, final int x, final int y, final int z,
+            final Block block, final int meta) {
+        if (world.getTileEntity(x, y, z) instanceof TileJarNode) {
+            super.breakBlock(world, x, y, z, block, meta);
             return;
         }
-        final TileSyntheticNode tile = (TileSyntheticNode) p_149749_1_
-                .getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
+        final TileSyntheticNode tile = (TileSyntheticNode) world
+                .getTileEntity(x, y, z);
         if (tile != null) {
             for (final Aspect asp : tile.getMaxAspects().getAspects()) {
                 final ItemStack essence = new ItemStack(
                         ConfigItems.itemWispEssence,
                         tile.getMaxAspects().getAmount(asp) / 4);
                 ((ItemWispEssence) ConfigItems.itemWispEssence).setAspects(essence, new AspectList().add(asp, 2));
-                p_149749_1_.spawnEntityInWorld(
-                        new EntityItem(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, essence));
+                world.spawnEntityInWorld(
+                        new EntityItem(world, x, y, z, essence));
             }
         }
-        super.breakBlock(p_149749_1_, p_149749_2_, p_149749_3_, p_149749_4_, p_149749_5_, p_149749_6_);
+        super.breakBlock(world, x, y, z, block, meta);
     }
 }
