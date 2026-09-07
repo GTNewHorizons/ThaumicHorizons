@@ -4,6 +4,8 @@
 
 package com.kentington.thaumichorizons.client.lib;
 
+import static com.kentington.thaumichorizons.common.items.lenses.LensPotionEffects.isNightVisionGrantedByLens;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -36,7 +38,6 @@ import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityBoatThaumium;
 import com.kentington.thaumichorizons.common.items.lenses.ILens;
 import com.kentington.thaumichorizons.common.items.lenses.ItemLensCase;
-import com.kentington.thaumichorizons.common.items.lenses.ItemLensFire;
 import com.kentington.thaumichorizons.common.items.lenses.LensManager;
 import com.kentington.thaumichorizons.common.lib.THKeyHandler;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
@@ -92,88 +93,106 @@ public class RenderEventHandler {
     public void renderOverlay(final RenderGameOverlayEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final long time = System.nanoTime() / 1000000L;
-        if (event.type == RenderGameOverlayEvent.ElementType.TEXT) {
-            this.handleFociRadial(mc, time, event);
-            final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-            if (LensManager.nightVisionOffTime > 0L
-                    && (goggles == null || !(goggles.getItem() instanceof IRevealer)
-                            || goggles.stackTagCompound == null)
-                    && ItemLensFire.isEffectGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
-                mc.thePlayer.removePotionEffect(Potion.nightVision.id);
-                LensManager.nightVisionOffTime = 0L;
-            }
-            if (goggles != null && goggles.getItem() instanceof IRevealer
-                    && goggles.stackTagCompound != null
-                    && goggles.stackTagCompound.getString("Lens") != null
-                    && !goggles.stackTagCompound.getString("Lens").equals("")) {
-                final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-                if (theLens != null) {
-                    theLens.handleRender(mc, event.partialTicks);
-                }
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) {
+            return;
+        }
+
+        final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
+        final boolean hasRevealerGoggles = goggles != null && goggles.getItem() instanceof IRevealer;
+
+        if (LensManager.nightVisionOffTime > 0L && (!hasRevealerGoggles || goggles.stackTagCompound == null)
+                && isNightVisionGrantedByLens(mc.thePlayer.getActivePotionEffect(Potion.nightVision))) {
+            mc.thePlayer.removePotionEffect(Potion.nightVision.id);
+            LensManager.nightVisionOffTime = 0L;
+        }
+
+        if (!hasRevealerGoggles) {
+            return;
+        }
+
+        this.handleFociRadial(mc, time, event, goggles);
+
+        if (goggles.stackTagCompound != null && goggles.stackTagCompound.getString("Lens") != null
+                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
+            final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
+            if (theLens != null) {
+                theLens.handleRender(mc, event.partialTicks);
             }
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event) {
+    public void handleFociRadial(final Minecraft mc, final long time, final RenderGameOverlayEvent event,
+            final ItemStack goggles) {
         if (THKeyHandler.radialActive || RenderEventHandler.radialHudScale > 0.0f) {
-            final long timeDiff = System.currentTimeMillis() - THKeyHandler.lastPressV;
             if (THKeyHandler.radialActive) {
                 if (mc.currentScreen != null) {
                     THKeyHandler.radialActive = false;
                     THKeyHandler.radialLock = true;
+                    THKeyHandler.radialSelectionMade = true;
                     mc.setIngameFocus();
                     mc.setIngameNotInFocus();
                     return;
                 }
-                if (RenderEventHandler.radialHudScale == 0.0f) {
+                if (RenderEventHandler.radialHudScale == 0.0f && !THKeyHandler.radialLock) {
                     this.foci.clear();
                     this.fociItem.clear();
                     this.fociHover.clear();
                     this.fociScale.clear();
+                    THKeyHandler.radialLock = true;
                     int pouchcount = 0;
-                    ItemStack item = null;
+                    ItemStack item;
+                    final String currentLensName = goggles.stackTagCompound != null
+                            ? goggles.stackTagCompound.getString("Lens")
+                            : null;
                     final IInventory baubles = BaublesApi.getBaubles(mc.thePlayer);
                     for (int a = 0; a < 4; ++a) {
                         if (baubles.getStackInSlot(a) != null
-                                && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase) {
+                                && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
                             ++pouchcount;
                             item = baubles.getStackInSlot(a);
-                            final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
+                            final ItemStack[] inv = lensCase.getInventory(item);
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
-                                if (item != null && item.getItem() instanceof ILens) {
-                                    this.foci.put(((ILens) item.getItem()).lensName(), q + pouchcount * 1000);
-                                    this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                                    this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                                    this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                                if (item != null && item.getItem() instanceof ILens lens) {
+                                    final String lensName = lens.lensName();
+                                    if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
+                                    this.foci.put(lensName, q + pouchcount * 1000);
+                                    this.fociItem.put(lensName, item.copy());
+                                    this.fociScale.put(lensName, 1.0f);
+                                    this.fociHover.put(lensName, false);
                                 }
                             }
                         }
                     }
                     for (int a = 0; a < 36; ++a) {
                         item = mc.thePlayer.inventory.mainInventory[a];
-                        if (item != null && item.getItem() instanceof ILens) {
-                            this.foci.put(((ILens) item.getItem()).lensName(), a);
-                            this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                            this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                            this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                        if (item != null && item.getItem() instanceof ILens lens) {
+                            final String lensName = lens.lensName();
+                            if (!lensName.equals(currentLensName) && !this.foci.containsKey(lensName)) {
+                                this.foci.put(lensName, a);
+                                this.fociItem.put(lensName, item.copy());
+                                this.fociScale.put(lensName, 1.0f);
+                                this.fociHover.put(lensName, false);
+                            }
                         }
-                        if (item != null && item.getItem() instanceof ItemLensCase) {
+                        if (item != null && item.getItem() instanceof ItemLensCase lensCase) {
                             ++pouchcount;
-                            final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
+                            final ItemStack[] inv = lensCase.getInventory(item);
                             for (int q = 0; q < inv.length; ++q) {
                                 item = inv[q];
-                                if (item != null && item.getItem() instanceof ILens) {
-                                    this.foci.put(((ILens) item.getItem()).lensName(), q + pouchcount * 1000);
-                                    this.fociItem.put(((ILens) item.getItem()).lensName(), item.copy());
-                                    this.fociScale.put(((ILens) item.getItem()).lensName(), 1.0f);
-                                    this.fociHover.put(((ILens) item.getItem()).lensName(), false);
+                                if (item != null && item.getItem() instanceof ILens lens) {
+                                    final String lensName = lens.lensName();
+                                    if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
+                                    this.foci.put(lensName, q + pouchcount * 1000);
+                                    this.fociItem.put(lensName, item.copy());
+                                    this.fociScale.put(lensName, 1.0f);
+                                    this.fociHover.put(lensName, false);
                                 }
                             }
                         }
                     }
-                    if (this.foci.size() > 0 && mc.inGameHasFocus) {
+                    if (!this.foci.isEmpty() && mc.inGameHasFocus) {
                         mc.inGameHasFocus = false;
                         mc.mouseHelper.ungrabMouseCursor();
                     }
@@ -189,13 +208,18 @@ public class RenderEventHandler {
                     event.resolution.getScaledWidth_double(),
                     event.resolution.getScaledHeight_double(),
                     time,
-                    event.partialTicks);
+                    event.partialTicks,
+                    goggles);
             if (time > this.lastTime) {
                 for (final String key : this.fociHover.keySet()) {
                     if (this.fociHover.get(key)) {
                         if (!THKeyHandler.radialActive && !THKeyHandler.radialLock) {
                             PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
                             THKeyHandler.radialLock = true;
+                            if (Display.isActive() && !mc.inGameHasFocus) {
+                                mc.inGameHasFocus = true;
+                                mc.mouseHelper.grabMouseCursor();
+                            }
                         }
                         if (this.fociScale.get(key) >= 1.3f) {
                             continue;
@@ -210,11 +234,12 @@ public class RenderEventHandler {
                 }
                 if (!THKeyHandler.radialActive) {
                     RenderEventHandler.radialHudScale -= 0.05f;
-                } else if (THKeyHandler.radialActive && RenderEventHandler.radialHudScale < 1.0f) {
+                } else if (RenderEventHandler.radialHudScale < 1.0f) {
                     RenderEventHandler.radialHudScale += 0.05f;
                 }
                 if (RenderEventHandler.radialHudScale > 1.0f) {
                     RenderEventHandler.radialHudScale = 1.0f;
+                    THKeyHandler.radialLock = false;
                 }
                 if (RenderEventHandler.radialHudScale < 0.0f) {
                     RenderEventHandler.radialHudScale = 0.0f;
@@ -227,22 +252,18 @@ public class RenderEventHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks) {
+    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks,
+            final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer.inventory.armorItemInSlot(3) == null
-                || !(mc.thePlayer.inventory.armorItemInSlot(3).getItem() instanceof IRevealer)) {
-            return;
-        }
-        final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         ILens lens = null;
         if (goggles.stackTagCompound != null) {
             lens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
         }
-        final int i = (int) (Mouse.getEventX() * sw / mc.displayWidth);
-        final int j = (int) (sh - Mouse.getEventY() * sh / mc.displayHeight - 1.0);
+        final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
+        final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
-        if (this.fociItem.size() == 0) {
+        if (this.fociItem.isEmpty()) {
             return;
         }
         GL11.glPushMatrix();
@@ -332,15 +353,22 @@ public class RenderEventHandler {
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
             if (!THKeyHandler.radialLock && THKeyHandler.radialActive) {
-                final int mx2 = (int) (i - sw / 2.0 - xx);
-                final int my2 = (int) (j - sh / 2.0 - yy);
+                final double scaledXX = xx * RenderEventHandler.radialHudScale;
+                final double scaledYY = yy * RenderEventHandler.radialHudScale;
+                final int mx2 = (int) (i - sw / 2.0 - scaledXX);
+                final int my2 = (int) (j - sh / 2.0 - scaledYY);
                 if (mx2 >= -10 && mx2 <= 10 && my2 >= -10 && my2 <= 10) {
                     this.fociHover.put(key, true);
                     tt = this.fociItem.get(key);
                     if (k == 0) {
                         THKeyHandler.radialActive = false;
                         THKeyHandler.radialLock = true;
+                        THKeyHandler.radialSelectionMade = true;
                         PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
+                        if (Display.isActive() && !mc.inGameHasFocus) {
+                            mc.inGameHasFocus = true;
+                            mc.mouseHelper.grabMouseCursor();
+                        }
                         break;
                     }
                 } else {

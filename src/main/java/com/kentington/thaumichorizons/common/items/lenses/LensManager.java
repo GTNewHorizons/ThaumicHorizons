@@ -94,7 +94,7 @@ public class LensManager {
                     return;
                 }
                 if ((Integer) lenses.get(var13) < 1000) {
-                    player.inventory.setInventorySlotContents((Integer) lenses.get(var13), null);
+                    player.inventory.decrStackSize((Integer) lenses.get(var13), 1);
                 }
                 w.playSoundAtEntity(player, "thaumcraft:cameraticks", 0.3f, 1.0f);
                 String currentLens = "";
@@ -135,7 +135,11 @@ public class LensManager {
         final ItemStack contents = inv[lensid];
         if (contents != null && contents.getItem() instanceof ILens) {
             lens = contents.copy();
-            inv[lensid] = null;
+            if (contents.stackSize <= 1) {
+                inv[lensid] = null;
+            } else {
+                contents.stackSize--;
+            }
             ((ItemLensCase) pouch.getItem()).setInventory(pouch, inv);
             if (pouchslot >= 0) {
                 player.inventory.setInventorySlotContents(pouchslot, pouch);

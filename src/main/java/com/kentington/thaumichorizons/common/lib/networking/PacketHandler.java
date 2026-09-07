@@ -38,8 +38,11 @@ public class PacketHandler {
         PacketHandler.INSTANCE.registerMessage(PacketNoMoreItems.class, PacketNoMoreItems.class, idx++, Side.CLIENT);
         PacketHandler.INSTANCE
                 .registerMessage(PacketFXBlocksplosion.class, PacketFXBlocksplosion.class, idx++, Side.CLIENT);
-        PacketHandler.INSTANCE
-                .registerMessage(PacketRemoveNightvision.class, PacketRemoveNightvision.class, idx++, Side.CLIENT);
+        PacketHandler.INSTANCE.registerMessage(
+                PacketRemoveLensNightvision.class,
+                PacketRemoveLensNightvision.class,
+                idx++,
+                Side.CLIENT);
         PacketHandler.INSTANCE
                 .registerMessage(PacketFingersToServer.class, PacketFingersToServer.class, idx++, Side.SERVER);
         PacketHandler.INSTANCE

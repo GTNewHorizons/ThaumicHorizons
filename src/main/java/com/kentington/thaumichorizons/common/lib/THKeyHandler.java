@@ -43,9 +43,10 @@ public class THKeyHandler {
     private boolean keyPressedX;
     public static long lastPressX;
     private boolean keyPressedV;
+    public static long lastPressV;
     public static boolean radialActive;
     public static boolean radialLock;
-    public static long lastPressV;
+    public static boolean radialSelectionMade;
 
     public THKeyHandler() {
         this.keyV = new KeyBinding("Change Arcane Lens", Keyboard.KEY_NONE, "Thaumcraft");
@@ -76,8 +77,10 @@ public class THKeyHandler {
                         if (!this.keyPressedV) {
                             THKeyHandler.lastPressV = System.currentTimeMillis();
                             THKeyHandler.radialLock = false;
+                            THKeyHandler.radialSelectionMade = false;
                         }
-                        if (!THKeyHandler.radialLock && player.inventory.armorItemInSlot(3) != null
+                        if (!THKeyHandler.radialLock && !THKeyHandler.radialSelectionMade
+                                && player.inventory.armorItemInSlot(3) != null
                                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
                             if (player.isSneaking()) {
                                 PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(player, "REMOVE"));
@@ -90,6 +93,7 @@ public class THKeyHandler {
                 }
             } else {
                 THKeyHandler.radialActive = false;
+                THKeyHandler.radialSelectionMade = false;
                 if (this.keyPressedV) {
                     THKeyHandler.lastPressV = System.currentTimeMillis();
                 }
@@ -215,8 +219,9 @@ public class THKeyHandler {
         THKeyHandler.lastPressM = 0L;
         THKeyHandler.lastPressC = 0L;
         THKeyHandler.lastPressX = 0L;
+        THKeyHandler.lastPressV = 0L;
         THKeyHandler.radialActive = false;
         THKeyHandler.radialLock = false;
-        THKeyHandler.lastPressV = 0L;
+        THKeyHandler.radialSelectionMade = false;
     }
 }

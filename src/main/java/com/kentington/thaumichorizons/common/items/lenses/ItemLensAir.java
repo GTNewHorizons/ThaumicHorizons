@@ -45,6 +45,11 @@ public class ItemLensAir extends Item implements ILens {
         return "LensAir";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     @SideOnly(Side.CLIENT)
     public void handleRender(final Minecraft mc, final float partialTicks) {
         if (mc.gameSettings.thirdPersonView > 0) {
