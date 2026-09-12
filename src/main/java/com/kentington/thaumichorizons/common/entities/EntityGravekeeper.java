@@ -17,7 +17,9 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -44,20 +46,32 @@ public class EntityGravekeeper extends EntityOcelot {
         this.targetTasks.addTask(10, new EntityAINearestAttackableTarget(this, EntityInhabitedZombie.class, 0, false));
     }
 
+    @Override
     public boolean attackEntityAsMob(final Entity p_70652_1_) {
         return (p_70652_1_ instanceof EntityLivingBase && ((EntityLivingBase) p_70652_1_).isEntityUndead())
                 || p_70652_1_.attackEntityFrom(DamageSource.causeMobDamage(this), 2.0f);
     }
 
+    @Override
     public String getCommandSenderName() {
         return this.hasCustomNameTag() ? this.getCustomNameTag()
                 : (this.isTamed() ? StatCollector.translateToLocal("entity.ThaumicHorizons.Gravekeeper.name")
                         : super.getCommandSenderName());
     }
 
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag() || !this.isTamed()) {
+            return super.func_145748_c_();
+        } else {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.Gravekeeper.name");
+        }
+    }
+
+    @Override
     public void updateAITick() {
         super.updateAITick();
-        final List<EntityLivingBase> critters = (List<EntityLivingBase>) this.worldObj.getEntitiesWithinAABB(
+        final List<EntityLivingBase> critters = this.worldObj.getEntitiesWithinAABB(
                 EntityLivingBase.class,
                 AxisAlignedBB.getBoundingBox(
                         this.posX - 5.0,
@@ -86,12 +100,14 @@ public class EntityGravekeeper extends EntityOcelot {
         }
     }
 
+    @Override
     protected void entityInit() {
         super.entityInit();
         final byte b0 = this.dataWatcher.getWatchableObjectByte(16);
         this.dataWatcher.updateObject(16, (byte) (b0 | 0x4));
     }
 
+    @Override
     public boolean isTamed() {
         return true;
     }

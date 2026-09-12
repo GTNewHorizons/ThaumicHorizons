@@ -87,6 +87,8 @@ entity.ThaumicHorizons.VoltSlime.name=Volt Slime
 entity.ThaumicHorizons.MedSlime.name=Medslime
 entity.ThaumicHorizons.Sheeder.name=Sheeder
 entity.ThaumicHorizons.LostSoul.name=Lost Soul
+entity.ThaumicHorizons.GolemTH.name=%s Golem
+entity.ThaumicHorizons.GolemTH.voidling.name=Voidling Golem
 
 ###POTIONS###
 

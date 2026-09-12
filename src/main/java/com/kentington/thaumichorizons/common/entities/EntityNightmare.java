@@ -12,6 +12,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -126,6 +128,16 @@ public class EntityNightmare extends EntityEndersteed {
         return StatCollector.translateToLocal("entity.ThaumicHorizons.NightmareTH.name");
     }
 
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag()) {
+            return super.func_145748_c_();
+        } else {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.NightmareTH.name");
+        }
+    }
+
+    @Override
     public void onUpdate() {
         final AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
                 this.boundingBox.minX,
@@ -177,6 +189,7 @@ public class EntityNightmare extends EntityEndersteed {
         }
     }
 
+    @Override
     public void setInWeb() {
         this.isInWeb = false;
         this.fallDistance = 0.0f;
