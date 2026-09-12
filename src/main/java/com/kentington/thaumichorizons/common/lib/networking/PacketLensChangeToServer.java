@@ -4,8 +4,8 @@
 
 package com.kentington.thaumichorizons.common.lib.networking;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -42,11 +42,11 @@ public class PacketLensChangeToServer implements IMessage, IMessageHandler<Packe
 
     public IMessage onMessage(final PacketLensChangeToServer message, final MessageContext ctx) {
         final World world = DimensionManager.getWorld(message.dim);
-        if (world == null || (ctx.getServerHandler().playerEntity == null)) {
+        if (world == null) {
             return null;
         }
-        final Entity e = ctx.getServerHandler().playerEntity;
-        if (e instanceof EntityPlayer player && player.inventory.armorItemInSlot(3) != null
+        final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+        if (player.inventory.armorItemInSlot(3) != null
                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
             LensManager.changeLens(player.inventory.armorItemInSlot(3), world, player, message.lens);
         }
