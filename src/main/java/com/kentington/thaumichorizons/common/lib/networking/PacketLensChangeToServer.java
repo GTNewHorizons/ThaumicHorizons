@@ -21,36 +21,31 @@ import thaumcraft.api.nodes.IRevealer;
 public class PacketLensChangeToServer implements IMessage, IMessageHandler<PacketLensChangeToServer, IMessage> {
 
     private int dim;
-    private int playerid;
     private String lens;
 
     public PacketLensChangeToServer() {}
 
     public PacketLensChangeToServer(final EntityPlayer player, final String lens) {
         this.dim = player.worldObj.provider.dimensionId;
-        this.playerid = player.getEntityId();
         this.lens = lens;
     }
 
     public void toBytes(final ByteBuf buffer) {
         buffer.writeInt(this.dim);
-        buffer.writeInt(this.playerid);
         ByteBufUtils.writeUTF8String(buffer, this.lens);
     }
 
     public void fromBytes(final ByteBuf buffer) {
         this.dim = buffer.readInt();
-        this.playerid = buffer.readInt();
         this.lens = ByteBufUtils.readUTF8String(buffer);
     }
 
     public IMessage onMessage(final PacketLensChangeToServer message, final MessageContext ctx) {
         final World world = DimensionManager.getWorld(message.dim);
-        if (world == null || (ctx.getServerHandler().playerEntity != null
-                && ctx.getServerHandler().playerEntity.getEntityId() != message.playerid)) {
+        if (world == null || (ctx.getServerHandler().playerEntity == null)) {
             return null;
         }
-        final Entity e = world.getEntityByID(message.playerid);
+        final Entity e = ctx.getServerHandler().playerEntity;
         if (e instanceof EntityPlayer player && player.inventory.armorItemInSlot(3) != null
                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
             LensManager.changeLens(player.inventory.armorItemInSlot(3), world, player, message.lens);
