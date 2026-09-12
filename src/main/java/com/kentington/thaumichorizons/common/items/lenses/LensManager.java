@@ -28,8 +28,8 @@ public class LensManager {
 
     public static void changeLens(final ItemStack is, final World w, final EntityPlayer player, final String lens) {
         final IRevealer goggles = (IRevealer) is.getItem();
-        final TreeMap lenses = new TreeMap<>();
-        final HashMap pouches = new HashMap<>();
+        final TreeMap<String, Integer> lenses = new TreeMap<>();
+        final HashMap<Integer, Integer> pouches = new HashMap<>();
         int pouchcount = 0;
         ItemStack item = null;
         final IInventory baubles = BaublesApi.getBaubles(player);
