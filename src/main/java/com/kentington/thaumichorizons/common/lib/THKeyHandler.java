@@ -6,7 +6,6 @@ package com.kentington.thaumichorizons.common.lib;
 
 import java.util.ArrayList;
 
-import com.kentington.thaumichorizons.client.lib.RenderEventHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -16,6 +15,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 
+import com.kentington.thaumichorizons.client.lib.RenderEventHandler;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFingersToServer;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
