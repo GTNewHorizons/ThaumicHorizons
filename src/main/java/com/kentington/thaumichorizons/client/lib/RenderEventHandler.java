@@ -213,7 +213,7 @@ public class RenderEventHandler {
                 for (final String key : this.fociHover.keySet()) {
                     if (this.fociHover.get(key)) {
                         if (!THKeyHandler.radialActive && !THKeyHandler.radialLock) {
-                            PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
+                            PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(key));
                             THKeyHandler.radialLock = true;
                             if (Display.isActive() && !mc.inGameHasFocus) {
                                 mc.inGameHasFocus = true;
@@ -363,7 +363,7 @@ public class RenderEventHandler {
                         THKeyHandler.radialActive = false;
                         THKeyHandler.radialLock = true;
                         THKeyHandler.radialSelectionMade = true;
-                        PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(mc.thePlayer, key));
+                        PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(key));
                         if (Display.isActive() && !mc.inGameHasFocus) {
                             mc.inGameHasFocus = true;
                             mc.mouseHelper.grabMouseCursor();

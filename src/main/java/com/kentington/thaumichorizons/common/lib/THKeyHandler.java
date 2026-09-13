@@ -83,7 +83,7 @@ public class THKeyHandler {
                                 && player.inventory.armorItemInSlot(3) != null
                                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
                             if (player.isSneaking()) {
-                                PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(player, "REMOVE"));
+                                PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer("REMOVE"));
                             } else {
                                 THKeyHandler.radialActive = true;
                             }
