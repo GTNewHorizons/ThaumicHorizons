@@ -177,8 +177,8 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                         asp,
                         aspects.getAmount(asp),
                         w / 2 - size * thisRow / 2 + size * (num % 5),
-                        h / 2 + 16 + yOff,
-                        w);
+                        h / 2 + 16 + yOff
+                );
                 if (++num % 5 == 0) {
                     thisRow = Math.min(aspects.size() - num, 5);
                 }
@@ -280,7 +280,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
         return "item.LensOrderEntropy";
     }
 
-    public void drawAspectTag(final Aspect aspect, final int amount, final int x, final int y, final int sw) {
+    public void drawAspectTag(final Aspect aspect, final int amount, final int x, final int y) {
         GL11.glPushMatrix();
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569f);
         GL11.glEnable(GL11.GL_BLEND);

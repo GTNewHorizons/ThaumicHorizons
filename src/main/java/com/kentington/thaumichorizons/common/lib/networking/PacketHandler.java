@@ -56,7 +56,7 @@ public class PacketHandler {
                 PacketToggleInvisibleToServer.class,
                 idx++,
                 Side.SERVER);
-        PacketHandler.INSTANCE.registerMessage(PacketRainState.class, PacketRainState.class, idx++, Side.CLIENT);
+        PacketHandler.INSTANCE.registerMessage(PacketRainState.class, PacketRainState.class, idx, Side.CLIENT);
     }
 
     static {

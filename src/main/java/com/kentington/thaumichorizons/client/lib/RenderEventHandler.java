@@ -207,7 +207,6 @@ public class RenderEventHandler {
             this.renderFocusRadialHUD(
                     event.resolution.getScaledWidth_double(),
                     event.resolution.getScaledHeight_double(),
-                    time,
                     event.partialTicks,
                     goggles);
             if (time > this.lastTime) {
@@ -252,8 +251,8 @@ public class RenderEventHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    private void renderFocusRadialHUD(final double sw, final double sh, final long time, final float partialTicks,
-            final ItemStack goggles) {
+    private void renderFocusRadialHUD(final double sw, final double sh, final float partialTicks,
+                                      final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
         ILens lens = null;
