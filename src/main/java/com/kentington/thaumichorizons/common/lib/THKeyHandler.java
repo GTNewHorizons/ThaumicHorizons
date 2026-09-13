@@ -6,6 +6,7 @@ package com.kentington.thaumichorizons.common.lib;
 
 import java.util.ArrayList;
 
+import com.kentington.thaumichorizons.client.lib.RenderEventHandler;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -84,7 +85,7 @@ public class THKeyHandler {
                                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
                             if (player.isSneaking()) {
                                 PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer("REMOVE"));
-                            } else {
+                            } else if (RenderEventHandler.radialHudScale <= 0.0f) {
                                 THKeyHandler.radialActive = true;
                             }
                         }

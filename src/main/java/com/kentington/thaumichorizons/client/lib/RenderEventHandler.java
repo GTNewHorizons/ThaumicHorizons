@@ -54,7 +54,7 @@ import thaumcraft.common.Thaumcraft;
 
 public class RenderEventHandler {
 
-    static float radialHudScale;
+    public static float radialHudScale;
     TreeMap<String, Integer> foci;
     HashMap<String, ItemStack> fociItem;
     HashMap<String, Boolean> fociHover;
@@ -351,7 +351,7 @@ public class RenderEventHandler {
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
-            if (!THKeyHandler.radialLock && THKeyHandler.radialActive) {
+            if (!THKeyHandler.radialLock && THKeyHandler.radialActive && RenderEventHandler.radialHudScale >= 1.0f) {
                 final double scaledXX = xx * RenderEventHandler.radialHudScale;
                 final double scaledYY = yy * RenderEventHandler.radialHudScale;
                 final int mx2 = (int) (i - sw / 2.0 - scaledXX);
