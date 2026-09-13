@@ -37,7 +37,7 @@ public class LensManager {
                 ++pouchcount;
                 item = baubles.getStackInSlot(a);
                 pouches.put(pouchcount, a - 4);
-                final ItemStack[] inv = ((ItemLensCase) Objects.requireNonNull(item.getItem())).getInventory(item);
+                final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
                 for (int q = 0; q < inv.length; ++q) {
                     item = inv[q];
                     if (item != null && item.getItem() instanceof ILens) {
@@ -121,14 +121,14 @@ public class LensManager {
             }
         }
         if (oldLens != null) {
-            ((ILens) Objects.requireNonNull(oldLens.getItem())).handleRemoval(player);
+            ((ILens) oldLens.getItem()).handleRemoval(player);
         }
     }
 
     private static ItemStack fetchLensFromPouch(final EntityPlayer player, final int lensId, final ItemStack pouch,
             final int pouchSlot) {
         ItemStack lens = null;
-        final ItemStack[] inv = ((ItemLensCase) Objects.requireNonNull(pouch.getItem())).getInventory(pouch);
+        final ItemStack[] inv = ((ItemLensCase) pouch.getItem()).getInventory(pouch);
         final ItemStack contents = inv[lensId];
         if (contents != null && contents.getItem() instanceof ILens) {
             lens = contents.copy();
@@ -160,7 +160,7 @@ public class LensManager {
             } else {
                 pouch = baubles.getStackInSlot(pouchSlot + 4);
             }
-            final ItemStack[] inv = ((ItemLensCase) Objects.requireNonNull(pouch.getItem())).getInventory(pouch);
+            final ItemStack[] inv = ((ItemLensCase) pouch.getItem()).getInventory(pouch);
             for (int q = 0; q < inv.length; ++q) {
                 final ItemStack contents = inv[q];
                 if (contents == null) {
@@ -229,7 +229,7 @@ public class LensManager {
             goggles.stackTagCompound.setInteger("LensIndex", -1);
         } else {
             goggles.stackTagCompound.removeTag("Lens");
-            goggles.stackTagCompound.setString("Lens", ((ILens) Objects.requireNonNull(lens.getItem())).lensName());
+            goggles.stackTagCompound.setString("Lens", ((ILens) lens.getItem()).lensName());
             if (lensIndex != -1 && lore.tagCount() > lensIndex) {
                 lore.removeTag(lensIndex);
             }
