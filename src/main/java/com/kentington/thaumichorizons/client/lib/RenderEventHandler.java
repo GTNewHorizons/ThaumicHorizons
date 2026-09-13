@@ -402,7 +402,7 @@ public class RenderEventHandler {
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         if (goggles != null && goggles.getItem() instanceof IRevealer && goggles.stackTagCompound != null) {
             if (goggles.stackTagCompound.getString("Lens") != null
-                    && !goggles.stackTagCompound.getString("Lens").equals("")) {
+                    && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
                 final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
                 if (theLens == ThaumicHorizons.itemLensEarth) {
                     if (this.cacheX != event.target.blockX || this.cacheY != event.target.blockY
@@ -579,7 +579,7 @@ public class RenderEventHandler {
         if (goggles != null && goggles.getItem() instanceof IRevealer
                 && goggles.stackTagCompound != null
                 && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").equals("")) {
+                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
             final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
             if (theLens == ThaumicHorizons.itemLensEarth) {
                 this.setBlocksEvanescent(mc.thePlayer);
@@ -618,7 +618,7 @@ public class RenderEventHandler {
         if (goggles != null && goggles.getItem() instanceof IRevealer
                 && goggles.stackTagCompound != null
                 && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").equals("")) {
+                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
             final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
             if (theLens == ThaumicHorizons.itemLensWater) {
                 event.setCanceled(true);

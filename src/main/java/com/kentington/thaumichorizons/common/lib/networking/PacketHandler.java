@@ -72,7 +72,7 @@ public class PacketHandler {
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         if (player.getEntityId() != sentPlayerID) {
             PacketHandler.securityWarn("Player {} tried to {} for other people!", player.getGameProfile(), action);
-            return false;
+            return true;
         }
         EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
         if (!ieep.hasInfusion(requiredInfusion)) {
@@ -80,8 +80,8 @@ public class PacketHandler {
                     "Player {} tried to {} getting the ability legitimately",
                     player.getGameProfile(),
                     action);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
