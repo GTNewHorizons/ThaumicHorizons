@@ -252,7 +252,7 @@ public class RenderEventHandler {
 
     @SideOnly(Side.CLIENT)
     private void renderFocusRadialHUD(final double sw, final double sh, final float partialTicks,
-                                      final ItemStack goggles) {
+            final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
         ILens lens = null;
