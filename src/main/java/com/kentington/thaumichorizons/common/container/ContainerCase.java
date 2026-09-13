@@ -4,8 +4,6 @@
 
 package com.kentington.thaumichorizons.common.container;
 
-import java.util.Objects;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -100,8 +98,7 @@ public class ContainerCase extends Container {
     public void onContainerClosed(final EntityPlayer par1EntityPlayer) {
         super.onContainerClosed(par1EntityPlayer);
         if (!this.worldObj.isRemote) {
-            ((ItemLensCase) this.pouch.getItem())
-                    .setInventory(this.pouch, ((InventoryCase) this.input).stackList);
+            ((ItemLensCase) this.pouch.getItem()).setInventory(this.pouch, ((InventoryCase) this.input).stackList);
             if (this.player == null) {
                 return;
             }
