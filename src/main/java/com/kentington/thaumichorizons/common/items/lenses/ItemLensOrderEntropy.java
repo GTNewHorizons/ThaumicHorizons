@@ -177,8 +177,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                         asp,
                         aspects.getAmount(asp),
                         w / 2 - size * thisRow / 2 + size * (num % 5),
-                        h / 2 + 16 + yOff
-                );
+                        h / 2 + 16 + yOff);
                 if (++num % 5 == 0) {
                     thisRow = Math.min(aspects.size() - num, 5);
                 }
