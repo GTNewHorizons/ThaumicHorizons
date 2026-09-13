@@ -5,7 +5,6 @@
 package com.kentington.thaumichorizons.common.items.lenses;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import net.minecraft.entity.player.EntityPlayer;

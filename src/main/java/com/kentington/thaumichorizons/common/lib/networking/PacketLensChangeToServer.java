@@ -5,8 +5,6 @@
 package com.kentington.thaumichorizons.common.lib.networking;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import com.kentington.thaumichorizons.common.items.lenses.LensManager;
 
