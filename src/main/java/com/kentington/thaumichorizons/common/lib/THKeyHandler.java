@@ -15,6 +15,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 
+import com.kentington.thaumichorizons.client.lib.RenderEventHandler;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFingersToServer;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
@@ -43,9 +44,10 @@ public class THKeyHandler {
     private boolean keyPressedX;
     public static long lastPressX;
     private boolean keyPressedV;
+    public static long lastPressV;
     public static boolean radialActive;
     public static boolean radialLock;
-    public static long lastPressV;
+    public static boolean radialSelectionMade;
 
     public THKeyHandler() {
         this.keyV = new KeyBinding("Change Arcane Lens", Keyboard.KEY_NONE, "Thaumcraft");
@@ -76,12 +78,14 @@ public class THKeyHandler {
                         if (!this.keyPressedV) {
                             THKeyHandler.lastPressV = System.currentTimeMillis();
                             THKeyHandler.radialLock = false;
+                            THKeyHandler.radialSelectionMade = false;
                         }
-                        if (!THKeyHandler.radialLock && player.inventory.armorItemInSlot(3) != null
+                        if (!THKeyHandler.radialLock && !THKeyHandler.radialSelectionMade
+                                && player.inventory.armorItemInSlot(3) != null
                                 && player.inventory.armorItemInSlot(3).getItem() instanceof IRevealer) {
                             if (player.isSneaking()) {
-                                PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(player, "REMOVE"));
-                            } else {
+                                PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer("REMOVE"));
+                            } else if (RenderEventHandler.radialHudScale <= 0.0f) {
                                 THKeyHandler.radialActive = true;
                             }
                         }
@@ -90,6 +94,7 @@ public class THKeyHandler {
                 }
             } else {
                 THKeyHandler.radialActive = false;
+                THKeyHandler.radialSelectionMade = false;
                 if (this.keyPressedV) {
                     THKeyHandler.lastPressV = System.currentTimeMillis();
                 }
@@ -111,7 +116,7 @@ public class THKeyHandler {
                                     (int) player.posX,
                                     (int) player.posY,
                                     (int) player.posZ);
-                            PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer(player, player.dimension));
+                            PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer());
                         }
                     }
                     this.keyPressedM = true;
@@ -148,8 +153,7 @@ public class THKeyHandler {
                                                         + EnumChatFormatting.GRAY
                                                         + "Spider Climb enabled."));
                             }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleClimbToServer(player, player.dimension));
+                            PacketHandler.INSTANCE.sendToServer(new PacketToggleClimbToServer());
                         }
                     }
                     this.keyPressedC = true;
@@ -196,8 +200,7 @@ public class THKeyHandler {
                                                         + EnumChatFormatting.GRAY
                                                         + "Chameleon Skin enabled."));
                             }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleInvisibleToServer(player, player.dimension));
+                            PacketHandler.INSTANCE.sendToServer(new PacketToggleInvisibleToServer());
                         }
                     }
                     this.keyPressedX = true;
@@ -215,8 +218,9 @@ public class THKeyHandler {
         THKeyHandler.lastPressM = 0L;
         THKeyHandler.lastPressC = 0L;
         THKeyHandler.lastPressX = 0L;
+        THKeyHandler.lastPressV = 0L;
         THKeyHandler.radialActive = false;
         THKeyHandler.radialLock = false;
-        THKeyHandler.lastPressV = 0L;
+        THKeyHandler.radialSelectionMade = false;
     }
 }

@@ -20,16 +20,14 @@ import net.minecraft.world.World;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 
 import baubles.api.BaublesApi;
-import thaumcraft.api.nodes.IRevealer;
 
 public class LensManager {
 
     public static long nightVisionOffTime;
 
     public static void changeLens(final ItemStack is, final World w, final EntityPlayer player, final String lens) {
-        final IRevealer goggles = (IRevealer) is.getItem();
-        final TreeMap lenses = new TreeMap<>();
-        final HashMap pouches = new HashMap<>();
+        final TreeMap<String, Integer> lenses = new TreeMap<>();
+        final HashMap<Integer, Integer> pouches = new HashMap<>();
         int pouchcount = 0;
         ItemStack item = null;
         final IInventory baubles = BaublesApi.getBaubles(player);
@@ -64,52 +62,50 @@ public class LensManager {
                 }
             }
         }
-        ItemStack oldLens = null;
-        if (!lens.equals("REMOVE") && lenses.size() != 0) {
-            if (lenses != null && lenses.size() > 0 && lens != null) {
-                String var13 = lens;
-                if (lenses.get(lens) == null) {
-                    var13 = (String) lenses.higherKey(lens);
-                }
-                if (var13 == null || lenses.get(var13) == null) {
-                    var13 = (String) lenses.firstKey();
-                }
-                if ((Integer) lenses.get(var13) < 1000) {
-                    item = player.inventory.mainInventory[(Integer) lenses.get(var13)].copy();
-                } else {
-                    final int var14 = (Integer) lenses.get(var13) / 1000;
-                    if (pouches.containsKey(var14)) {
-                        final int pouchslot = (Integer) pouches.get(var14);
-                        final int lensSlot = (Integer) lenses.get(var13) - (var14 * 1000);
-                        ItemStack tmp;
-                        if (pouchslot >= 0) {
-                            tmp = player.inventory.mainInventory[pouchslot].copy();
-                        } else {
-                            tmp = baubles.getStackInSlot(pouchslot + 4).copy();
-                        }
-                        item = fetchLensFromPouch(player, lensSlot, tmp, pouchslot);
+        ItemStack oldLens;
+        if (!lens.equals("REMOVE") && !lenses.isEmpty()) {
+            String var13 = lens;
+            if (lenses.get(lens) == null) {
+                var13 = lenses.higherKey(lens);
+            }
+            if (var13 == null || lenses.get(var13) == null) {
+                var13 = lenses.firstKey();
+            }
+            if (lenses.get(var13) < 1000) {
+                item = player.inventory.mainInventory[lenses.get(var13)].copy();
+            } else {
+                final int var14 = lenses.get(var13) / 1000;
+                if (pouches.containsKey(var14)) {
+                    final int pouchSlot = pouches.get(var14);
+                    final int lensSlot = lenses.get(var13) - (var14 * 1000);
+                    ItemStack tmp;
+                    if (pouchSlot >= 0) {
+                        tmp = player.inventory.mainInventory[pouchSlot].copy();
+                    } else {
+                        tmp = baubles.getStackInSlot(pouchSlot + 4).copy();
                     }
+                    item = fetchLensFromPouch(player, lensSlot, tmp, pouchSlot);
                 }
-                if (item == null) {
-                    return;
-                }
-                if ((Integer) lenses.get(var13) < 1000) {
-                    player.inventory.setInventorySlotContents((Integer) lenses.get(var13), null);
-                }
-                w.playSoundAtEntity(player, "thaumcraft:cameraticks", 0.3f, 1.0f);
-                String currentLens = "";
-                if (is.stackTagCompound != null) {
-                    currentLens = is.stackTagCompound.getString("Lens");
-                }
-                oldLens = getLensItem(currentLens);
-                if (!currentLens.equals("") && (addLensToPouch(player, oldLens, pouches)
-                        || player.inventory.addItemStackToInventory(oldLens))) {
-                    setLensItem(is, item);
-                } else if (currentLens.equals("")) {
-                    setLensItem(is, item);
-                } else if (!addLensToPouch(player, item, pouches)) {
-                    player.inventory.addItemStackToInventory(item);
-                }
+            }
+            if (item == null) {
+                return;
+            }
+            if (lenses.get(var13) < 1000) {
+                player.inventory.decrStackSize(lenses.get(var13), 1);
+            }
+            w.playSoundAtEntity(player, "thaumcraft:cameraticks", 0.3f, 1.0f);
+            String currentLens = "";
+            if (is.stackTagCompound != null) {
+                currentLens = is.stackTagCompound.getString("Lens");
+            }
+            oldLens = getLensItem(currentLens);
+            if (!currentLens.isEmpty() && (addLensToPouch(player, oldLens, pouches)
+                    || player.inventory.addItemStackToInventory(oldLens))) {
+                setLensItem(is, item);
+            } else if (currentLens.isEmpty()) {
+                setLensItem(is, item);
+            } else if (!addLensToPouch(player, item, pouches)) {
+                player.inventory.addItemStackToInventory(item);
             }
         } else {
             String currentLens2 = "";
@@ -117,7 +113,7 @@ public class LensManager {
                 currentLens2 = is.stackTagCompound.getString("Lens");
             }
             oldLens = getLensItem(currentLens2);
-            if (!currentLens2.equals("") && (addLensToPouch(player, oldLens, pouches)
+            if (!currentLens2.isEmpty() && (addLensToPouch(player, oldLens, pouches)
                     || player.inventory.addItemStackToInventory(oldLens))) {
                 setLensItem(is, null);
                 w.playSoundAtEntity(player, "thaumcraft:cameraticks", 0.3f, 0.9f);
@@ -128,21 +124,25 @@ public class LensManager {
         }
     }
 
-    private static ItemStack fetchLensFromPouch(final EntityPlayer player, final int lensid, final ItemStack pouch,
-            final int pouchslot) {
+    private static ItemStack fetchLensFromPouch(final EntityPlayer player, final int lensId, final ItemStack pouch,
+            final int pouchSlot) {
         ItemStack lens = null;
         final ItemStack[] inv = ((ItemLensCase) pouch.getItem()).getInventory(pouch);
-        final ItemStack contents = inv[lensid];
+        final ItemStack contents = inv[lensId];
         if (contents != null && contents.getItem() instanceof ILens) {
             lens = contents.copy();
-            inv[lensid] = null;
+            if (contents.stackSize <= 1) {
+                inv[lensId] = null;
+            } else {
+                contents.stackSize--;
+            }
             ((ItemLensCase) pouch.getItem()).setInventory(pouch, inv);
-            if (pouchslot >= 0) {
-                player.inventory.setInventorySlotContents(pouchslot, pouch);
+            if (pouchSlot >= 0) {
+                player.inventory.setInventorySlotContents(pouchSlot, pouch);
                 player.inventory.markDirty();
             } else {
                 final IInventory baubles = BaublesApi.getBaubles(player);
-                baubles.setInventorySlotContents(pouchslot + 4, pouch);
+                baubles.setInventorySlotContents(pouchSlot + 4, pouch);
                 baubles.markDirty();
             }
         }
@@ -151,14 +151,13 @@ public class LensManager {
 
     private static boolean addLensToPouch(final EntityPlayer player, final ItemStack lens,
             final HashMap<Integer, Integer> pouches) {
-        for (int value : pouches.values()) {
+        for (int pouchSlot : pouches.values()) {
             final IInventory baubles = BaublesApi.getBaubles(player);
-            final int pouchslot = value;
             ItemStack pouch;
-            if (pouchslot >= 0) {
-                pouch = player.inventory.mainInventory[pouchslot];
+            if (pouchSlot >= 0) {
+                pouch = player.inventory.mainInventory[pouchSlot];
             } else {
-                pouch = baubles.getStackInSlot(pouchslot + 4);
+                pouch = baubles.getStackInSlot(pouchSlot + 4);
             }
             final ItemStack[] inv = ((ItemLensCase) pouch.getItem()).getInventory(pouch);
             for (int q = 0; q < inv.length; ++q) {
@@ -166,11 +165,11 @@ public class LensManager {
                 if (contents == null) {
                     inv[q] = lens.copy();
                     ((ItemLensCase) pouch.getItem()).setInventory(pouch, inv);
-                    if (pouchslot >= 0) {
-                        player.inventory.setInventorySlotContents(pouchslot, pouch);
+                    if (pouchSlot >= 0) {
+                        player.inventory.setInventorySlotContents(pouchSlot, pouch);
                         player.inventory.markDirty();
                     } else {
-                        baubles.setInventorySlotContents(pouchslot + 4, pouch);
+                        baubles.setInventorySlotContents(pouchSlot + 4, pouch);
                         baubles.markDirty();
                     }
                     player.inventory.markDirty();
@@ -189,22 +188,14 @@ public class LensManager {
     }
 
     public static Item getLens(final String lens) {
-        if (lens.equals("LensFire")) {
-            return ThaumicHorizons.itemLensFire;
-        }
-        if (lens.equals("LensWater")) {
-            return ThaumicHorizons.itemLensWater;
-        }
-        if (lens.equals("LensEarth")) {
-            return ThaumicHorizons.itemLensEarth;
-        }
-        if (lens.equals("LensAir")) {
-            return ThaumicHorizons.itemLensAir;
-        }
-        if (lens.equals("LensOrderEntropy")) {
-            return ThaumicHorizons.itemLensOrderEntropy;
-        }
-        return null;
+        return switch (lens) {
+            case "LensFire" -> ThaumicHorizons.itemLensFire;
+            case "LensWater" -> ThaumicHorizons.itemLensWater;
+            case "LensEarth" -> ThaumicHorizons.itemLensEarth;
+            case "LensAir" -> ThaumicHorizons.itemLensAir;
+            case "LensOrderEntropy" -> ThaumicHorizons.itemLensOrderEntropy;
+            default -> null;
+        };
     }
 
     public static void setLensItem(final ItemStack goggles, final ItemStack lens) {
