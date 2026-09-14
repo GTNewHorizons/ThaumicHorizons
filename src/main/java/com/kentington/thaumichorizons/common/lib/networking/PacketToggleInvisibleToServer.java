@@ -6,7 +6,6 @@ package com.kentington.thaumichorizons.common.lib.networking;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -21,24 +20,12 @@ import io.netty.buffer.ByteBuf;
 public class PacketToggleInvisibleToServer
         implements IMessage, IMessageHandler<PacketToggleInvisibleToServer, IMessage> {
 
-    private int playerid;
-    private int dim;
-
     public PacketToggleInvisibleToServer() {}
 
-    public PacketToggleInvisibleToServer(final EntityPlayer player, final int dim) {
-        this.playerid = player.getEntityId();
-        this.dim = dim;
-    }
-
     public void toBytes(final ByteBuf buffer) {
-        buffer.writeInt(this.playerid);
-        buffer.writeInt(this.dim);
     }
 
     public void fromBytes(final ByteBuf buffer) {
-        this.playerid = buffer.readInt();
-        this.dim = buffer.readInt();
     }
 
     public IMessage onMessage(final PacketToggleInvisibleToServer message, final MessageContext ctx) {

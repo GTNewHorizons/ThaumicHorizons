@@ -202,7 +202,7 @@ public class THKeyHandler {
                                                         + "Chameleon Skin enabled."));
                             }
                             PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleInvisibleToServer(player, player.dimension));
+                                    .sendToServer(new PacketToggleInvisibleToServer());
                         }
                     }
                     this.keyPressedX = true;
