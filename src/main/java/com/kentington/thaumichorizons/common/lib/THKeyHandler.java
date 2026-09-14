@@ -153,8 +153,7 @@ public class THKeyHandler {
                                                         + EnumChatFormatting.GRAY
                                                         + "Spider Climb enabled."));
                             }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleClimbToServer());
+                            PacketHandler.INSTANCE.sendToServer(new PacketToggleClimbToServer());
                         }
                     }
                     this.keyPressedC = true;
@@ -201,8 +200,7 @@ public class THKeyHandler {
                                                         + EnumChatFormatting.GRAY
                                                         + "Chameleon Skin enabled."));
                             }
-                            PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleInvisibleToServer());
+                            PacketHandler.INSTANCE.sendToServer(new PacketToggleInvisibleToServer());
                         }
                     }
                     this.keyPressedX = true;

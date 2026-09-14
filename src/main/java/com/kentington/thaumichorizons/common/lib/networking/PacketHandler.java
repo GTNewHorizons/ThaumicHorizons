@@ -63,8 +63,7 @@ public class PacketHandler {
         INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("ThaumicHorizons".toLowerCase());
     }
 
-    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action,
-            int requiredInfusion) {
+    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int requiredInfusion) {
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
         EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
         if (!ieep.hasInfusion(requiredInfusion)) {

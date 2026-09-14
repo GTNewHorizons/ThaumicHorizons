@@ -17,11 +17,9 @@ public class PacketToggleClimbToServer implements IMessage, IMessageHandler<Pack
 
     public PacketToggleClimbToServer() {}
 
-    public void toBytes(final ByteBuf buffer) {
-    }
+    public void toBytes(final ByteBuf buffer) {}
 
-    public void fromBytes(final ByteBuf buffer) {
-    }
+    public void fromBytes(final ByteBuf buffer) {}
 
     public IMessage onMessage(final PacketToggleClimbToServer message, final MessageContext ctx) {
         if (PacketHandler.selfInfusionSecurityCheck(ctx, "toggle spider climb", 9)) {

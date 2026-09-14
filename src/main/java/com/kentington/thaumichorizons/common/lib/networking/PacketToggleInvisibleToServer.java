@@ -22,15 +22,12 @@ public class PacketToggleInvisibleToServer
 
     public PacketToggleInvisibleToServer() {}
 
-    public void toBytes(final ByteBuf buffer) {
-    }
+    public void toBytes(final ByteBuf buffer) {}
 
-    public void fromBytes(final ByteBuf buffer) {
-    }
+    public void fromBytes(final ByteBuf buffer) {}
 
     public IMessage onMessage(final PacketToggleInvisibleToServer message, final MessageContext ctx) {
-        if (PacketHandler
-                .selfInfusionSecurityCheck(ctx, "toggle chamelon skin (i.e. invisible)", 10)) {
+        if (PacketHandler.selfInfusionSecurityCheck(ctx, "toggle chamelon skin (i.e. invisible)", 10)) {
             return null;
         }
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
