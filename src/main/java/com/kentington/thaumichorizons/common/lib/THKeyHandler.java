@@ -116,7 +116,7 @@ public class THKeyHandler {
                                     (int) player.posX,
                                     (int) player.posY,
                                     (int) player.posZ);
-                            PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer(player, player.dimension));
+                            PacketHandler.INSTANCE.sendToServer(new PacketFingersToServer());
                         }
                     }
                     this.keyPressedM = true;
