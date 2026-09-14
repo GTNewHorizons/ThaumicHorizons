@@ -27,7 +27,6 @@ public class ContainerCase extends Container {
 
     public ContainerCase(final InventoryPlayer inventory, final World par2World) {
         this.input = new InventoryCase(this);
-        this.pouch = null;
         this.worldObj = par2World;
         this.player = inventory.player;
         this.pouch = inventory.getCurrentItem();
