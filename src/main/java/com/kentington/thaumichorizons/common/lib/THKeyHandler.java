@@ -154,7 +154,7 @@ public class THKeyHandler {
                                                         + "Spider Climb enabled."));
                             }
                             PacketHandler.INSTANCE
-                                    .sendToServer(new PacketToggleClimbToServer(player, player.dimension));
+                                    .sendToServer(new PacketToggleClimbToServer());
                         }
                     }
                     this.keyPressedC = true;
