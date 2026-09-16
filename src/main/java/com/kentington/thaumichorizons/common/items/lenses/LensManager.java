@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 
 import baubles.api.BaublesApi;
+import thaumcraft.api.nodes.IRevealer;
 
 public class LensManager {
 
@@ -185,6 +186,18 @@ public class LensManager {
             return new ItemStack(getLens(lens));
         }
         return null;
+    }
+
+    public static ILens getLensFromItem(final ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof IRevealer) || stack.stackTagCompound == null) {
+            return null;
+        }
+        final String lensName = stack.stackTagCompound.getString("Lens");
+        if (lensName == null || lensName.isEmpty()) {
+            return null;
+        }
+        final Item lensItem = getLens(lensName);
+        return lensItem instanceof ILens ? (ILens) lensItem : null;
     }
 
     public static Item getLens(final String lens) {

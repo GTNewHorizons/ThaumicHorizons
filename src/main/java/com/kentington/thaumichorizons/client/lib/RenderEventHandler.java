@@ -116,12 +116,9 @@ public class RenderEventHandler {
 
         this.handleFociRadial(mc, time, event, goggles);
 
-        if (goggles.stackTagCompound != null && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
-            final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-            if (theLens != null) {
-                theLens.handleRender(mc, event.partialTicks);
-            }
+        final ILens theLens = LensManager.getLensFromItem(goggles);
+        if (theLens != null) {
+            theLens.handleRender(mc, event.partialTicks);
         }
     }
 
@@ -248,10 +245,7 @@ public class RenderEventHandler {
             final ItemStack goggles) {
         final RenderItem ri = new RenderItem();
         final Minecraft mc = Minecraft.getMinecraft();
-        ILens lens = null;
-        if (goggles.stackTagCompound != null) {
-            lens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-        }
+        final ILens lens = LensManager.getLensFromItem(goggles);
         final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
         final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
@@ -392,28 +386,19 @@ public class RenderEventHandler {
     public void blockHighlight(final DrawBlockHighlightEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-        if (goggles != null && goggles.getItem() instanceof IRevealer && goggles.stackTagCompound != null) {
-            if (goggles.stackTagCompound.getString("Lens") != null
-                    && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
-                final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-                if (theLens == ThaumicHorizons.itemLensEarth) {
-                    if (this.cacheX != event.target.blockX || this.cacheY != event.target.blockY
-                            || this.cacheZ != event.target.blockZ
-                            || this.tempDir != ForgeDirection.getOrientation(event.target.sideHit)) {
-                        this.resetBlocks(mc.thePlayer);
-                    }
-                    if (event.player.worldObj.getBlock(event.target.blockX, event.target.blockY, event.target.blockZ)
-                            .getMaterial() != Material.air) {
-                        this.cacheX = event.target.blockX;
-                        this.cacheY = event.target.blockY;
-                        this.cacheZ = event.target.blockZ;
-                        this.tempDir = ForgeDirection.getOrientation(event.target.sideHit);
-                    } else {
-                        this.resetBlocks(mc.thePlayer);
-                    }
-                } else {
-                    this.resetBlocks(mc.thePlayer);
-                }
+        final ILens theLens = LensManager.getLensFromItem(goggles);
+        if (theLens != null && theLens == ThaumicHorizons.itemLensEarth) {
+            if (this.cacheX != event.target.blockX || this.cacheY != event.target.blockY
+                    || this.cacheZ != event.target.blockZ
+                    || this.tempDir != ForgeDirection.getOrientation(event.target.sideHit)) {
+                this.resetBlocks(mc.thePlayer);
+            }
+            if (event.player.worldObj.getBlock(event.target.blockX, event.target.blockY, event.target.blockZ)
+                    .getMaterial() != Material.air) {
+                this.cacheX = event.target.blockX;
+                this.cacheY = event.target.blockY;
+                this.cacheZ = event.target.blockZ;
+                this.tempDir = ForgeDirection.getOrientation(event.target.sideHit);
             } else {
                 this.resetBlocks(mc.thePlayer);
             }
@@ -567,14 +552,9 @@ public class RenderEventHandler {
         if (mc.thePlayer == null) return;
 
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-        if (goggles != null && goggles.getItem() instanceof IRevealer
-                && goggles.stackTagCompound != null
-                && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
-            final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-            if (theLens == ThaumicHorizons.itemLensEarth) {
-                this.setBlocksEvanescent(mc.thePlayer);
-            }
+        final ILens theLens = LensManager.getLensFromItem(goggles);
+        if (theLens != null && theLens == ThaumicHorizons.itemLensEarth) {
+            this.setBlocksEvanescent(mc.thePlayer);
         }
     }
 
@@ -606,15 +586,11 @@ public class RenderEventHandler {
     public void clearWater(final RenderBlockOverlayEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
-        if (goggles != null && goggles.getItem() instanceof IRevealer
-                && goggles.stackTagCompound != null
-                && goggles.stackTagCompound.getString("Lens") != null
-                && !goggles.stackTagCompound.getString("Lens").isEmpty()) {
-            final ILens theLens = (ILens) LensManager.getLens(goggles.stackTagCompound.getString("Lens"));
-            if (theLens == ThaumicHorizons.itemLensWater) {
-                event.setCanceled(true);
-            }
+        final ILens theLens = LensManager.getLensFromItem(goggles);
+        if (theLens != null && theLens == ThaumicHorizons.itemLensWater) {
+            event.setCanceled(true);
         }
+
         if (event.overlayType == RenderBlockOverlayEvent.OverlayType.FIRE
                 && mc.thePlayer.ridingEntity instanceof EntityBoatThaumium) {
             event.setCanceled(true);
