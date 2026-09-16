@@ -7,7 +7,6 @@ package com.kentington.thaumichorizons.client.lib;
 import static com.kentington.thaumichorizons.common.items.lenses.LensPotionEffects.isNightVisionGrantedByLens;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 import net.minecraft.block.Block;
@@ -54,11 +53,23 @@ import thaumcraft.common.Thaumcraft;
 
 public class RenderEventHandler {
 
+    private static class FocusRenderInfo {
+
+        int slot;
+        ItemStack item;
+        float scale;
+        boolean hover;
+
+        FocusRenderInfo(final int slot, final ItemStack item) {
+            this.slot = slot;
+            this.item = item;
+            this.scale = 1.0f;
+            this.hover = false;
+        }
+    }
+
     public static float radialHudScale;
-    TreeMap<String, Integer> foci;
-    HashMap<String, ItemStack> fociItem;
-    HashMap<String, Boolean> fociHover;
-    HashMap<String, Float> fociScale;
+    TreeMap<String, FocusRenderInfo> foci;
     long lastTime;
     boolean lastState;
     float breakProgress;
@@ -73,9 +84,6 @@ public class RenderEventHandler {
 
     public RenderEventHandler() {
         this.foci = new TreeMap<>();
-        this.fociItem = new HashMap<>();
-        this.fociHover = new HashMap<>();
-        this.fociScale = new HashMap<>();
         this.lastTime = 0L;
         this.lastState = false;
         this.breakProgress = 0.0f;
@@ -94,7 +102,6 @@ public class RenderEventHandler {
         final Minecraft mc = Minecraft.getMinecraft();
         final long time = System.nanoTime() / 1000000L;
         if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
-
 
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         final boolean hasRevealerGoggles = goggles != null && goggles.getItem() instanceof IRevealer;
@@ -133,9 +140,6 @@ public class RenderEventHandler {
                 }
                 if (RenderEventHandler.radialHudScale == 0.0f && !THKeyHandler.radialLock) {
                     this.foci.clear();
-                    this.fociItem.clear();
-                    this.fociHover.clear();
-                    this.fociScale.clear();
                     THKeyHandler.radialLock = true;
                     int pouchcount = 0;
                     ItemStack item;
@@ -154,10 +158,7 @@ public class RenderEventHandler {
                                 if (item != null && item.getItem() instanceof ILens lens) {
                                     final String lensName = lens.lensName();
                                     if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
-                                    this.foci.put(lensName, q + pouchcount * 1000);
-                                    this.fociItem.put(lensName, item.copy());
-                                    this.fociScale.put(lensName, 1.0f);
-                                    this.fociHover.put(lensName, false);
+                                    this.foci.put(lensName, new FocusRenderInfo(q + pouchcount * 1000, item.copy()));
                                 }
                             }
                         }
@@ -167,10 +168,7 @@ public class RenderEventHandler {
                         if (item != null && item.getItem() instanceof ILens lens) {
                             final String lensName = lens.lensName();
                             if (!lensName.equals(currentLensName) && !this.foci.containsKey(lensName)) {
-                                this.foci.put(lensName, a);
-                                this.fociItem.put(lensName, item.copy());
-                                this.fociScale.put(lensName, 1.0f);
-                                this.fociHover.put(lensName, false);
+                                this.foci.put(lensName, new FocusRenderInfo(a, item.copy()));
                             }
                         }
                         if (item != null && item.getItem() instanceof ItemLensCase lensCase) {
@@ -181,10 +179,7 @@ public class RenderEventHandler {
                                 if (item != null && item.getItem() instanceof ILens lens) {
                                     final String lensName = lens.lensName();
                                     if (lensName.equals(currentLensName) || this.foci.containsKey(lensName)) continue;
-                                    this.foci.put(lensName, q + pouchcount * 1000);
-                                    this.fociItem.put(lensName, item.copy());
-                                    this.fociScale.put(lensName, 1.0f);
-                                    this.fociHover.put(lensName, false);
+                                    this.foci.put(lensName, new FocusRenderInfo(q + pouchcount * 1000, item.copy()));
                                 }
                             }
                         }
@@ -207,8 +202,9 @@ public class RenderEventHandler {
                     event.partialTicks,
                     goggles);
             if (time > this.lastTime) {
-                for (final String key : this.fociHover.keySet()) {
-                    if (this.fociHover.get(key)) {
+                for (final String key : this.foci.keySet()) {
+                    final FocusRenderInfo renderInfo = this.foci.get(key);
+                    if (renderInfo.hover) {
                         if (!THKeyHandler.radialActive && !THKeyHandler.radialLock) {
                             PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(key));
                             THKeyHandler.radialLock = true;
@@ -217,15 +213,15 @@ public class RenderEventHandler {
                                 mc.mouseHelper.grabMouseCursor();
                             }
                         }
-                        if (this.fociScale.get(key) >= 1.3f) {
+                        if (renderInfo.scale >= 1.3f) {
                             continue;
                         }
-                        this.fociScale.put(key, this.fociScale.get(key) + 0.025f);
+                        renderInfo.scale += 0.025f;
                     } else {
-                        if (this.fociScale.get(key) <= 1.0f) {
+                        if (renderInfo.scale <= 1.0f) {
                             continue;
                         }
-                        this.fociScale.put(key, this.fociScale.get(key) - 0.025f);
+                        renderInfo.scale -= 0.025f;
                     }
                 }
                 if (!THKeyHandler.radialActive) {
@@ -259,7 +255,7 @@ public class RenderEventHandler {
         final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
         final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
-        if (this.fociItem.isEmpty()) return;
+        if (this.foci.isEmpty()) return;
 
         GL11.glPushMatrix();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
@@ -274,7 +270,7 @@ public class RenderEventHandler {
         GL11.glPushMatrix();
         GL11.glTranslated(sw / 2.0, sh / 2.0, 0.0);
         ItemStack tt = null;
-        final float width = 16.0f + this.fociItem.size() * 2.5f;
+        final float width = 16.0f + this.foci.size() * 2.5f;
         UtilsFX.bindTexture("textures/misc/radial.png");
         GL11.glPushMatrix();
         GL11.glRotatef(partialTicks + mc.thePlayer.ticksExisted % 720 / 2.0f, 0.0f, 0.0f, 1.0f);
@@ -330,18 +326,19 @@ public class RenderEventHandler {
                 RenderEventHandler.radialHudScale,
                 RenderEventHandler.radialHudScale);
         float currentRot = -90.0f * RenderEventHandler.radialHudScale;
-        final float pieSlice = 360.0f / this.fociItem.size();
+        final float pieSlice = 360.0f / this.foci.size();
         String key = this.foci.firstKey();
-        for (int a = 0; a < this.fociItem.size(); ++a) {
+        for (int a = 0; a < this.foci.size(); ++a) {
+            final FocusRenderInfo renderInfo = this.foci.get(key);
             final double xx = MathHelper.cos(currentRot / 180.0f * (float) Math.PI) * width;
             final double yy = MathHelper.sin(currentRot / 180.0f * (float) Math.PI) * width;
             currentRot += pieSlice;
             GL11.glPushMatrix();
             GL11.glTranslated(xx, yy, 100.0);
-            GL11.glScalef(this.fociScale.get(key), this.fociScale.get(key), this.fociScale.get(key));
+            GL11.glScalef(renderInfo.scale, renderInfo.scale, renderInfo.scale);
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
-            final ItemStack item2 = this.fociItem.get(key).copy();
+            final ItemStack item2 = renderInfo.item.copy();
             item2.stackTagCompound = null;
             ri.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, item2, -8, -8);
             RenderHelper.disableStandardItemLighting();
@@ -353,8 +350,8 @@ public class RenderEventHandler {
                 final int mx2 = (int) (i - sw / 2.0 - scaledXX);
                 final int my2 = (int) (j - sh / 2.0 - scaledYY);
                 if (mx2 >= -10 && mx2 <= 10 && my2 >= -10 && my2 <= 10) {
-                    this.fociHover.put(key, true);
-                    tt = this.fociItem.get(key);
+                    renderInfo.hover = true;
+                    tt = renderInfo.item;
                     if (k == 0) {
                         THKeyHandler.radialActive = false;
                         THKeyHandler.radialLock = true;
@@ -367,7 +364,7 @@ public class RenderEventHandler {
                         break;
                     }
                 } else {
-                    this.fociHover.put(key, false);
+                    renderInfo.hover = false;
                 }
             }
             key = this.foci.higherKey(key);
