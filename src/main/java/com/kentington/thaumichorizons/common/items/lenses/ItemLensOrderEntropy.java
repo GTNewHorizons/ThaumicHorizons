@@ -82,9 +82,8 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                 if (!this.isNew) {
                     aspects = ScanManager.getScanAspects(scan, p.worldObj);
                 }
-                ItemStack stack;
                 if (scan.id > 0) {
-                    stack = new ItemStack(Item.getItemById(scan.id), 1, scan.meta);
+                    ItemStack stack = new ItemStack(Item.getItemById(scan.id), 1, scan.meta);
                     if (stack.getItem() != null) {
                         try {
                             text = stack.getDisplayName();
@@ -167,12 +166,10 @@ public class ItemLensOrderEntropy extends Item implements ILens {
         final int h = sr.getScaledHeight();
         if (aspects != null && aspects.size() > 0) {
             int num = 0;
-            int yOff;
-            int thisRow;
             final int size = 18;
-            thisRow = Math.min(aspects.size() - num, 5);
+            int thisRow = Math.min(aspects.size() - num, 5);
             for (final Aspect asp : aspects.getAspects()) {
-                yOff = num / 5 * size;
+                int yOff = num / 5 * size;
                 this.drawAspectTag(
                         asp,
                         aspects.getAmount(asp),
@@ -257,8 +254,8 @@ public class ItemLensOrderEntropy extends Item implements ILens {
     }
 
     @Nullable
-    private ScanResult getScanResult(World world, EntityPlayer p, MovingObjectPosition mop, ScanResult sr) {
-        if (ScanManager.isValidScanTarget(p, sr, "@")) {
+    private ScanResult getScanResult(World world, EntityPlayer player, MovingObjectPosition mop, ScanResult sr) {
+        if (ScanManager.isValidScanTarget(player, sr, "@")) {
             Thaumcraft.proxy.blockRunes(
                     world,
                     mop.blockX,
@@ -270,7 +267,7 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                     15,
                     0.03f);
             this.isNew = true;
-            return sr;
+
         }
         return sr;
     }
