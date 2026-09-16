@@ -93,9 +93,8 @@ public class RenderEventHandler {
     public void renderOverlay(final RenderGameOverlayEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final long time = System.nanoTime() / 1000000L;
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) {
-            return;
-        }
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
+
 
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         final boolean hasRevealerGoggles = goggles != null && goggles.getItem() instanceof IRevealer;
@@ -106,9 +105,7 @@ public class RenderEventHandler {
             LensManager.nightVisionOffTime = 0L;
         }
 
-        if (!hasRevealerGoggles) {
-            return;
-        }
+        if (!hasRevealerGoggles) return;
 
         this.handleFociRadial(mc, time, event, goggles);
 
@@ -262,9 +259,8 @@ public class RenderEventHandler {
         final int i = (int) (Mouse.getX() * sw / mc.displayWidth);
         final int j = (int) (sh - Mouse.getY() * sh / mc.displayHeight - 1.0);
         final int k = Mouse.getEventButton();
-        if (this.fociItem.isEmpty()) {
-            return;
-        }
+        if (this.fociItem.isEmpty()) return;
+
         GL11.glPushMatrix();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -571,9 +567,8 @@ public class RenderEventHandler {
     @SubscribeEvent
     public void renderTick(final TickEvent.RenderTickEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer == null) {
-            return;
-        }
+        if (mc.thePlayer == null) return;
+
         final ItemStack goggles = mc.thePlayer.inventory.armorItemInSlot(3);
         if (goggles != null && goggles.getItem() instanceof IRevealer
                 && goggles.stackTagCompound != null
