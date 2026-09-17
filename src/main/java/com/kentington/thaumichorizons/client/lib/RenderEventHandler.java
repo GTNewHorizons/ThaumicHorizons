@@ -199,11 +199,11 @@ public class RenderEventHandler {
                     event.partialTicks,
                     goggles);
             if (time > this.lastTime) {
-                for (final String key : this.foci.keySet()) {
-                    final FocusRenderInfo renderInfo = this.foci.get(key);
+                for (final var entry : this.foci.entrySet()) {
+                    FocusRenderInfo renderInfo = entry.getValue();
                     if (renderInfo.hover) {
                         if (!THKeyHandler.radialActive && !THKeyHandler.radialLock) {
-                            PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(key));
+                            PacketHandler.INSTANCE.sendToServer(new PacketLensChangeToServer(entry.getKey()));
                             THKeyHandler.radialLock = true;
                             if (Display.isActive() && !mc.inGameHasFocus) {
                                 mc.inGameHasFocus = true;
