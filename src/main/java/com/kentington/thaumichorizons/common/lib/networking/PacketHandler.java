@@ -69,7 +69,7 @@ public class PacketHandler {
         if (!ieep.hasInfusion(requiredInfusion)) {
             ThaumicHorizons.log.warn(
                     SECURITY_MARKER,
-                    "Player {} tried to {} getting the ability legitimately",
+                    "Player {} tried to {} without getting the ability legitimately",
                     player.getGameProfile(),
                     action);
             return true;
