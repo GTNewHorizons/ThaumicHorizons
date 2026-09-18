@@ -6,6 +6,7 @@ package com.kentington.thaumichorizons.common.lib;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -22,7 +23,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +44,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.entities.EntityGolemTH;
@@ -62,13 +63,11 @@ import com.kentington.thaumichorizons.common.items.ItemAmuletMirror;
 import com.kentington.thaumichorizons.common.items.ItemFocusContainment;
 import com.kentington.thaumichorizons.common.lib.networking.PacketFXContainment;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
-import com.kentington.thaumichorizons.common.lib.networking.PacketNoMoreItems;
 import com.kentington.thaumichorizons.common.lib.networking.PacketPlayerInfusionSync;
 import com.kentington.thaumichorizons.common.tiles.TileSoulBeacon;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 
-import baubles.common.container.InventoryBaubles;
-import baubles.common.lib.PlayerHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -669,7 +668,11 @@ public class EventHandlerEntity {
         }
     }
 
-    @SubscribeEvent
+    /*
+     * Saves the player only after the Amulet of Life (TwilightForest), the Last Stand enchantment (OpenBlocks) and the
+     * Death Protection Doll (Witchery)
+     */
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerHurt(final LivingHurtEvent event) {
         final EntityInfusionProperties prop = (EntityInfusionProperties) event.entity
                 .getExtendedProperties("CreatureInfusion");
@@ -690,75 +693,6 @@ public class EventHandlerEntity {
                         .addWarpTemp(event.entity.getCommandSenderName(), prop.tumorWarpTemp);
             }
             prop.resetPlayerInfusions();
-
-            // Mirrored Amulet returning items
-            ItemStack amulet = null;
-            for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                if (bauble != null && bauble.getItem() instanceof ItemAmuletMirror) {
-                    amulet = bauble;
-                    break;
-                }
-            }
-            if (amulet != null) {
-                boolean transportedSomething = false;
-                for (int i = 0; i < player.inventory.armorInventory.length; ++i) {
-                    final ItemStack item = player.inventory.armorInventory[i];
-                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
-                        transportedSomething = true;
-                        player.inventory.armorInventory[i] = null;
-                    }
-                }
-                for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
-                    final ItemStack item = player.inventory.mainInventory[i];
-                    if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
-                        transportedSomething = true;
-                        player.inventory.mainInventory[i] = null;
-                    }
-                }
-                InventoryBaubles baubles = PlayerHandler.getPlayerBaubles(player);
-                int amuletIndex = 0;
-                for (int i = 0; i < baubles.stackList.length; ++i) {
-                    final ItemStack item = baubles.stackList[i];
-                    if (item == amulet) {
-                        amuletIndex = i;
-                    } else if (item != null && ItemHandMirror.transport(amulet, item, player, player.worldObj)) {
-                        transportedSomething = true;
-                        baubles.stackList[i] = null;
-                    }
-                }
-                PlayerHandler.setPlayerBaubles(player, baubles);
-                if (transportedSomething) {
-                    baubles.stackList[amuletIndex] = null;
-                    PlayerHandler.setPlayerBaubles(player, baubles);
-                    PacketHandler.INSTANCE.sendToAllAround(
-                            new PacketFXContainment(
-                                    player.posX,
-                                    player.posY + player.getEyeHeight(),
-                                    player.posZ),
-                            new NetworkRegistry.TargetPoint(
-                                    player.worldObj.provider.dimensionId,
-                                    player.posX,
-                                    player.posY,
-                                    player.posZ,
-                                    32.0));
-                    player.worldObj.playSoundEffect(
-                            player.posX,
-                            player.posY + player.getEyeHeight(),
-                            player.posZ,
-                            "thaumcraft:craftfail",
-                            1.0f,
-                            1.0f);
-                    player.inventory.markDirty();
-                    final ItemStack droppedPearl = new ItemStack(ConfigItems.itemEldritchObject, 1, 3);
-                    final EntityPermanentItem drop = new EntityPermanentItem(
-                            player.worldObj,
-                            player.posX,
-                            player.posY,
-                            player.posZ,
-                            droppedPearl);
-                    player.worldObj.spawnEntityInWorld(drop);
-                }
-            }
 
             // Return to Soul Beacon before death
             if (player.getEntityData().getBoolean("soulBeacon")) {
@@ -792,16 +726,26 @@ public class EventHandlerEntity {
                             }
                         }
                     }
-                    player.inventory.dropAllItems();
-                    for (ItemStack bauble : PlayerHandler.getPlayerBaubles(player).stackList) {
-                        if (bauble == null) {
-                            continue;
+
+                    // Takes into account all possible inventories.
+                    if (!player.worldObj.getGameRules().getGameRuleBooleanValue("keepInventory")) {
+                        player.captureDrops = true;
+                        player.capturedDrops.clear();
+
+                        player.inventory.dropAllItems();
+
+                        player.captureDrops = false;
+                        PlayerDropsEvent eventDrop = new PlayerDropsEvent(player, event.source, player.capturedDrops, true);
+                        if (!MinecraftForge.EVENT_BUS.post(eventDrop))
+                        {
+                            for (EntityItem item : player.capturedDrops)
+                            {
+                                player.joinEntityItemWithWorld(item);
+                            }
                         }
-                        player.func_146097_a(bauble, true, false);
+
+                        player.inventory.markDirty();
                     }
-                    PlayerHandler.clearPlayerBaubles(player);
-                    player.inventory.markDirty();
-                    PacketHandler.INSTANCE.sendTo(new PacketNoMoreItems(), (EntityPlayerMP) player);
                     player.curePotionEffects(new ItemStack(Items.milk_bucket));
                     player.heal(Float.MAX_VALUE);
                     if (dim != player.worldObj.provider.dimensionId) {
@@ -817,6 +761,73 @@ public class EventHandlerEntity {
                     vat.setEntityContained(player);
                     beaconWorld.getTileEntity(x, y - 1, z).markDirty();
                     player.worldObj.markBlockForUpdate(x, y - 1, z);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDropTransport(final PlayerDropsEvent event) {
+        if (!event.entityPlayer.worldObj.isRemote) {
+            // Mirrored Amulet returning items
+            EntityItem amuletEntity = null;
+            ItemStack amulet = null;
+            Iterator<EntityItem> iteratorSearchAmulet = event.drops.iterator();
+            while (iteratorSearchAmulet.hasNext()) {
+                EntityItem baubleEntity = iteratorSearchAmulet.next();
+                ItemStack bauble = baubleEntity.getEntityItem();
+
+                if (bauble.getItem() instanceof ItemAmuletMirror && bauble.hasTagCompound()
+                        && bauble.stackTagCompound.hasKey("isActivateTransport")) {
+                    amuletEntity = baubleEntity;
+                    amulet = bauble;
+                    iteratorSearchAmulet.remove();
+                    break;
+                }
+            }
+
+            if (amulet != null) {
+                boolean transportedSomething = false;
+                Iterator<EntityItem> iteratorDrops = event.drops.iterator();
+                while (iteratorDrops.hasNext()) {
+                    ItemStack item = iteratorDrops.next().getEntityItem();
+                    if (ItemHandMirror.transport(amulet, item, event.entityPlayer, event.entityPlayer.worldObj)) {
+                        transportedSomething = true;
+                        iteratorDrops.remove();
+                    }
+                }
+                if (transportedSomething) {
+                    PacketHandler.INSTANCE.sendToAllAround(
+                            new PacketFXContainment(
+                                    event.entityPlayer.posX,
+                                    event.entityPlayer.posY + event.entityPlayer.getEyeHeight(),
+                                    event.entityPlayer.posZ),
+                            new NetworkRegistry.TargetPoint(
+                                    event.entityPlayer.worldObj.provider.dimensionId,
+                                    event.entityPlayer.posX,
+                                    event.entityPlayer.posY,
+                                    event.entityPlayer.posZ,
+                                    32.0));
+                    event.entityPlayer.worldObj.playSoundEffect(
+                            event.entityPlayer.posX,
+                            event.entityPlayer.posY + event.entityPlayer.getEyeHeight(),
+                            event.entityPlayer.posZ,
+                            "thaumcraft:craftfail",
+                            1.0f,
+                            1.0f);
+                    event.entityPlayer.inventory.markDirty();
+                    final ItemStack droppedPearl = new ItemStack(ConfigItems.itemEldritchObject, 1, 3);
+                    final EntityPermanentItem drop = new EntityPermanentItem(
+                            event.entityPlayer.worldObj,
+                            event.entityPlayer.posX,
+                            event.entityPlayer.posY,
+                            event.entityPlayer.posZ,
+                            droppedPearl);
+                    event.entityPlayer.worldObj.spawnEntityInWorld(drop);
+                    if (event.drops.isEmpty()) event.setCanceled(true);
+                } else {
+                    amulet.stackTagCompound.removeTag("isActivateTransport");
+                    event.drops.add(amuletEntity);
                 }
             }
         }
