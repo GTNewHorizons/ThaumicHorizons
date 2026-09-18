@@ -10,6 +10,8 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -26,16 +28,27 @@ public class EntityFamiliar extends EntityOcelot {
         super(p_i1688_1_);
     }
 
+    @Override
     public String getCommandSenderName() {
         return this.hasCustomNameTag() ? this.getCustomNameTag()
                 : (this.isTamed() ? StatCollector.translateToLocal("entity.ThaumicHorizons.Familiar.name")
                         : super.getCommandSenderName());
     }
 
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag() || !this.isTamed()) {
+            return super.func_145748_c_();
+        } else {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.Familiar.name");
+        }
+    }
+
+    @Override
     public void updateAITick() {
         super.updateAITick();
         if (this.ticksExisted % 10 == 0) {
-            final List<EntityPlayer> players = (List<EntityPlayer>) this.worldObj.getEntitiesWithinAABB(
+            final List<EntityPlayer> players = this.worldObj.getEntitiesWithinAABB(
                     EntityPlayer.class,
                     AxisAlignedBB.getBoundingBox(
                             this.posX - 5.0,
