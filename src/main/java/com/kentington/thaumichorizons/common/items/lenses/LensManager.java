@@ -34,7 +34,8 @@ public class LensManager {
         final IInventory baubles = BaublesApi.getBaubles(player);
         final int baubleSlots = baubles.getSizeInventory();
         for (int a = 0; a < baubleSlots; ++a) {
-            if (baubles.getStackInSlot(a) != null && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
+            if (baubles.getStackInSlot(a) != null
+                    && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
                 ++pouchcount;
                 item = baubles.getStackInSlot(a);
                 pouches.put(pouchcount, a - baubleSlots);
