@@ -145,7 +145,7 @@ public class RenderEventHandler {
                         ? goggles.stackTagCompound.getString("Lens")
                         : null;
                 final IInventory baubles = BaublesApi.getBaubles(mc.thePlayer);
-                for (int a = 0; a < 4; ++a) {
+                for (int a = 0; a < baubles.getSizeInventory(); ++a) {
                     if (baubles.getStackInSlot(a) != null
                             && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
                         ++pouchcount;
