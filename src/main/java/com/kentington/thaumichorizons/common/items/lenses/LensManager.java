@@ -50,8 +50,8 @@ public class LensManager {
         }
         for (int newkey = 0; newkey < 36; ++newkey) {
             item = player.inventory.mainInventory[newkey];
-            if (item != null && item.getItem() instanceof ILens) {
-                lenses.put(((ILens) item.getItem()).lensName(), newkey);
+            if (item != null && item.getItem() instanceof ILens newLens) {
+                lenses.put(newLens.lensName(), newkey);
             }
             if (item != null && item.getItem() instanceof ItemLensCase lensCase) {
                 ++pouchcount;
