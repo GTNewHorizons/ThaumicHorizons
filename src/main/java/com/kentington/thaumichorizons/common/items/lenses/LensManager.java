@@ -32,11 +32,12 @@ public class LensManager {
         int pouchcount = 0;
         ItemStack item = null;
         final IInventory baubles = BaublesApi.getBaubles(player);
-        for (int a = 0; a < 4; ++a) {
+        final int baubleSlots = baubles.getSizeInventory();
+        for (int a = 0; a < baubleSlots; ++a) {
             if (baubles.getStackInSlot(a) != null && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase) {
                 ++pouchcount;
                 item = baubles.getStackInSlot(a);
-                pouches.put(pouchcount, a - 4);
+                pouches.put(pouchcount, a - baubleSlots);
                 final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
                 for (int q = 0; q < inv.length; ++q) {
                     item = inv[q];
@@ -83,7 +84,7 @@ public class LensManager {
                     if (pouchSlot >= 0) {
                         tmp = player.inventory.mainInventory[pouchSlot].copy();
                     } else {
-                        tmp = baubles.getStackInSlot(pouchSlot + 4).copy();
+                        tmp = baubles.getStackInSlot(pouchSlot + baubleSlots).copy();
                     }
                     item = fetchLensFromPouch(player, lensSlot, tmp, pouchSlot);
                 }
@@ -143,7 +144,7 @@ public class LensManager {
                 player.inventory.markDirty();
             } else {
                 final IInventory baubles = BaublesApi.getBaubles(player);
-                baubles.setInventorySlotContents(pouchSlot + 4, pouch);
+                baubles.setInventorySlotContents(pouchSlot + baubles.getSizeInventory(), pouch);
                 baubles.markDirty();
             }
         }
@@ -158,7 +159,7 @@ public class LensManager {
             if (pouchSlot >= 0) {
                 pouch = player.inventory.mainInventory[pouchSlot];
             } else {
-                pouch = baubles.getStackInSlot(pouchSlot + 4);
+                pouch = baubles.getStackInSlot(pouchSlot + baubles.getSizeInventory());
             }
             final ItemStack[] inv = ((ItemLensCase) pouch.getItem()).getInventory(pouch);
             for (int q = 0; q < inv.length; ++q) {
@@ -170,7 +171,7 @@ public class LensManager {
                         player.inventory.setInventorySlotContents(pouchSlot, pouch);
                         player.inventory.markDirty();
                     } else {
-                        baubles.setInventorySlotContents(pouchSlot + 4, pouch);
+                        baubles.setInventorySlotContents(pouchSlot + baubles.getSizeInventory(), pouch);
                         baubles.markDirty();
                     }
                     player.inventory.markDirty();
