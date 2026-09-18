@@ -34,15 +34,15 @@ public class LensManager {
         final IInventory baubles = BaublesApi.getBaubles(player);
         final int baubleSlots = baubles.getSizeInventory();
         for (int a = 0; a < baubleSlots; ++a) {
-            if (baubles.getStackInSlot(a) != null && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase) {
+            if (baubles.getStackInSlot(a) != null && baubles.getStackInSlot(a).getItem() instanceof ItemLensCase lensCase) {
                 ++pouchcount;
                 item = baubles.getStackInSlot(a);
                 pouches.put(pouchcount, a - baubleSlots);
-                final ItemStack[] inv = ((ItemLensCase) item.getItem()).getInventory(item);
+                final ItemStack[] inv = lensCase.getInventory(item);
                 for (int q = 0; q < inv.length; ++q) {
                     item = inv[q];
-                    if (item != null && item.getItem() instanceof ILens) {
-                        lenses.put(((ILens) item.getItem()).lensName(), q + pouchcount * 1000);
+                    if (item != null && item.getItem() instanceof ILens newLens) {
+                        lenses.put(newLens.lensName(), q + pouchcount * 1000);
                     }
                 }
             }
@@ -52,14 +52,14 @@ public class LensManager {
             if (item != null && item.getItem() instanceof ILens) {
                 lenses.put(((ILens) item.getItem()).lensName(), newkey);
             }
-            if (item != null && item.getItem() instanceof ItemLensCase) {
+            if (item != null && item.getItem() instanceof ItemLensCase lensCase) {
                 ++pouchcount;
                 pouches.put(pouchcount, newkey);
-                final ItemStack[] pid = ((ItemLensCase) item.getItem()).getInventory(item);
+                final ItemStack[] pid = lensCase.getInventory(item);
                 for (int pouchslot = 0; pouchslot < pid.length; ++pouchslot) {
                     item = pid[pouchslot];
-                    if (item != null && item.getItem() instanceof ILens) {
-                        lenses.put(((ILens) item.getItem()).lensName(), pouchslot + pouchcount * 1000);
+                    if (item != null && item.getItem() instanceof ILens newLens) {
+                        lenses.put(newLens.lensName(), pouchslot + pouchcount * 1000);
                     }
                 }
             }
