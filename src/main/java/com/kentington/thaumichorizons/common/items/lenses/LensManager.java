@@ -193,7 +193,7 @@ public class LensManager {
             return null;
         }
         final String lensName = stack.stackTagCompound.getString("Lens");
-        if (lensName == null || lensName.isEmpty()) {
+        if (lensName.isEmpty()) {
             return null;
         }
         final Item lensItem = getLens(lensName);
