@@ -283,7 +283,7 @@ public class ClientProxy extends CommonProxy {
                     return new GuiVat(player, (TileVat) world.getTileEntity(x, y, z));
                 }
                 case 8 -> {
-                    return new GuiCase(player.inventory, world, x, y, z);
+                    return new GuiCase(player.inventory, world);
                 }
                 case 9 -> {
                     return new GuiFingers(player.inventory);
