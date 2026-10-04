@@ -401,7 +401,27 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
         final int meltable = this.isMeltableBlock(bi, md);
         final boolean flammable = bi.isFlammable(p.worldObj, x, y, z, ForgeDirection.UNKNOWN);
         ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(new ItemStack(bi, 1, md));
-        if (result != null && wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
+        // Meltable blocks (e.g. stone) take priority over any furnace smelting recipe they may have,
+        // otherwise mods that add a smelting recipe for stone (such as Et Futurum Requiem's smooth
+        // stone) would prevent the stone -> lava transmutation.
+        if (meltable > 0 && wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
+            if (meltable == 1) {
+                p.worldObj.setBlockToAir(x, y, z);
+            } else if (meltable == 2) {
+                if (p.worldObj.provider.dimensionId != -1) {
+                    p.worldObj.setBlock(x, y, z, Blocks.water, 0, 3);
+                } else {
+                    p.worldObj.setBlockToAir(x, y, z);
+                }
+            } else if (meltable == 3) {
+                p.worldObj.setBlock(x, y, z, Blocks.dirt, 0, 3);
+            } else if (meltable == 4) {
+                Blocks.tnt.onBlockDestroyedByPlayer(p.worldObj, x, y, z, 1);
+                p.worldObj.setBlockToAir(x, y, z);
+            } else if (meltable == 6) {
+                p.worldObj.setBlock(x, y, z, Blocks.lava, 0, 3);
+            }
+        } else if (result != null && wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
             if (this.getUpgradeLevel(wand.getFocusItem(stack), ItemFocusLiquefaction.purity) > 0
                     && Utils.findSpecialMiningResult(new ItemStack(bi, 1, md), 9999.0f, p.worldObj.rand) != null) {
                 final ItemStack pure = Utils
@@ -432,23 +452,6 @@ public class ItemFocusLiquefaction extends ItemFocusBasic {
                 final EntityItem theItem = new EntityItem(p.worldObj, x + 0.5f, y + 0.5f, z + 0.5f);
                 theItem.setEntityItemStack(result.copy());
                 p.worldObj.spawnEntityInWorld(theItem);
-            }
-        } else if (meltable > 0 && wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
-            if (meltable == 1) {
-                p.worldObj.setBlockToAir(x, y, z);
-            } else if (meltable == 2) {
-                if (p.worldObj.provider.dimensionId != -1) {
-                    p.worldObj.setBlock(x, y, z, Blocks.water, 0, 3);
-                } else {
-                    p.worldObj.setBlockToAir(x, y, z);
-                }
-            } else if (meltable == 3) {
-                p.worldObj.setBlock(x, y, z, Blocks.dirt, 0, 3);
-            } else if (meltable == 4) {
-                Blocks.tnt.onBlockDestroyedByPlayer(p.worldObj, x, y, z, 1);
-                p.worldObj.setBlockToAir(x, y, z);
-            } else if (meltable == 6) {
-                p.worldObj.setBlock(x, y, z, Blocks.lava, 0, 3);
             }
         } else if (flammable && wand.consumeAllVis(stack, p, this.getVisCost(stack), true, true)) {
             p.worldObj.setBlock(x, y, z, Blocks.fire);
