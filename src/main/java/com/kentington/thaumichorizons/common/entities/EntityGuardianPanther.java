@@ -23,7 +23,9 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -49,12 +51,14 @@ public class EntityGuardianPanther extends EntityOcelot implements IEntityInfuse
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true));
     }
 
+    @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(24.0);
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.5000000119209289);
     }
 
+    @Override
     public boolean interact(final EntityPlayer p_70085_1_) {
         final ItemStack itemstack = p_70085_1_.inventory.getCurrentItem();
         if (itemstack != null && itemstack.getItem() instanceof final ItemFood itemfood) {
@@ -70,30 +74,45 @@ public class EntityGuardianPanther extends EntityOcelot implements IEntityInfuse
         return super.interact(p_70085_1_);
     }
 
+    @Override
     public boolean attackEntityAsMob(final Entity p_70652_1_) {
         return p_70652_1_.attackEntityFrom(DamageSource.causeMobDamage(this), 6.0f);
     }
 
+    @Override
     public String getCommandSenderName() {
         return this.hasCustomNameTag() ? this.getCustomNameTag()
                 : (this.isTamed() ? StatCollector.translateToLocal("entity.ThaumicHorizons.GuardianPanther.name")
                         : super.getCommandSenderName());
     }
 
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag() || !this.isTamed()) {
+            return super.func_145748_c_();
+        } else {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.GuardianPanther.name");
+        }
+    }
+
+    @Override
     public void updateAITick() {
         super.updateAITick();
     }
 
+    @Override
     protected void entityInit() {
         super.entityInit();
         final byte b0 = this.dataWatcher.getWatchableObjectByte(16);
         this.dataWatcher.updateObject(16, (byte) (b0 | 0x4));
     }
 
+    @Override
     public boolean isTamed() {
         return true;
     }
 
+    @Override
     public void resetStats() {
         this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(24.0);
         this.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.5000000119209289);
