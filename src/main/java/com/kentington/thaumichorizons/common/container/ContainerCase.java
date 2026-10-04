@@ -20,31 +20,22 @@ import thaumcraft.common.container.SlotLimitedByClass;
 public class ContainerCase extends Container {
 
     private final World worldObj;
-    private int posX;
-    private int posY;
-    private int posZ;
-    private int blockSlot;
+    private final int blockSlot;
     public IInventory input;
     ItemStack pouch;
     EntityPlayer player;
 
-    public ContainerCase(final InventoryPlayer iinventory, final World par2World, final int par3, final int par4,
-            final int par5) {
+    public ContainerCase(final InventoryPlayer inventory, final World par2World) {
         this.input = new InventoryCase(this);
-        this.pouch = null;
-        this.player = null;
         this.worldObj = par2World;
-        this.posX = par3;
-        this.posY = par4;
-        this.posZ = par5;
-        this.player = iinventory.player;
-        this.pouch = iinventory.getCurrentItem();
-        this.blockSlot = iinventory.currentItem + 45;
+        this.player = inventory.player;
+        this.pouch = inventory.getCurrentItem();
+        this.blockSlot = inventory.currentItem + 45;
         for (int a = 0; a < 18; ++a) {
             this.addSlotToContainer(
                     new SlotLimitedByClass(ILens.class, this.input, a, 37 + a % 6 * 18, 51 + a / 6 * 18));
         }
-        this.bindPlayerInventory(iinventory);
+        this.bindPlayerInventory(inventory);
         if (!par2World.isRemote && this.pouch != null
                 && this.pouch.getItem() instanceof ItemLensCase lensCase
                 && this.input instanceof InventoryCase inv) {
@@ -69,7 +60,7 @@ public class ContainerCase extends Container {
             return null;
         }
         ItemStack stack = null;
-        final Slot slotObject = (Slot) this.inventorySlots.get(slot);
+        final Slot slotObject = this.inventorySlots.get(slot);
         if (slotObject != null && slotObject.getHasStack()) {
             final ItemStack stackInSlot = slotObject.getStack();
             stack = stackInSlot.copy();
@@ -87,6 +78,7 @@ public class ContainerCase extends Container {
             } else {
                 slotObject.onSlotChanged();
             }
+            this.detectAndSendChanges();
         }
         return stack;
     }

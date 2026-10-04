@@ -4,6 +4,8 @@
 
 package com.kentington.thaumichorizons.common.items.lenses;
 
+import static com.kentington.thaumichorizons.common.items.lenses.LensPotionEffects.isNightVisionGrantedByLens;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +19,7 @@ import net.minecraft.util.IIcon;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.lib.networking.PacketHandler;
-import com.kentington.thaumichorizons.common.lib.networking.PacketRemoveNightvision;
+import com.kentington.thaumichorizons.common.lib.networking.PacketRemoveLensNightvision;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,16 +36,28 @@ public class ItemLensWater extends Item implements ILens {
         return "LensWater";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     public void handleRender(final Minecraft mc, final float partialTicks) {
         final boolean inWater = mc.thePlayer.isInsideOfMaterial(Material.water);
-        if (inWater
-                && (mc.thePlayer.getActivePotionEffect(Potion.nightVision) == null
-                        || mc.thePlayer.getActivePotionEffect(Potion.nightVision).getDuration() < 242)
-                && Minecraft.getSystemTime() > LensManager.nightVisionOffTime) {
-            LensManager.nightVisionOffTime = Minecraft.getSystemTime();
-            mc.thePlayer.addPotionEffect(new PotionEffect(Potion.nightVision.id, 255, 0, true));
-        } else if (!inWater) {
-            mc.thePlayer.removePotionEffect(Potion.nightVision.id);
+        final PotionEffect effect = mc.thePlayer.getActivePotionEffect(Potion.nightVision);
+
+        if (inWater) {
+            // Apply effect.
+            if ((effect == null || (isNightVisionGrantedByLens(effect) && effect.getDuration() < 242))
+                    && Minecraft.getSystemTime() > LensManager.nightVisionOffTime) {
+                LensManager.nightVisionOffTime = Minecraft.getSystemTime();
+                mc.thePlayer
+                        .addPotionEffect(new LensPotionEffects.LensNightVision(Potion.nightVision.id, 255, -1, true));
+            }
+        } else {
+            // Remove effect.
+            if (isNightVisionGrantedByLens(effect)) {
+                mc.thePlayer.removePotionEffect(Potion.nightVision.id);
+            }
         }
     }
 
@@ -62,7 +76,6 @@ public class ItemLensWater extends Item implements ILens {
     }
 
     public void handleRemoval(final EntityPlayer p) {
-        p.removePotionEffect(Potion.nightVision.id);
-        PacketHandler.INSTANCE.sendTo(new PacketRemoveNightvision(), (EntityPlayerMP) p);
+        PacketHandler.INSTANCE.sendTo(new PacketRemoveLensNightvision(), (EntityPlayerMP) p);
     }
 }
