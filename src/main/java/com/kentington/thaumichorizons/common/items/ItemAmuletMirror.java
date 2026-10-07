@@ -79,9 +79,13 @@ public class ItemAmuletMirror extends Item implements IBauble, IRunicArmor {
         return true;
     }
 
-    public void onEquipped(final ItemStack arg0, final EntityLivingBase arg1) {}
+    public void onEquipped(final ItemStack itemstack, final EntityLivingBase arg1) {
+        if (itemstack.hasTagCompound()) itemstack.stackTagCompound.setBoolean("isActivateTransport", true);
+    }
 
-    public void onUnequipped(final ItemStack arg0, final EntityLivingBase arg1) {}
+    public void onUnequipped(final ItemStack itemstack, final EntityLivingBase arg1) {
+        if (itemstack.hasTagCompound()) itemstack.stackTagCompound.removeTag("isActivateTransport");
+    }
 
     public void onWornTick(final ItemStack arg0, final EntityLivingBase arg1) {}
 
