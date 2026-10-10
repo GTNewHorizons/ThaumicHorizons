@@ -3243,7 +3243,7 @@ public class ThaumicHorizons {
         critterRecipes.add(
                 new CreatureInfusionRecipe(
                         "cowInfusion",
-                        EntityList.getEntityID(new EntityMooshroom(null)),
+                        -EntityList.getEntityID(new EntityMooshroom(null)),
                         2,
                         (new AspectList()).add(Aspect.PLANT, 8).add(Aspect.BEAST, 4),
                         EntityCow.class,
