@@ -98,7 +98,7 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
                             tco.yCoord + 0.64 + 0.10000000149011612 * Math.sin(Math.toRadians(tco.rotation)),
                             tco.zCoord + 0.5 + dist * Math.cos(2.0 * radian + offset * which),
                             0.0f,
-                            0.1f + 0.05f * (float) Math.log1p(tco.getAspects().getAmount(asp2)),
+                            0.1f + 1f * (float) Math.log1p(tco.getAspects().getAmount(asp2)),
                             0.9f,
                             frames,
                             1,
