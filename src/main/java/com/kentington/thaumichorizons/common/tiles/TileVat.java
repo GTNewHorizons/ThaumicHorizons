@@ -1239,22 +1239,25 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 EntityLivingBase created = null;
                 if ((Integer) out < 0) {
                     created = (EntityLivingBase) EntityList.createEntityByID(-(Integer) out, this.worldObj);
+                } else {
+                    final ModContainer mc = Loader.instance().getIndexedModList().get("ThaumicHorizons");
+                    try {
+                        created = (EntityLivingBase) EntityRegistry.instance().lookupModSpawn(mc, (Integer) out)
+                                .getEntityClass().getConstructor(World.class).newInstance(this.worldObj);
+                    } catch (InvocationTargetException e) {
+                        e.getCause().printStackTrace();
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
                 }
-                final ModContainer mc = Loader.instance().getIndexedModList().get("ThaumicHorizons");
-                try {
-                    created = (EntityLivingBase) EntityRegistry.instance().lookupModSpawn(mc, (Integer) out)
-                            .getEntityClass().getConstructor(World.class).newInstance(this.worldObj);
-                } catch (InvocationTargetException e) {
-                    e.getCause().printStackTrace();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                if (created != null) {
+                    created.copyLocationAndAnglesFrom(this.getEntityContained());
+                    created.copyDataFrom(this.getEntityContained(), true);
+                    if (created instanceof IEntityInfusedStats) {
+                        ((IEntityInfusedStats) created).resetStats();
+                    }
+                    this.setEntityContained(created);
                 }
-                created.copyLocationAndAnglesFrom(this.getEntityContained());
-                created.copyDataFrom(this.getEntityContained(), true);
-                if (created instanceof IEntityInfusedStats) {
-                    ((IEntityInfusedStats) created).resetStats();
-                }
-                this.setEntityContained(created);
             } else if (out instanceof NBTBase) {
                 final NBTTagCompound tagMods = (NBTTagCompound) out;
                 final Multimap map = HashMultimap.create();
