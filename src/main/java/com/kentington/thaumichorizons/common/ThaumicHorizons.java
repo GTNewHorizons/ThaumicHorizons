@@ -503,10 +503,10 @@ public class ThaumicHorizons {
         ROD_CRYSTAL = new WandRod(
                 "disposable",
                 250,
-                null,
+                new ItemStack(Blocks.bedrock),
                 99,
                 new ResourceLocation("thaumichorizons", "textures/models/crystalRod.png"));
-        CAP_CRYSTAL = new WandCap("disposable", 0.9F, null, 99);
+        CAP_CRYSTAL = new WandCap("disposable", 0.9F, new ItemStack(Blocks.bedrock), 99);
         CAP_CRYSTAL.setTexture(new ResourceLocation("thaumichorizons", "textures/models/crystalCap.png"));
         ROD_CRYSTAL.setGlowing(true);
         blockSynthNode = new BlockSyntheticNode();
@@ -3243,7 +3243,7 @@ public class ThaumicHorizons {
         critterRecipes.add(
                 new CreatureInfusionRecipe(
                         "cowInfusion",
-                        EntityList.getEntityID(new EntityMooshroom(null)),
+                        -EntityList.getEntityID(new EntityMooshroom(null)),
                         2,
                         (new AspectList()).add(Aspect.PLANT, 8).add(Aspect.BEAST, 4),
                         EntityCow.class,

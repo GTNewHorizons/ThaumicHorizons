@@ -1,7 +1,3 @@
-//
-// Decompiled by Procyon v0.5.30
-//
-
 package com.kentington.thaumichorizons.common.blocks;
 
 import java.util.Random;
@@ -81,28 +77,16 @@ public class BlockGatewayPortal extends Block {
             if (world.getBlock(x + 1, y, z) == ThaumicHorizons.blockGateway) {
                 slotZ = z;
                 switch (md) {
-                    case 6 -> {
-                        slotX = x + 1;
-                    }
-                    case 7 -> {
-                        slotX = x;
-                    }
-                    case 9 -> {
-                        slotX = x - 1;
-                    }
+                    case 6 -> slotX = x + 1;
+                    case 7 -> slotX = x;
+                    case 9 -> slotX = x - 1;
                 }
             } else {
                 slotX = x;
                 switch (md) {
-                    case 6 -> {
-                        slotZ = z + 1;
-                    }
-                    case 7 -> {
-                        slotZ = z;
-                    }
-                    case 9 -> {
-                        slotZ = z - 1;
-                    }
+                    case 6 -> slotZ = z + 1;
+                    case 7 -> slotZ = z;
+                    case 9 -> slotZ = z - 1;
                 }
             }
         } else {
@@ -151,307 +135,93 @@ public class BlockGatewayPortal extends Block {
                 || world.getBlock(x + 1, y, z) == ThaumicHorizons.blockPortal
                 || world.getBlock(x - 1, y, z) == ThaumicHorizons.blockGateway
                 || world.getBlock(x - 1, y, z) == ThaumicHorizons.blockPortal;
-        Label_0410: {
-            switch (world.getBlockMetadata(x, y, z)) {
-                case 0 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.lapiz;
-                        }
-                        case 1 -> {
-                            return this.stone;
-                        }
-                        case 2 -> {
-                            if (isXAligned) {
-                                return this.CornerTR;
-                            }
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) {
-                                return this.CornerTL;
-                            }
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerTL;
-                        }
-                        case 5 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerTR;
-                        }
-                        default -> {
-                            return this.leftSide(isXAligned, side);
-                        }
-                    }
-                }
-                case 1, 2, 3 -> {
-                    return this.leftSide(isXAligned, side);
-                }
-                case 4 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.stone;
-                        }
-                        case 1 -> {
-                            return this.lapiz;
-                        }
-                        case 2 -> {
-                            if (isXAligned) {
-                                return this.CornerBR;
-                            }
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) {
-                                return this.CornerBL;
-                            }
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerBL;
-                        }
-                        case 5 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerBR;
-                        }
-                        default -> {
-                            break Label_0410;
-                        }
-                    }
-                }
-                case 5 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.lapiz;
-                        }
-                        case 1 -> {
-                            return this.stone;
-                        }
-                        case 2 -> {
-                            if (isXAligned) return this.topR;
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) return this.topL;
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (!isXAligned) return this.topL;
-                            return this.stone;
-                        }
-                        case 5 -> {
-                            if (!isXAligned) return this.topR;
-                            return this.stone;
-                        }
-                        default -> {
-                            return this.lapiz;
-                        }
-                    }
-                }
-                case 6, 7, 9 -> {
-                    return this.bottomSide(isXAligned, side);
-                }
-                case 8 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.lapiz;
-                        }
-                        case 1 -> {
-                            return this.stone;
-                        }
-                        case 2 -> {
-                            if (isXAligned) return this.topL;
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) return this.topR;
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (!isXAligned) return this.topR;
-                            return this.stone;
-                        }
-                        case 5 -> {
-                            if (!isXAligned) return this.topL;
-                            return this.stone;
-                        }
-                        default -> {
-                            return this.lapiz;
-                        }
-                    }
-                }
-                case 10 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.lapiz;
-                        }
-                        case 1 -> {
-                            return this.stone;
-                        }
-                        case 2 -> {
-                            if (isXAligned) {
-                                return this.CornerTL;
-                            }
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) {
-                                return this.CornerTR;
-                            }
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerTR;
-                        }
-                        case 5 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerTL;
-                        }
-                        default -> {
-                            return this.rightSide(isXAligned, side);
-                        }
-                    }
-                }
-                case 11, 12, 13 -> {
-                    return this.rightSide(isXAligned, side);
-                }
-                case 14 -> {
-                    switch (side) {
-                        case 0 -> {
-                            return this.stone;
-                        }
-                        case 1 -> {
-                            return this.lapiz;
-                        }
-                        case 2 -> {
-                            if (isXAligned) {
-                                return this.CornerBL;
-                            }
-                            return this.stone;
-                        }
-                        case 3 -> {
-                            if (isXAligned) {
-                                return this.CornerBR;
-                            }
-                            return this.stone;
-                        }
-                        case 4 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerBR;
-                        }
-                        case 5 -> {
-                            if (isXAligned) {
-                                return this.stone;
-                            }
-                            return this.CornerBL;
-                        }
-                        default -> {
-                            break Label_0410;
-                        }
-                    }
-                }
-            }
-        }
-        return this.lapiz;
+        return switch (world.getBlockMetadata(x, y, z)) {
+            case 0 -> switch (side) {
+                    case 0 -> this.lapiz;
+                    case 1 -> this.stone;
+                    case 2 -> isXAligned ? this.CornerTR : this.stone;
+                    case 3 -> isXAligned ? this.CornerTL : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.CornerTL;
+                    case 5 -> isXAligned ? this.stone : this.CornerTR;
+                    default -> this.leftSide(isXAligned, side);
+                };
+            case 1, 2, 3 -> this.leftSide(isXAligned, side);
+            case 4 -> switch (side) {
+                    case 0 -> this.stone;
+                    case 1 -> this.lapiz;
+                    case 2 -> isXAligned ? this.CornerBR : this.stone;
+                    case 3 -> isXAligned ? this.CornerBL : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.CornerBL;
+                    case 5 -> isXAligned ? this.stone : this.CornerBR;
+                    default -> this.lapiz;
+                };
+            case 5 -> switch (side) {
+                    case 0 -> this.lapiz;
+                    case 1 -> this.stone;
+                    case 2 -> isXAligned ? this.topR : this.stone;
+                    case 3 -> isXAligned ? this.topL : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.topL;
+                    case 5 -> isXAligned ? this.stone : this.topR;
+                    default -> this.lapiz;
+                };
+            case 6, 7, 9 -> this.bottomSide(isXAligned, side);
+            case 8 -> switch (side) {
+                    case 0 -> this.lapiz;
+                    case 1 -> this.stone;
+                    case 2 -> isXAligned ? this.topL : this.stone;
+                    case 3 -> isXAligned ? this.topR : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.topR;
+                    case 5 -> isXAligned ? this.stone : this.topL;
+                    default -> this.lapiz;
+                };
+            case 10 -> switch (side) {
+                    case 0 -> this.lapiz;
+                    case 1 -> this.stone;
+                    case 2 -> isXAligned ? this.CornerTL : this.stone;
+                    case 3 -> isXAligned ? this.CornerTR : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.CornerTR;
+                    case 5 -> isXAligned ? this.stone : this.CornerTL;
+                    default -> this.rightSide(isXAligned, side);
+                };
+            case 11, 12, 13 -> this.rightSide(isXAligned, side);
+            case 14 -> switch (side) {
+                    case 0 -> this.stone;
+                    case 1 -> this.lapiz;
+                    case 2 -> isXAligned ? this.CornerBL : this.stone;
+                    case 3 -> isXAligned ? this.CornerBR : this.stone;
+                    case 4 -> isXAligned ? this.stone : this.CornerBR;
+                    case 5 -> isXAligned ? this.stone : this.CornerBL;
+                    default -> this.lapiz;
+                };
+            default -> this.lapiz;
+        };
     }
 
     IIcon leftSide(final boolean xAligned, final int side) {
-        if (xAligned) {
-            switch (side) {
-                case 2 -> {
-                    return this.R;
-                }
-                case 3 -> {
-                    return this.L;
-                }
-                case 4 -> {
-                    return this.stone;
-                }
-                default -> {
-                    return this.lapiz;
-                }
-            }
-        } else {
-            switch (side) {
-                case 2 -> {
-                    return this.stone;
-                }
-                case 4 -> {
-                    return this.L;
-                }
-                case 5 -> {
-                    return this.R;
-                }
-                default -> {
-                    return this.lapiz;
-                }
-            }
-        }
+        return switch (side) {
+            case 2 -> xAligned ? this.R : this.stone;
+            case 3 -> xAligned ? this.L : this.lapiz;
+            case 4 -> xAligned ? this.stone : this.L;
+            case 5 -> xAligned ? this.lapiz : this.R;
+            default -> this.lapiz;
+        };
     }
 
     IIcon rightSide(final boolean xAligned, final int side) {
-        if (xAligned) {
-            switch (side) {
-                case 2 -> {
-                    return this.L;
-                }
-                case 3 -> {
-                    return this.R;
-                }
-                case 5 -> {
-                    return this.stone;
-                }
-                default -> {
-                    return this.lapiz;
-                }
-            }
-        } else {
-            switch (side) {
-                case 3 -> {
-                    return this.stone;
-                }
-                case 4 -> {
-                    return this.R;
-                }
-                case 5 -> {
-                    return this.L;
-                }
-                default -> {
-                    return this.lapiz;
-                }
-            }
-        }
+        return switch (side) {
+            case 2 -> xAligned ? this.L : this.lapiz;
+            case 3 -> xAligned ? this.R : this.stone;
+            case 4 -> xAligned ? this.lapiz : this.R;
+            case 5 -> xAligned ? this.stone : this.L;
+            default -> this.lapiz;
+        };
     }
 
     IIcon bottomSide(final boolean xAligned, final int side) {
-        switch (side) {
-            case 0 -> {
-                return this.stone;
-            }
-            case 1 -> {
-                return this.lapiz;
-            }
-            default -> {
-                return this.B;
-            }
-        }
+        return switch (side) {
+            case 0 -> this.stone;
+            case 1 -> this.lapiz;
+            default -> this.B;
+        };
     }
 }

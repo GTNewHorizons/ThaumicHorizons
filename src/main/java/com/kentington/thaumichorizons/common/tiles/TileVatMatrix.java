@@ -61,6 +61,32 @@ import thaumcraft.common.tiles.TilePedestal;
 
 public class TileVatMatrix extends TileVisNode implements IWandable {
 
+    // Timers and progress values (in ticks)
+    private static final int COUNT_DELAY = 10;
+    private static final int INFUSER_SOUND_INTERVAL = 65;
+    private static final int INSTABILITY_EFFECT_CHANCE = 200;
+    private static final int INSTABILITY_CRAFT_CHANCE = 500;
+    private static final int INSTABILITY_INCREASE_CHANCE_BASE = 100;
+    private static final int MAX_INSTABILITY = 25;
+
+    // Essentia costs
+    private static final int VIS_DRAIN_AMOUNT = 100;
+
+    // Instability damage divisor
+    private static final float INSTABILITY_DAMAGE_DIVISOR = 10.0f;
+
+    // Pedestal search radius
+    private static final int PEDESTAL_SEARCH_HORIZONTAL = 12;
+    private static final int PEDESTAL_SEARCH_Y_DOWN = 5;
+    private static final int PEDESTAL_SEARCH_Y_UP = 10;
+    private static final int PEDESTAL_SYMMETRY_RANGE = 8;
+
+    // Self-infusion health
+    private static final float SELF_INFUSION_INITIAL_HEALTH = 20.0f;
+
+    // Particle count for infuser effects
+    private static final int INFUSER_PARTICLE_COUNT = 25;
+
     // infusion state
     public boolean crafting = false;
     public boolean active = false;
@@ -74,10 +100,9 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
     public String recipeOutputLabel = "";
     public int recipeInstability = 0;
     public int recipeType = 0;
-    public float selfInfusionHealth = 20f;
+    public float selfInfusionHealth = SELF_INFUSION_INITIAL_HEALTH;
     public ArrayList<ChunkCoordinates> pedestals = new ArrayList<>();
     public int count = 0;
-    private final int countDelay = 10;
     public int craftCount = 0;
     private int itemCount = 0;
     private AspectList myEssentiaCost = new AspectList();
@@ -101,7 +126,7 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
             checkSurroundings = false;
             getSurroundings();
         }
-        if (active && crafting && count % countDelay == 0) {
+        if (active && crafting && count % COUNT_DELAY == 0) {
             craftCycle();
             markDirty();
         }
@@ -114,60 +139,61 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
     public void getSurroundings() {
         final ArrayList<ChunkCoordinates> stuff = new ArrayList<>();
         pedestals.clear();
-        try {
-            for (int xx = -12; xx <= 12; ++xx) {
-                for (int zz = -12; zz <= 12; ++zz) {
-                    boolean skip = false;
-                    for (int yy = -5; yy <= 10; ++yy) {
-                        if (xx == 0 && zz == 0) continue;
-                        final int x = xCoord + xx, y = yCoord - yy, z = zCoord + zz;
-                        final TileEntity te = worldObj.getTileEntity(x, y, z);
-                        if (!skip && yy > 0 && Math.abs(xx) <= 8 && Math.abs(zz) <= 8 && te instanceof TilePedestal) {
-                            pedestals.add(new ChunkCoordinates(x, y, z));
-                            skip = true;
-                        } else {
-                            final Block bi = worldObj.getBlock(x, y, z);
-                            if (bi == Blocks.skull || (bi instanceof IInfusionStabiliser
-                                    && ((IInfusionStabiliser) bi).canStabaliseInfusion(worldObj, x, y, z))) {
-                                stuff.add(new ChunkCoordinates(x, y, z));
-                            }
+        for (int xx = -PEDESTAL_SEARCH_HORIZONTAL; xx <= PEDESTAL_SEARCH_HORIZONTAL; ++xx) {
+            for (int zz = -PEDESTAL_SEARCH_HORIZONTAL; zz <= PEDESTAL_SEARCH_HORIZONTAL; ++zz) {
+                boolean skip = false;
+                for (int yy = -PEDESTAL_SEARCH_Y_DOWN; yy <= PEDESTAL_SEARCH_Y_UP; ++yy) {
+                    if (xx == 0 && zz == 0) continue;
+                    final int x = xCoord + xx, y = yCoord - yy, z = zCoord + zz;
+                    final TileEntity te = worldObj.getTileEntity(x, y, z);
+                    if (!skip && yy > 0
+                            && Math.abs(xx) <= PEDESTAL_SYMMETRY_RANGE
+                            && Math.abs(zz) <= PEDESTAL_SYMMETRY_RANGE
+                            && te instanceof TilePedestal) {
+                        pedestals.add(new ChunkCoordinates(x, y, z));
+                        skip = true;
+                    } else {
+                        final Block bi = worldObj.getBlock(x, y, z);
+                        if (bi == Blocks.skull || (bi instanceof IInfusionStabiliser
+                                && ((IInfusionStabiliser) bi).canStabaliseInfusion(worldObj, x, y, z))) {
+                            stuff.add(new ChunkCoordinates(x, y, z));
                         }
                     }
                 }
             }
-            symmetry = 0;
-            for (final ChunkCoordinates cc : pedestals) {
-                boolean items = false;
-                final int dx = xCoord - cc.posX, dz = zCoord - cc.posZ;
-                TileEntity te2 = worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
-                if (te2 instanceof TilePedestal) {
-                    symmetry += 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) != null) {
-                        ++symmetry;
-                        items = true;
-                    }
-                }
-                te2 = worldObj.getTileEntity(xCoord + dx, cc.posY, zCoord + dz);
-                if (te2 instanceof TilePedestal) {
-                    symmetry -= 2;
-                    if (((TilePedestal) te2).getStackInSlot(0) == null || !items) continue;
-                    --symmetry;
+        }
+        symmetry = 0;
+        for (final ChunkCoordinates cc : pedestals) {
+            boolean items = false;
+            final int dx = xCoord - cc.posX, dz = zCoord - cc.posZ;
+            TileEntity te2 = worldObj.getTileEntity(cc.posX, cc.posY, cc.posZ);
+            if (te2 instanceof TilePedestal) {
+                symmetry += 2;
+                if (((TilePedestal) te2).getStackInSlot(0) != null) {
+                    ++symmetry;
+                    items = true;
                 }
             }
-            float sym = 0f;
-            for (final ChunkCoordinates cc2 : stuff) {
-                final int dx = xCoord - cc2.posX, dz = zCoord - cc2.posZ;
-                Block bi2 = worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser
-                        && ((IInfusionStabiliser) bi2).canStabaliseInfusion(worldObj, cc2.posX, cc2.posY, cc2.posZ)))
-                    sym += 0.1f;
-                bi2 = worldObj.getBlock(xCoord + dx, cc2.posY, zCoord + dz);
-                if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser
-                        && ((IInfusionStabiliser) bi2).canStabaliseInfusion(worldObj, cc2.posX, cc2.posY, cc2.posZ)))
-                    sym -= 0.2f;
+            te2 = worldObj.getTileEntity(xCoord + dx, cc.posY, zCoord + dz);
+            if (te2 instanceof TilePedestal) {
+                symmetry -= 2;
+                if (((TilePedestal) te2).getStackInSlot(0) == null || !items) continue;
+                --symmetry;
             }
-            symmetry += (int) sym;
-        } catch (Exception ignored) {}
+        }
+        float sym = 0f;
+        for (final ChunkCoordinates cc2 : stuff) {
+            final int dx = xCoord - cc2.posX, dz = zCoord - cc2.posZ;
+            Block bi2 = worldObj.getBlock(cc2.posX, cc2.posY, cc2.posZ);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser
+                    && ((IInfusionStabiliser) bi2).canStabaliseInfusion(worldObj, cc2.posX, cc2.posY, cc2.posZ)))
+                sym += 0.1f;
+            bi2 = worldObj.getBlock(xCoord + dx, cc2.posY, zCoord + dz);
+            if (bi2 == Blocks.skull || (bi2 instanceof IInfusionStabiliser
+                    && ((IInfusionStabiliser) bi2).canStabaliseInfusion(worldObj, cc2.posX, cc2.posY, cc2.posZ)))
+                sym -= 0.2f;
+        }
+        symmetry += (int) sym;
     }
 
     // -------------------------------------------------------------------------
@@ -420,7 +446,7 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
         final EntityLivingBase entity = (vat != null) ? vat.getEntityContained() : null;
 
         // instability events
-        if (instability > 0 && worldObj.rand.nextInt(500) <= instability) {
+        if (instability > 0 && worldObj.rand.nextInt(INSTABILITY_CRAFT_CHANCE) <= instability) {
             switch (worldObj.rand.nextInt(21)) {
                 case 0, 2, 10, 13 -> inEvEjectItem(0);
                 case 6, 17 -> inEvEjectItem(1);
@@ -447,14 +473,17 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
         if (instability > 0) {
             float visDrawn = 999f;
             if (!worldObj.isRemote) {
-                visDrawn = Math
-                        .min(visDrawn, VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.EARTH, 100));
-                visDrawn = Math
-                        .min(visDrawn, VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.WATER, 100));
-                visDrawn = Math
-                        .min(visDrawn, VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.ORDER, 100));
+                visDrawn = Math.min(
+                        visDrawn,
+                        VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.EARTH, VIS_DRAIN_AMOUNT));
+                visDrawn = Math.min(
+                        visDrawn,
+                        VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.WATER, VIS_DRAIN_AMOUNT));
+                visDrawn = Math.min(
+                        visDrawn,
+                        VisNetHandler.drainVis(worldObj, xCoord, yCoord, zCoord, Aspect.ORDER, VIS_DRAIN_AMOUNT));
             }
-            final float dmg = instability / 10f / (5f + visDrawn);
+            final float dmg = instability / INSTABILITY_DAMAGE_DIVISOR / (5f + visDrawn);
             if (entity != null) {
                 entity.setHealth(entity.getHealth() - dmg);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -481,10 +510,10 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
                         markDirty();
                         return;
                     }
-                    if (worldObj.rand.nextInt(100 - recipeInstability * 3) == 0) {
+                    if (worldObj.rand.nextInt(INSTABILITY_INCREASE_CHANCE_BASE - recipeInstability * 3) == 0) {
                         ++instability;
                     }
-                    if (instability > 25) instability = 25;
+                    if (instability > MAX_INSTABILITY) instability = MAX_INSTABILITY;
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                     markDirty();
                     break;
@@ -573,7 +602,7 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
         }
         onInfusionInterrupted();
         if (vat != null) {
-            vat.selfInfusions = new int[12];
+            vat.selfInfusions = new int[TileVat.SELF_INFUSION_SLOTS];
             vat.setEntityContained(null);
             vat.mode = 0;
             vat.markDirty();
@@ -598,22 +627,25 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
                 if ((Integer) out < 0) {
                     created = (EntityLivingBase) net.minecraft.entity.EntityList
                             .createEntityByID(-(Integer) out, worldObj);
+                } else {
+                    final ModContainer mc = Loader.instance().getIndexedModList().get("ThaumicHorizons");
+                    try {
+                        created = (EntityLivingBase) EntityRegistry.instance().lookupModSpawn(mc, (Integer) out)
+                                .getEntityClass().getConstructor(World.class).newInstance(worldObj);
+                    } catch (InvocationTargetException e) {
+                        e.getCause().printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                final ModContainer mc = Loader.instance().getIndexedModList().get("ThaumicHorizons");
-                try {
-                    created = (EntityLivingBase) EntityRegistry.instance().lookupModSpawn(mc, (Integer) out)
-                            .getEntityClass().getConstructor(World.class).newInstance(worldObj);
-                } catch (InvocationTargetException e) {
-                    e.getCause().printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (created != null) {
+                    created.copyLocationAndAnglesFrom(vat.getEntityContained());
+                    created.copyDataFrom(vat.getEntityContained(), true);
+                    if (created instanceof IEntityInfusedStats) {
+                        ((IEntityInfusedStats) created).resetStats();
+                    }
+                    vat.setEntityContained(created);
                 }
-                created.copyLocationAndAnglesFrom(vat.getEntityContained());
-                created.copyDataFrom(vat.getEntityContained(), true);
-                if (created instanceof IEntityInfusedStats) {
-                    ((IEntityInfusedStats) created).resetStats();
-                }
-                vat.setEntityContained(created);
             } else if (out instanceof NBTBase) {
                 final NBTTagCompound tagMods = (NBTTagCompound) out;
                 final Multimap<String, net.minecraft.entity.ai.attributes.AttributeModifier> map = HashMultimap
@@ -693,7 +725,7 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
         recipePlayer = null;
         recipeOutputLabel = "";
         instability = 0;
-        selfInfusionHealth = 20f;
+        selfInfusionHealth = SELF_INFUSION_INITIAL_HEALTH;
         itemCount = 0;
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         markDirty();
@@ -713,7 +745,7 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
         }
         if (craftCount == 0) {
             worldObj.playSound(xCoord, yCoord, zCoord, "thaumcraft:infuserstart", 0.5f, 1f, false);
-        } else if (craftCount % 65 == 0) {
+        } else if (craftCount % INFUSER_SOUND_INTERVAL == 0) {
             worldObj.playSound(xCoord, yCoord, zCoord, "thaumcraft:infuser", 0.5f, 1f, false);
         }
         ++craftCount;
@@ -725,9 +757,9 @@ public class TileVatMatrix extends TileVisNode implements IWandable {
                 0.5f + worldObj.rand.nextFloat() * 0.2f,
                 0.1f,
                 0.7f + worldObj.rand.nextFloat() * 0.3f,
-                25,
+                INFUSER_PARTICLE_COUNT,
                 -0.03f);
-        if (instability > 0 && worldObj.rand.nextInt(200) <= instability) {
+        if (instability > 0 && worldObj.rand.nextInt(INSTABILITY_EFFECT_CHANCE) <= instability) {
             Thaumcraft.proxy.nodeBolt(
                     worldObj,
                     xCoord + 0.5f,

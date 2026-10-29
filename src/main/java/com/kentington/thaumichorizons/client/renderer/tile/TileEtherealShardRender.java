@@ -158,9 +158,7 @@ public class TileEtherealShardRender extends TileEntitySpecialRenderer {
             }
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1f);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
+        } catch (Exception ignored) {} finally {
             GL11.glPopMatrix();
         }
     }

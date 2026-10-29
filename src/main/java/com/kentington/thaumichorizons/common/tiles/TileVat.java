@@ -39,6 +39,24 @@ import thaumcraft.common.entities.golems.EntityGolemBase;
 
 public class TileVat extends TileThaumcraft implements IAspectContainer, IEssentiaTransport, ISidedInventory {
 
+    // Timers and progress values (in ticks)
+    private static final int CLONE_PROGRESS = 800;
+    private static final int HEAL_ASPECT_COOLDOWN = 40;
+    private static final int LIFE_ASPECT_COOLDOWN = 50;
+    private static final int EFFIGY_PROGRESS = 80;
+    private static final int BLOOD_SAMPLE_INITIAL_PROGRESS = 40;
+
+    // Healing amounts
+    private static final float STRONG_HEAL_AMOUNT = 8.0f;
+    private static final float WEAK_HEAL_AMOUNT = 4.0f;
+
+    // Essentia costs
+    private static final int EFFIGY_ESSENTIA_AMOUNT = 8;
+    private static final int BLOOD_SAMPLE_LIFE_COST = 4;
+
+    // Self-infusion slots
+    static final int SELF_INFUSION_SLOTS = 12;
+
     public int mode;
     AspectList myEssentia;
     AspectList essentiaDemanded;
@@ -47,7 +65,6 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
     public ItemStack nutrients;
     public int progress;
     private EntityLivingBase entityContained;
-    public final int CLONE_TIME = 800;
     public int[] selfInfusions;
     private NBTTagCompound entityNBTObj = null;
     private Boolean firstTick = true;
@@ -60,7 +77,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         this.sample = null;
         this.nutrients = null;
         this.entityContained = null;
-        this.selfInfusions = new int[12];
+        this.selfInfusions = new int[SELF_INFUSION_SLOTS];
     }
 
     public TileVatMatrix getMatrix() {
@@ -124,7 +141,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                             this.mode = 0;
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.selfInfusions = new int[12];
+                            this.selfInfusions = new int[SELF_INFUSION_SLOTS];
                             --possibleJar.stackSize;
                         }
                     } else {
@@ -191,22 +208,22 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()) {
                     if (this.getEntityContained().getCreatureAttribute() != EnumCreatureAttribute.UNDEAD) {
                         if (this.myEssentia.getAmount(Aspect.HEAL) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(8.0f);
+                            this.getEntityContained().heal(STRONG_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.HEAL, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 40;
+                            this.progress += HEAL_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.HEAL) < 1) {
                             this.essentiaDemanded.add(Aspect.HEAL, 1);
                         }
                         if (this.myEssentia.getAmount(Aspect.LIFE) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(4.0f);
+                            this.getEntityContained().heal(WEAK_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.LIFE, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 50;
+                            this.progress += LIFE_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.LIFE) < 1) {
@@ -214,22 +231,22 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         }
                     } else {
                         if (this.myEssentia.getAmount(Aspect.UNDEAD) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(8.0f);
+                            this.getEntityContained().heal(STRONG_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.UNDEAD, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 40;
+                            this.progress += HEAL_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.UNDEAD) < 1) {
                             this.essentiaDemanded.add(Aspect.UNDEAD, 1);
                         }
                         if (this.myEssentia.getAmount(Aspect.DEATH) > 0 && this.progress <= 0) {
-                            this.getEntityContained().heal(4.0f);
+                            this.getEntityContained().heal(WEAK_HEAL_AMOUNT);
                             this.myEssentia.remove(Aspect.DEATH, 1);
                             this.markDirty();
                             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                            this.progress += 50;
+                            this.progress += LIFE_ASPECT_COOLDOWN;
                         }
                         if (this.getEntityContained().getHealth() < this.getEntityContained().getMaxHealth()
                                 && this.essentiaDemanded.getAmount(Aspect.DEATH) < 1) {
@@ -273,13 +290,14 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 }
             } else if (this.sample != null && this.sample.getItem() == ThaumicHorizons.itemCorpseEffigy) {
                 this.mode = 3;
-                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, 8).add(Aspect.HEAL, 8);
-                this.progress = 80;
+                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, EFFIGY_ESSENTIA_AMOUNT)
+                        .add(Aspect.HEAL, EFFIGY_ESSENTIA_AMOUNT);
+                this.progress = EFFIGY_PROGRESS;
                 this.markDirty();
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             } else if (this.sample != null && this.nutrients != null) {
                 this.mode = 1;
-                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, 4);
+                this.essentiaDemanded = new AspectList().add(Aspect.LIFE, BLOOD_SAMPLE_LIFE_COST);
                 if (this.sample.getItem() == ThaumicHorizons.itemSyringeBloodSample && this.sample.hasTagCompound()
                         && this.sample.stackTagCompound.getCompoundTag("critter") != null
                         && this.sample.stackTagCompound.getCompoundTag("critter").getCompoundTag("ForgeData") != null) {
@@ -296,7 +314,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                         }
                     }
                 }
-                this.progress = 40;
+                this.progress = BLOOD_SAMPLE_INITIAL_PROGRESS;
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                 this.markDirty();
             }
@@ -333,7 +351,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 if (this.nutrients.stackSize <= 0) {
                     this.nutrients = null;
                 }
-                this.progress = 800;
+                this.progress = CLONE_PROGRESS;
                 this.essentiaDemanded = new AspectList();
                 this.myEssentia = new AspectList();
                 if (this.getEntityContained() == null) {
@@ -603,7 +621,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
                 }
             }
         }
-        this.selfInfusions = new int[12];
+        this.selfInfusions = new int[SELF_INFUSION_SLOTS];
         this.setEntityContained(null);
         this.mode = 0;
         this.currentlySucking = null;
@@ -707,7 +725,7 @@ public class TileVat extends TileThaumcraft implements IAspectContainer, IEssent
         this.nutrients = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag("nutrients"));
         this.selfInfusions = nbttagcompound.getIntArray("selfInfusions");
         if (this.selfInfusions.length == 0) {
-            this.selfInfusions = new int[12];
+            this.selfInfusions = new int[SELF_INFUSION_SLOTS];
         }
     }
 

@@ -85,10 +85,6 @@ public class ItemLensOrderEntropy extends Item implements ILens {
                         try {
                             text = stack.getDisplayName();
                         } catch (Exception ignored) {}
-                    } else if (stack.getItem() != null) {
-                        try {
-                            text = stack.getItem().getItemStackDisplayName(stack);
-                        } catch (Exception ignored) {}
                     }
                 }
                 if (scan.type == 2) {
