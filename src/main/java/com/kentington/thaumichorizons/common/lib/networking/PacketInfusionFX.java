@@ -4,12 +4,11 @@
 
 package com.kentington.thaumichorizons.common.lib.networking;
 
-import java.util.HashMap;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 
 import com.kentington.thaumichorizons.common.tiles.TileVat;
+import com.kentington.thaumichorizons.common.tiles.TileVatMatrix;
 import com.kentington.thaumichorizons.common.tiles.TileVatSlave;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -81,13 +80,17 @@ public class PacketInfusionFX implements IMessage, IMessageHandler<PacketInfusio
             if (is == null) {
                 return null;
             }
-            if (is.sourceFX.containsKey(key)) {
-                final TileVat.SourceFX sf = is.sourceFX.get(key);
+            final TileVatMatrix matrix = is.getMatrix();
+            if (matrix == null) {
+                return null;
+            }
+            if (matrix.sourceFX.containsKey(key)) {
+                final TileVatMatrix.SourceFX sf = matrix.sourceFX.get(key);
                 sf.ticks = count;
-                is.sourceFX.put(key, sf);
+                matrix.sourceFX.put(key, sf);
             } else {
-                final HashMap<String, TileVat.SourceFX> sourceFX = is.sourceFX;
-                sourceFX.put(key, new TileVat.SourceFX(new ChunkCoordinates(tx, ty, tz), count, message.color));
+                matrix.sourceFX
+                        .put(key, new TileVatMatrix.SourceFX(new ChunkCoordinates(tx, ty, tz), count, message.color));
             }
         }
         return null;
