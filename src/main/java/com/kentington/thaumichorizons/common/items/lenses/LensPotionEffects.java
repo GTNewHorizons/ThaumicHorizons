@@ -1,5 +1,6 @@
 package com.kentington.thaumichorizons.common.items.lenses;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
 public class LensPotionEffects {
@@ -15,6 +16,11 @@ public class LensPotionEffects {
         public LensNightVision(int potionID, int duration, int amplifier, boolean isAmbient) {
             super(potionID, duration, amplifier, isAmbient);
             isGrantedByLens = true;
+        }
+
+        @Override
+        public boolean isCurativeItem(ItemStack stack) {
+            return !isGrantedByLens && super.isCurativeItem(stack);
         }
 
         public void combine(PotionEffect effect) {
