@@ -322,6 +322,7 @@ public class RenderEventHandler {
         float currentRot = -90.0f * RenderEventHandler.radialHudScale;
         final float pieSlice = 360.0f / this.foci.size();
         String key = this.foci.firstKey();
+        boolean hoveredAny = false;
         for (int a = 0; a < this.foci.size(); ++a) {
             final FocusRenderInfo renderInfo = this.foci.get(key);
             final double xx = MathHelper.cos(currentRot / 180.0f * (float) Math.PI) * width;
@@ -344,6 +345,7 @@ public class RenderEventHandler {
                 final int mx2 = (int) (i - sw / 2.0 - scaledXX);
                 final int my2 = (int) (j - sh / 2.0 - scaledYY);
                 if (mx2 >= -10 && mx2 <= 10 && my2 >= -10 && my2 <= 10) {
+                    hoveredAny = true;
                     renderInfo.hover = true;
                     tt = renderInfo.item;
                     if (k == 0) {
@@ -362,6 +364,15 @@ public class RenderEventHandler {
                 }
             }
             key = this.foci.higherKey(key);
+        }
+        if (Mouse.getEventButton() == 0 && !hoveredAny && THKeyHandler.radialActive && !THKeyHandler.radialLock) {
+            THKeyHandler.radialActive = false;
+            THKeyHandler.radialLock = true;
+            THKeyHandler.radialSelectionMade = true;
+            if (!mc.inGameHasFocus) {
+                mc.inGameHasFocus = true;
+                mc.mouseHelper.grabMouseCursor();
+            }
         }
         GL11.glPopMatrix();
         if (tt != null) {
