@@ -28,6 +28,11 @@ public class ItemLensEarth extends Item implements ILens {
         return "LensEarth";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     public void handleRender(final Minecraft mc, final float partialTicks) {}
 
     public String getUnlocalizedName(final ItemStack par1ItemStack) {

@@ -38,8 +38,11 @@ public class PacketHandler {
         PacketHandler.INSTANCE.registerMessage(PacketNoMoreItems.class, PacketNoMoreItems.class, idx++, Side.CLIENT);
         PacketHandler.INSTANCE
                 .registerMessage(PacketFXBlocksplosion.class, PacketFXBlocksplosion.class, idx++, Side.CLIENT);
-        PacketHandler.INSTANCE
-                .registerMessage(PacketRemoveNightvision.class, PacketRemoveNightvision.class, idx++, Side.CLIENT);
+        PacketHandler.INSTANCE.registerMessage(
+                PacketRemoveLensNightvision.class,
+                PacketRemoveLensNightvision.class,
+                idx++,
+                Side.CLIENT);
         PacketHandler.INSTANCE
                 .registerMessage(PacketFingersToServer.class, PacketFingersToServer.class, idx++, Side.SERVER);
         PacketHandler.INSTANCE
@@ -53,32 +56,24 @@ public class PacketHandler {
                 PacketToggleInvisibleToServer.class,
                 idx++,
                 Side.SERVER);
-        PacketHandler.INSTANCE.registerMessage(PacketRainState.class, PacketRainState.class, idx++, Side.CLIENT);
+        PacketHandler.INSTANCE.registerMessage(PacketRainState.class, PacketRainState.class, idx, Side.CLIENT);
     }
 
     static {
         INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel("ThaumicHorizons".toLowerCase());
     }
 
-    private static void securityWarn(String message, Object... args) {
-        ThaumicHorizons.log.warn(SECURITY_MARKER, message, args);
-    }
-
-    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int sentPlayerID,
-            int requiredInfusion) {
+    static boolean selfInfusionSecurityCheck(final MessageContext ctx, String action, int requiredInfusion) {
         final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-        if (player.getEntityId() != sentPlayerID) {
-            PacketHandler.securityWarn("Player {} tried to {} for other people!", player.getGameProfile(), action);
-            return false;
-        }
         EntityInfusionProperties ieep = (EntityInfusionProperties) player.getExtendedProperties("CreatureInfusion");
         if (!ieep.hasInfusion(requiredInfusion)) {
-            PacketHandler.securityWarn(
-                    "Player {} tried to {} getting the ability legitimately",
+            ThaumicHorizons.log.warn(
+                    SECURITY_MARKER,
+                    "Player {} tried to {} without getting the ability legitimately",
                     player.getGameProfile(),
                     action);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
