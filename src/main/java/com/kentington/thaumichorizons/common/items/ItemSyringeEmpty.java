@@ -4,7 +4,10 @@
 
 package com.kentington.thaumichorizons.common.items;
 
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -43,6 +46,11 @@ public class ItemSyringeEmpty extends Item {
         return this.icon;
     }
 
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(final Item par1, final CreativeTabs par2CreativeTabs, final List par3List) {
+        par3List.add(new ItemStack(this, 1, 2));
+    }
+
     public String getUnlocalizedName(final ItemStack par1ItemStack) {
         return "item.syringeEmpty";
     }
@@ -60,6 +68,11 @@ public class ItemSyringeEmpty extends Item {
                 final NBTTagCompound critterTag = new NBTTagCompound();
                 critter.writeToNBT(critterTag);
                 critterTag.setString("id", EntityList.getEntityString(ent));
+                // Strip inventory-related tags - a blood sample should only carry genetic data
+                critterTag.removeTag("Items");
+                critterTag.removeTag("ArmorItem");
+                critterTag.removeTag("SaddleItem");
+                critterTag.removeTag("ChestedHorse");
                 bloodSample.stackTagCompound.setString("critterName", ent.getCommandSenderName());
                 bloodSample.stackTagCompound.setTag("critter", critterTag);
                 if (p.inventory.addItemStackToInventory(bloodSample)) {

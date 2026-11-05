@@ -35,7 +35,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
@@ -78,6 +80,17 @@ public class PocketPlaneData {
         return a.intValue() > a.floatValue() ? a.intValue() - 1 : a.intValue();
     }
 
+    /**
+     * Sets the block directly in the chunk for significant performance boost
+     */
+    private static void setBlock(World world, int x, int y, int z, Block blockIn, int metadataIn) {
+        WorldServer server = (WorldServer) world;
+        Chunk chunk = server.theChunkProviderServer.loadChunk(x >> 4, z >> 4);
+        chunk.func_150807_a(x & 15, y, z & 15, blockIn, metadataIn);
+        chunk.setChunkModified();
+    }
+
+    // TODO: Make pocket planes generate chunk-by-chunk using normal chunk generation
     public static void generatePocketPlane(final AspectList aspects, final PocketPlaneData data, final World world,
             final int vortexX, final int vortexY, final int vortexZ, final int returnID) {
         if (!world.isRemote) {
@@ -106,12 +119,12 @@ public class PocketPlaneData {
             drawSphere(xCenter, yCenter, zCenter, data.radius, ThaumicHorizons.blockVoid, 0, world);
             for (int x = -2; x <= 2; ++x) {
                 for (int z = -2; z <= 2; ++z) {
-                    world.setBlock(xCenter + x, yCenter, zCenter + z, ConfigBlocks.blockCosmeticSolid, 6, 0);
+                    setBlock(world, xCenter + x, yCenter, zCenter + z, ConfigBlocks.blockCosmeticSolid, 6);
                     world.setBlockToAir(xCenter + x, yCenter + 1, zCenter + z);
                     world.setBlockToAir(xCenter + x, yCenter + 2, zCenter + z);
                 }
             }
-            world.setBlock(xCenter, yCenter + 1, zCenter, ThaumicHorizons.blockVortex);
+            setBlock(world, xCenter, yCenter + 1, zCenter, ThaumicHorizons.blockVortex, 0);
             TileEntity te = world.getTileEntity(xCenter, yCenter + 1, zCenter);
             if (!(te instanceof TileVortex)) {
                 te = new TileVortex();
@@ -332,6 +345,7 @@ public class PocketPlaneData {
             level -= fastFloor((aspectFraction(Aspect.CLOTH, aspects) * data.radius));
             drewAnything = true;
         }
+
         if (aspects.getAmount(Aspect.EARTH) > 0) {
             if (bio == BiomeGenBase.desert) {
                 drawLayer(xCenter, yCenter, zCenter, data, world, Blocks.sand, 0, level, noise, bio, life, aspects);
@@ -427,13 +441,13 @@ public class PocketPlaneData {
                     if (top != bottom && level + y > 0) {
                         if (y == top) {
                             if (block != null) {
-                                world.setBlock(x + xCenter, y + level, z + zCenter, block, md, 0);
+                                setBlock(world, x + xCenter, y + level, z + zCenter, block, md);
                             }
                             if (block == Blocks.water) {
                                 if (bio != null && bio.getTempCategory() == BiomeGenBase.TempCategory.COLD) {
-                                    world.setBlock(x + xCenter, y + level, z + zCenter, Blocks.ice, 0, 0);
+                                    setBlock(world, x + xCenter, y + level, z + zCenter, Blocks.ice, 0);
                                 } else {
-                                    world.setBlock(x + xCenter, y + level, z + zCenter, block, 0, 0);
+                                    setBlock(world, x + xCenter, y + level, z + zCenter, block, 0);
                                     if ((life > 40 || aspects.getAmount(Aspect.BEAST) > 0)
                                             && world.rand.nextInt(100) > 98
                                             && creatures < MAX_CREATURES) {
@@ -444,199 +458,199 @@ public class PocketPlaneData {
                                         ++creatures;
                                     }
                                     if (life > 0 && world.rand.nextInt(100) > 98) {
-                                        world.setBlock(x + xCenter, y + level + 1, z + zCenter, Blocks.waterlily, 0, 0);
+                                        setBlock(world, x + xCenter, y + level + 1, z + zCenter, Blocks.waterlily, 0);
                                     }
                                 }
                             } else if (block == Blocks.dirt) {
                                 if (life > 0 && world.isAirBlock(x + xCenter, y + level + 1, z + zCenter)) {
-                                    world.setBlock(x + xCenter, y + level, z + zCenter, Blocks.grass, 0, 0);
+                                    setBlock(world, x + xCenter, y + level, z + zCenter, Blocks.grass, 0);
                                     if (life >= 10) {
                                         if ((life >= 20 || aspects.getAmount(Aspect.CROP) > 0
                                                 || aspects.getAmount(Aspect.HARVEST) > 0)
                                                 && world.rand.nextInt(100) > 97) {
                                             switch (world.rand.nextInt(10)) {
                                                 case 0 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level,
                                                             z + zCenter,
                                                             Blocks.farmland,
-                                                            0,
                                                             0);
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.carrots,
-                                                            0,
                                                             0);
                                                 }
                                                 case 1 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level,
                                                             z + zCenter,
                                                             Blocks.farmland,
-                                                            0,
                                                             0);
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.potatoes,
-                                                            0,
                                                             0);
                                                 }
                                                 case 2 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level,
                                                             z + zCenter,
                                                             Blocks.farmland,
-                                                            0,
                                                             0);
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.wheat,
-                                                            0,
                                                             0);
                                                 }
                                                 case 3 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.melon_block,
-                                                            0,
                                                             0);
                                                 }
                                                 case 4 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.pumpkin,
-                                                            0,
                                                             0);
                                                 }
                                                 case 5 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.reeds,
-                                                            0,
                                                             0);
                                                 }
                                                 case 6 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level,
                                                             z + zCenter,
                                                             Blocks.mycelium,
-                                                            0,
                                                             0);
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.red_mushroom,
-                                                            0,
                                                             0);
                                                 }
                                                 case 7 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level,
                                                             z + zCenter,
                                                             Blocks.mycelium,
-                                                            0,
                                                             0);
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             Blocks.brown_mushroom,
-                                                            0,
                                                             0);
                                                 }
                                                 case 8 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             ConfigBlocks.blockCustomPlant,
-                                                            2,
-                                                            0);
+                                                            2);
                                                 }
                                                 case 9 -> {
-                                                    world.setBlock(
+                                                    setBlock(
+                                                            world,
                                                             x + xCenter,
                                                             y + level + 1,
                                                             z + zCenter,
                                                             ConfigBlocks.blockCustomPlant,
-                                                            5,
-                                                            0);
+                                                            5);
                                                 }
                                             }
                                         } else if ((life >= 15 || aspects.getAmount(Aspect.TREE) > 0)
                                                 && world.rand.nextInt(100) > 97) {
                                                     switch (world.rand.nextInt(10)) {
                                                         case 0 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    0,
                                                                     0);
                                                         }
                                                         case 1 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    1,
-                                                                    0);
+                                                                    1);
                                                         }
                                                         case 2 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    2,
-                                                                    0);
+                                                                    2);
                                                         }
                                                         case 3 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    3,
-                                                                    0);
+                                                                    3);
                                                         }
                                                         case 4 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    4,
-                                                                    0);
+                                                                    4);
                                                         }
                                                         case 5 -> {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.sapling,
-                                                                    5,
-                                                                    0);
+                                                                    5);
                                                         }
                                                         case 6 -> {
                                                             if (((bio != null
@@ -644,24 +658,24 @@ public class PocketPlaneData {
                                                                     || aspects.getAmount(Aspect.MAGIC) > 10
                                                                     || aspects.getAmount(Aspect.AURA) > 5)
                                                                     && world.rand.nextInt(4) == 0) {
-                                                                world.setBlock(
+                                                                setBlock(
+                                                                        world,
                                                                         x + xCenter,
                                                                         y + level + 1,
                                                                         z + zCenter,
                                                                         ConfigBlocks.blockCustomPlant,
-                                                                        1,
-                                                                        0);
+                                                                        1);
                                                                 break;
                                                             }
                                                         }
                                                         case 7 -> {
                                                             if (world.rand.nextInt(3) == 0) {
-                                                                world.setBlock(
+                                                                setBlock(
+                                                                        world,
                                                                         x + xCenter,
                                                                         y + level + 1,
                                                                         z + zCenter,
                                                                         ConfigBlocks.blockCustomPlant,
-                                                                        0,
                                                                         0);
                                                                 break;
                                                             }
@@ -672,40 +686,40 @@ public class PocketPlaneData {
                                                     && world.rand.nextInt(100) > 94) {
                                                         final int random = world.rand.nextInt(18);
                                                         if (random <= 15) {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.red_flower,
-                                                                    random,
-                                                                    0);
+                                                                    random);
                                                         } else {
-                                                            world.setBlock(
+                                                            setBlock(
+                                                                    world,
                                                                     x + xCenter,
                                                                     y + level + 1,
                                                                     z + zCenter,
                                                                     Blocks.tallgrass,
-                                                                    random - 16,
-                                                                    0);
+                                                                    random - 16);
                                                         }
                                                     }
                                     }
                                 } else {
-                                    world.setBlock(x + xCenter, y + level, z + zCenter, block, 0, 0);
+                                    setBlock(world, x + xCenter, y + level, z + zCenter, block, 0);
                                 }
                             } else if (block == Blocks.sand) {
-                                world.setBlock(x + xCenter, y + level, z + zCenter, block, 0, 0);
+                                setBlock(world, x + xCenter, y + level, z + zCenter, block, 0);
                                 if (life > 10) {
                                     if (life >= 20 && world.rand.nextInt(100) > 98) {
-                                        world.setBlock(
+                                        setBlock(
+                                                world,
                                                 x + xCenter,
                                                 y + level + 1,
                                                 z + zCenter,
                                                 ConfigBlocks.blockCustomPlant,
-                                                3,
-                                                0);
+                                                3);
                                     } else if (world.rand.nextInt(100) > 97) {
-                                        world.setBlock(x + xCenter, y + level + 1, z + zCenter, Blocks.cactus, 0, 0);
+                                        setBlock(world, x + xCenter, y + level + 1, z + zCenter, Blocks.cactus, 0);
                                     }
                                 }
                             } else if (block == ConfigBlocks.blockTaint && md == 2 && world.rand.nextInt(300) > 298) {
@@ -713,12 +727,12 @@ public class PocketPlaneData {
                                     for (int ecks = 0; ecks < 3; ++ecks) {
                                         for (int zee = 0; zee < 2; ++zee) {
                                             for (int why = 0; why < 2; ++why) {
-                                                world.setBlock(
+                                                setBlock(
+                                                        world,
                                                         x + xCenter + ecks,
                                                         y + level + why,
                                                         z + zCenter + zee,
                                                         ThaumicHorizons.blockBrain,
-                                                        0,
                                                         0);
                                             }
                                         }
@@ -727,12 +741,12 @@ public class PocketPlaneData {
                                     for (int ecks = 0; ecks < 2; ++ecks) {
                                         for (int zee = 0; zee < 3; ++zee) {
                                             for (int why = 0; why < 2; ++why) {
-                                                world.setBlock(
+                                                setBlock(
+                                                        world,
                                                         x + xCenter + ecks,
                                                         y + level + why,
                                                         z + zCenter + zee,
                                                         ThaumicHorizons.blockBrain,
-                                                        0,
                                                         0);
                                             }
                                         }
@@ -741,7 +755,7 @@ public class PocketPlaneData {
                             }
                             if (bio != null && block.isNormalCube()
                                     && bio.getTempCategory() == BiomeGenBase.TempCategory.COLD) {
-                                world.setBlock(x + xCenter, y + level + 1, z + zCenter, Blocks.snow_layer, 1, 0);
+                                setBlock(world, x + xCenter, y + level + 1, z + zCenter, Blocks.snow_layer, 1);
                             }
                             if ((life >= 50 || aspects.getAmount(Aspect.BEAST) > 0) && world.rand.nextInt(100) > 98) {
                                 EntityLiving critter = null;
@@ -799,52 +813,46 @@ public class PocketPlaneData {
                                 ++creatures;
                             }
                             if (aspects.getAmount(Aspect.ELDRITCH) > 0 && world.rand.nextInt(200) > 198) {
-                                world.setBlock(
+                                setBlock(
+                                        world,
                                         x + xCenter,
                                         y + level,
                                         z + zCenter,
                                         ConfigBlocks.blockCosmeticSolid,
-                                        1,
-                                        0);
-                                world.setBlock(
+                                        1);
+                                setBlock(
+                                        world,
                                         x + xCenter,
                                         y + level + 1,
                                         z + zCenter,
                                         ConfigBlocks.blockCosmeticSolid,
-                                        0,
                                         0);
-                                world.setBlock(
+                                setBlock(
+                                        world,
                                         x + xCenter,
                                         y + level + 2,
                                         z + zCenter,
                                         ConfigBlocks.blockCosmeticSolid,
-                                        0,
                                         0);
-                                world.setBlock(
+                                setBlock(
+                                        world,
                                         x + xCenter,
                                         y + level + 3,
                                         z + zCenter,
                                         ConfigBlocks.blockCosmeticSolid,
-                                        0,
                                         0);
                             }
                             if (aspects.getAmount(Aspect.CRAFT) > 0 && world.rand.nextInt(200) > 198) {
-                                world.setBlock(
+                                setBlock(
+                                        world,
                                         x + xCenter,
                                         y + level + 1,
                                         z + zCenter,
                                         ConfigBlocks.blockStoneDevice,
-                                        1,
-                                        0);
+                                        1);
                             }
                             if (aspects.getAmount(Aspect.TAINT) > 0 && world.rand.nextInt(100) > 98) {
-                                world.setBlock(
-                                        x + xCenter,
-                                        y + level,
-                                        z + zCenter,
-                                        ConfigBlocks.blockTaintFibres,
-                                        0,
-                                        0);
+                                setBlock(world, x + xCenter, y + level, z + zCenter, ConfigBlocks.blockTaintFibres, 0);
                             }
                             if (aspects.getAmount(Aspect.TAINT) > 0 && world.rand.nextInt(200) > 198
                                     && creatures < MAX_CREATURES) {
@@ -861,7 +869,7 @@ public class PocketPlaneData {
                                 ++creatures;
                             }
                         } else if (block != null) {
-                            world.setBlock(x + xCenter, y + level, z + zCenter, block, md, 0);
+                            setBlock(world, x + xCenter, y + level, z + zCenter, block, md);
                         }
                     }
                 }
@@ -988,114 +996,114 @@ public class PocketPlaneData {
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z) != Blocks.water) {
                                 if (whichAspect == Aspect.EARTH) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            3,
-                                            0);
+                                            3);
                                 } else if (whichAspect == Aspect.AIR) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            0,
                                             0);
                                 } else if (whichAspect == Aspect.WATER) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            2,
-                                            0);
+                                            2);
                                 } else if (whichAspect == Aspect.FIRE) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            1,
-                                            0);
+                                            1);
                                 } else if (whichAspect == Aspect.ORDER) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            4,
-                                            0);
+                                            4);
                                 } else if (whichAspect == Aspect.ENTROPY) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             ConfigBlocks.blockCrystal,
-                                            5,
-                                            0);
+                                            5);
                                 } else if (whichAspect == Aspect.DEATH || whichAspect == Aspect.UNDEAD) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             Blocks.skull,
-                                            0,
                                             0);
                                 } else if (whichAspect == Aspect.SENSES) {
-                                    world.setBlock(
+                                    setBlock(
+                                            world,
                                             xCenter - xSize + xOffset + x,
                                             yCenter + yOffset + y,
                                             zCenter - zSize + zOffset + z,
                                             Blocks.lapis_block,
-                                            0,
                                             0);
                                 } else if (whichAspect == Aspect.GREED) {
                                     if (world.rand.nextBoolean()) {
-                                        world.setBlock(
+                                        setBlock(
+                                                world,
                                                 xCenter - xSize + xOffset + x,
                                                 yCenter + yOffset + y,
                                                 zCenter - zSize + zOffset + z,
                                                 Blocks.gold_block,
-                                                0,
                                                 0);
                                     } else {
-                                        world.setBlock(
+                                        setBlock(
+                                                world,
                                                 xCenter - xSize + xOffset + x,
                                                 yCenter + yOffset + y,
                                                 zCenter - zSize + zOffset + z,
                                                 Blocks.emerald_block,
-                                                0,
                                                 0);
                                     }
                                 } else if (whichAspect == Aspect.METAL) {
                                     if (world.rand.nextBoolean()) {
-                                        world.setBlock(
+                                        setBlock(
+                                                world,
                                                 xCenter - xSize + xOffset + x,
                                                 yCenter + yOffset + y,
                                                 zCenter - zSize + zOffset + z,
                                                 Blocks.gold_block,
-                                                0,
                                                 0);
                                     } else {
-                                        world.setBlock(
+                                        setBlock(
+                                                world,
                                                 xCenter - xSize + xOffset + x,
                                                 yCenter + yOffset + y,
                                                 zCenter - zSize + zOffset + z,
                                                 Blocks.iron_block,
-                                                0,
                                                 0);
                                     }
                                 }
                             }
                         } else {
-                            world.setBlock(
+                            setBlock(
+                                    world,
                                     xCenter - xSize + xOffset + x,
                                     yCenter + yOffset + y,
                                     zCenter - zSize + zOffset + z,
                                     Blocks.air,
-                                    0,
                                     0);
                         }
                     }
@@ -1395,13 +1403,13 @@ public class PocketPlaneData {
                                     xCenter - xSize + xOffset + x,
                                     yCenter + yOffset + y,
                                     zCenter - zSize + zOffset + z) != Blocks.water) {
-                        world.setBlock(
+                        setBlock(
+                                world,
                                 xCenter - xSize + xOffset + x,
                                 yCenter + yOffset + y,
                                 zCenter - zSize + zOffset + z,
                                 block,
-                                md,
-                                0);
+                                md);
                     }
                 }
             }
@@ -1478,38 +1486,38 @@ public class PocketPlaneData {
         int z = 0;
         int radiusError = error0;
         while (x >= z) {
-            world.setBlock(x0 + x, y0 + y1, z0 + z, block, md, 0);
-            world.setBlock(x0 + z, y0 + y1, z0 + x, block, md, 0);
-            world.setBlock(x0 - x, y0 + y1, z0 + z, block, md, 0);
-            world.setBlock(x0 - z, y0 + y1, z0 + x, block, md, 0);
-            world.setBlock(x0 - x, y0 + y1, z0 - z, block, md, 0);
-            world.setBlock(x0 - z, y0 + y1, z0 - x, block, md, 0);
-            world.setBlock(x0 + x, y0 + y1, z0 - z, block, md, 0);
-            world.setBlock(x0 + z, y0 + y1, z0 - x, block, md, 0);
-            world.setBlock(x0 + x, y0 - y1, z0 + z, block, md, 0);
-            world.setBlock(x0 + z, y0 - y1, z0 + x, block, md, 0);
-            world.setBlock(x0 - x, y0 - y1, z0 + z, block, md, 0);
-            world.setBlock(x0 - z, y0 - y1, z0 + x, block, md, 0);
-            world.setBlock(x0 - x, y0 - y1, z0 - z, block, md, 0);
-            world.setBlock(x0 - z, y0 - y1, z0 - x, block, md, 0);
-            world.setBlock(x0 + x, y0 - y1, z0 - z, block, md, 0);
-            world.setBlock(x0 + z, y0 - y1, z0 - x, block, md, 0);
-            world.setBlock(x0 + y1, y0 + x, z0 + z, block, md, 0);
-            world.setBlock(x0 + z, y0 + x, z0 + y1, block, md, 0);
-            world.setBlock(x0 - y1, y0 + x, z0 + z, block, md, 0);
-            world.setBlock(x0 - z, y0 + x, z0 + y1, block, md, 0);
-            world.setBlock(x0 + y1, y0 + x, z0 - z, block, md, 0);
-            world.setBlock(x0 + z, y0 + x, z0 - y1, block, md, 0);
-            world.setBlock(x0 - y1, y0 + x, z0 - z, block, md, 0);
-            world.setBlock(x0 - z, y0 + x, z0 - y1, block, md, 0);
-            world.setBlock(x0 + y1, y0 - x, z0 + z, block, md, 0);
-            world.setBlock(x0 + z, y0 - x, z0 + y1, block, md, 0);
-            world.setBlock(x0 - y1, y0 - x, z0 + z, block, md, 0);
-            world.setBlock(x0 - z, y0 - x, z0 + y1, block, md, 0);
-            world.setBlock(x0 + y1, y0 - x, z0 - z, block, md, 0);
-            world.setBlock(x0 + z, y0 - x, z0 - y1, block, md, 0);
-            world.setBlock(x0 - y1, y0 - x, z0 - z, block, md, 0);
-            world.setBlock(x0 - z, y0 - x, z0 - y1, block, md, 0);
+            setBlock(world, x0 + x, y0 + y1, z0 + z, block, md);
+            setBlock(world, x0 + z, y0 + y1, z0 + x, block, md);
+            setBlock(world, x0 - x, y0 + y1, z0 + z, block, md);
+            setBlock(world, x0 - z, y0 + y1, z0 + x, block, md);
+            setBlock(world, x0 - x, y0 + y1, z0 - z, block, md);
+            setBlock(world, x0 - z, y0 + y1, z0 - x, block, md);
+            setBlock(world, x0 + x, y0 + y1, z0 - z, block, md);
+            setBlock(world, x0 + z, y0 + y1, z0 - x, block, md);
+            setBlock(world, x0 + x, y0 - y1, z0 + z, block, md);
+            setBlock(world, x0 + z, y0 - y1, z0 + x, block, md);
+            setBlock(world, x0 - x, y0 - y1, z0 + z, block, md);
+            setBlock(world, x0 - z, y0 - y1, z0 + x, block, md);
+            setBlock(world, x0 - x, y0 - y1, z0 - z, block, md);
+            setBlock(world, x0 - z, y0 - y1, z0 - x, block, md);
+            setBlock(world, x0 + x, y0 - y1, z0 - z, block, md);
+            setBlock(world, x0 + z, y0 - y1, z0 - x, block, md);
+            setBlock(world, x0 + y1, y0 + x, z0 + z, block, md);
+            setBlock(world, x0 + z, y0 + x, z0 + y1, block, md);
+            setBlock(world, x0 - y1, y0 + x, z0 + z, block, md);
+            setBlock(world, x0 - z, y0 + x, z0 + y1, block, md);
+            setBlock(world, x0 + y1, y0 + x, z0 - z, block, md);
+            setBlock(world, x0 + z, y0 + x, z0 - y1, block, md);
+            setBlock(world, x0 - y1, y0 + x, z0 - z, block, md);
+            setBlock(world, x0 - z, y0 + x, z0 - y1, block, md);
+            setBlock(world, x0 + y1, y0 - x, z0 + z, block, md);
+            setBlock(world, x0 + z, y0 - x, z0 + y1, block, md);
+            setBlock(world, x0 - y1, y0 - x, z0 + z, block, md);
+            setBlock(world, x0 - z, y0 - x, z0 + y1, block, md);
+            setBlock(world, x0 + y1, y0 - x, z0 - z, block, md);
+            setBlock(world, x0 + z, y0 - x, z0 - y1, block, md);
+            setBlock(world, x0 - y1, y0 - x, z0 - z, block, md);
+            setBlock(world, x0 - z, y0 - x, z0 - y1, block, md);
             ++z;
             if (radiusError < 0) {
                 radiusError += 2 * z + 1;
@@ -1636,7 +1644,7 @@ public class PocketPlaneData {
         if (which == 1) {
             for (int x = -1; x <= 1; ++x) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(x, y, 256 * id + data.radius, ThaumicHorizons.blockVoid);
+                    setBlock(world, x, y, 256 * id + data.radius, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalA[0] = 0;
@@ -1645,7 +1653,7 @@ public class PocketPlaneData {
         } else if (which == 2) {
             for (int x = -1; x <= 1; ++x) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(x, y, 256 * id - data.radius, ThaumicHorizons.blockVoid);
+                    setBlock(world, x, y, 256 * id - data.radius, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalB[0] = 0;
@@ -1654,7 +1662,7 @@ public class PocketPlaneData {
         } else if (which == 3) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(data.radius, y, 256 * id + z, ThaumicHorizons.blockVoid);
+                    setBlock(world, data.radius, y, 256 * id + z, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalC[0] = 0;
@@ -1663,7 +1671,7 @@ public class PocketPlaneData {
         } else if (which == 4) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(-data.radius, y, 256 * id + z, ThaumicHorizons.blockVoid);
+                    setBlock(world, -data.radius, y, 256 * id + z, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalD[0] = 0;
@@ -1678,8 +1686,8 @@ public class PocketPlaneData {
         if (which == 1) {
             for (int x = -1; x <= 1; ++x) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(x, y, 256 * id + data.radius, ThaumicHorizons.blockPortal, 0, 3);
-                    world.setBlock(x, y, 256 * id + data.radius + 1, ThaumicHorizons.blockVoid);
+                    setBlock(world, x, y, 256 * id + data.radius, ThaumicHorizons.blockPortal, 0);
+                    setBlock(world, x, y, 256 * id + data.radius + 1, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalA[0] = xCoord;
@@ -1688,8 +1696,8 @@ public class PocketPlaneData {
         } else if (which == 2) {
             for (int x = -1; x <= 1; ++x) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(x, y, 256 * id - data.radius, ThaumicHorizons.blockPortal, 2, 3);
-                    world.setBlock(x, y, 256 * id - data.radius - 1, ThaumicHorizons.blockVoid);
+                    setBlock(world, x, y, 256 * id - data.radius, ThaumicHorizons.blockPortal, 2);
+                    setBlock(world, x, y, 256 * id - data.radius - 1, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalB[0] = xCoord;
@@ -1698,8 +1706,8 @@ public class PocketPlaneData {
         } else if (which == 3) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(data.radius, y, 256 * id + z, ThaumicHorizons.blockPortal, 1, 3);
-                    world.setBlock(data.radius + 1, y, 256 * id + z, ThaumicHorizons.blockVoid);
+                    setBlock(world, data.radius, y, 256 * id + z, ThaumicHorizons.blockPortal, 1);
+                    setBlock(world, data.radius + 1, y, 256 * id + z, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalC[0] = xCoord;
@@ -1708,8 +1716,8 @@ public class PocketPlaneData {
         } else if (which == 4) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = 126; y <= 128; ++y) {
-                    world.setBlock(-data.radius, y, 256 * id + z, ThaumicHorizons.blockPortal, 3, 3);
-                    world.setBlock(-data.radius - 1, y, 256 * id + z, ThaumicHorizons.blockVoid);
+                    setBlock(world, -data.radius, y, 256 * id + z, ThaumicHorizons.blockPortal, 3);
+                    setBlock(world, -data.radius - 1, y, 256 * id + z, ThaumicHorizons.blockVoid, 0);
                 }
             }
             data.portalD[0] = xCoord;
