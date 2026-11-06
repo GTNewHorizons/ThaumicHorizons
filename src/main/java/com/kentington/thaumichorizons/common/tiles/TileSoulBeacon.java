@@ -24,9 +24,8 @@ public class TileSoulBeacon extends TileThaumcraft {
     private long field_146016_i;
 
     public boolean activate(final EntityPlayer p) {
-        p.getEntityData().setBoolean("soulBeacon", true);
-        p.getEntityData().setIntArray("soulBeaconCoords", new int[] { this.xCoord, this.yCoord, this.zCoord });
         p.getEntityData().setInteger("soulBeaconDim", this.worldObj.provider.dimensionId);
+        p.getEntityData().setIntArray("soulBeaconCoords", new int[] { this.xCoord, this.yCoord, this.zCoord });
         p.addChatMessage(
                 new ChatComponentText(
                         EnumChatFormatting.ITALIC + ""
