@@ -92,7 +92,7 @@ public class CommonProxy implements IGuiHandler {
                 return new ContainerVat(player, (TileVat) world.getTileEntity(x, y, z));
             }
             case 8 -> {
-                return new ContainerCase(player.inventory, world, x, y, z);
+                return new ContainerCase(player.inventory, world);
             }
             case 9 -> {
                 return new ContainerFingers(player.inventory);

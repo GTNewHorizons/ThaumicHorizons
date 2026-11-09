@@ -45,13 +45,18 @@ public class ItemLensAir extends Item implements ILens {
         return "LensAir";
     }
 
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
     @SideOnly(Side.CLIENT)
     public void handleRender(final Minecraft mc, final float partialTicks) {
         if (mc.gameSettings.thirdPersonView > 0) {
             return;
         }
         final EntityPlayer player = mc.thePlayer;
-        final List<Entity> critters = (List<Entity>) player.worldObj.getEntitiesWithinAABBExcludingEntity(
+        final List<Entity> critters = player.worldObj.getEntitiesWithinAABBExcludingEntity(
                 mc.thePlayer,
                 AxisAlignedBB.getBoundingBox(
                         player.posX - 24.0,
@@ -121,7 +126,8 @@ public class ItemLensAir extends Item implements ILens {
                         numRipples = 4;
                     }
                     for (int i = 0; i < numRipples; ++i) {
-                        final double ripSize = size * ((i * 16 / (numRipples + 1) + sizeOffset) % 16.0f) / 12.0;
+                        final double ripSize = size * (((double) (i * 16) / (numRipples + 1) + sizeOffset) % 16.0f)
+                                / 12.0;
                         t.startDrawingQuads();
                         t.addVertexWithUV(xCenter - ripSize, yCenter + ripSize, 1.0, 0.0, 1.0);
                         t.addVertexWithUV(xCenter + ripSize, yCenter + ripSize, 1.0, 1.0, 1.0);
