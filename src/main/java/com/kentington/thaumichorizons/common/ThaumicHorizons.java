@@ -225,6 +225,7 @@ import com.kentington.thaumichorizons.common.tiles.TileVatSlave;
 import com.kentington.thaumichorizons.common.tiles.TileVisDynamo;
 import com.kentington.thaumichorizons.common.tiles.TileVortex;
 import com.kentington.thaumichorizons.common.tiles.TileVortexStabilizer;
+import com.ruling_0.materiallib.api.MaterialLibAPI;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -240,9 +241,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.enums.Materials;
-import gregtech.api.enums.OrePrefixes;
-import gregtech.api.util.GTOreDictUnificator;
+import gregtech.api.enums.materials.Materials;
+import gregtech.api.enums.materials.Shapes;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
@@ -2082,17 +2082,17 @@ public class ThaumicHorizons {
                                 .add(Aspect.AURA, 32).add(Aspect.MIND, 16).add(Aspect.ELDRITCH, 64),
                         new ItemStack(itemPlanarConduit),
                         new ItemStack[] { new ItemStack(ConfigItems.itemShard, 1, 6),
-                                GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Glass, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.InfusedOrder, 1L),
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.gemExquisite, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedOrder, Shapes.lens, 1),
                                 new ItemStack(ConfigItems.itemShard, 1, 6),
-                                GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Glass, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.InfusedOrder, 1L),
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.gemExquisite, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedOrder, Shapes.lens, 1),
                                 new ItemStack(ConfigItems.itemShard, 1, 6),
-                                GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Glass, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.InfusedOrder, 1L),
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.gemExquisite, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedOrder, Shapes.lens, 1),
                                 new ItemStack(ConfigItems.itemShard, 1, 6),
-                                GTOreDictUnificator.get(OrePrefixes.gemExquisite, Materials.Glass, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.InfusedOrder, 1L) });
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.gemExquisite, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedOrder, Shapes.lens, 1) });
                 recipeKeystone1 = ThaumcraftApi.addInfusionCraftingRecipe(
                         "planarKeystone",
                         new ItemStack(itemKeystone),
@@ -2102,11 +2102,11 @@ public class ThaumicHorizons {
                         new ItemStack(Items.ender_eye),
                         new ItemStack[] { new ItemStack(ConfigItems.itemShard, 1, 6),
                                 new ItemStack(ConfigItems.itemResource, 1, 3),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.Glass, 1L),
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.lens, 1),
                                 new ItemStack(ConfigItems.itemResource, 1, 3),
                                 new ItemStack(ConfigItems.itemShard, 1, 6),
                                 new ItemStack(ConfigItems.itemResource, 1, 3),
-                                GTOreDictUnificator.get(OrePrefixes.lens, Materials.Glass, 1L),
+                                MaterialLibAPI.getStack(Materials.Glass, Shapes.lens, 1),
                                 new ItemStack(ConfigItems.itemResource, 1, 3) });
                 recipeSlot = ThaumcraftApi.addInfusionCraftingRecipe(
                         "planarKeystone",
@@ -2115,18 +2115,18 @@ public class ThaumicHorizons {
                         (new AspectList()).add(Aspect.VOID, 48).add(Aspect.TRAVEL, 64).add(Aspect.AIR, 64)
                                 .add(Aspect.MECHANISM, 32).add(Aspect.ELDRITCH, 64).add(Aspect.MAGIC, 16),
                         new ItemStack(itemPlanarConduit),
-                        new ItemStack[] { GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Enderium, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.InfusedGold, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.InfusedGold, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Void, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.plateDense, Materials.Enderium, 1L),
-                                GTOreDictUnificator.get(OrePrefixes.screw, Materials.Titanium, 1L) });
+                        new ItemStack[] { MaterialLibAPI.getStack(Materials.Void, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Titanium, Shapes.screw, 1),
+                                MaterialLibAPI.getStack(Materials.Enderium, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Void, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedGold, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Titanium, Shapes.screw, 1),
+                                MaterialLibAPI.getStack(Materials.Void, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Titanium, Shapes.screw, 1),
+                                MaterialLibAPI.getStack(Materials.InfusedGold, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Void, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Enderium, Shapes.plateDense, 1),
+                                MaterialLibAPI.getStack(Materials.Titanium, Shapes.screw, 1) });
             } else {
                 recipeKeystone = ThaumcraftApi.addInfusionCraftingRecipe(
                         "pocketPlane",
