@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import com.kentington.thaumichorizons.common.ThaumicHorizons;
 import com.kentington.thaumichorizons.common.tiles.TileVat;
 import com.kentington.thaumichorizons.common.tiles.TileVatConnector;
+import com.kentington.thaumichorizons.common.tiles.TileVatMatrix;
 import com.kentington.thaumichorizons.common.tiles.TileVatSlave;
 
 import cpw.mods.fml.relauncher.Side;
@@ -65,7 +66,12 @@ public class BlockVat extends BlockContainer {
 
     public void breakBlock(final World world, final int x, final int y, final int z, final Block block, final int md) {
         if (md == 7) {
-            ((TileVat) world.getTileEntity(x, y, z)).killMe();
+            final TileVat vat = (TileVat) world.getTileEntity(x, y, z);
+            vat.killMe();
+            final net.minecraft.tileentity.TileEntity above = world.getTileEntity(x, y + 1, z);
+            if (above instanceof TileVatMatrix) {
+                ((TileVatMatrix) above).onInfusionInterrupted();
+            }
         } else {
             ((TileVatSlave) world.getTileEntity(x, y, z)).killMyBoss(md);
         }

@@ -102,11 +102,11 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
         float instability = 0.0f;
         float startUp = 0.0f;
         float craftCount = 0.0f;
-        if (vat != null) {
-            startUp = vat.startUp;
-            instability = vat.instability;
-            craftCount = vat.craftCount;
+        if (tile.crafting) {
+            startUp = 1.0f;
         }
+        instability = tile.instability;
+        craftCount = tile.craftCount;
         if (tile.getWorldObj() != null) {
             GL11.glRotatef(ticks % 360.0f * startUp, 0.0f, 1.0f, 0.0f);
         }
@@ -202,8 +202,8 @@ public class TileVatMatrixRender extends TileEntitySpecialRenderer {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
-        if (vat != null && vat.mode == 2) {
-            this.drawHalo(vat, par2, par4, par6, par8, vat.craftCount);
+        if (tile.crafting) {
+            this.drawHalo(vat, par2, par4, par6, par8, tile.craftCount);
         }
     }
 
