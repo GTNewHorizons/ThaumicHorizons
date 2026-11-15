@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -26,10 +28,11 @@ public class EntityEndersteed extends EntityHorse {
         this.initialized = false;
     }
 
+    @Override
     public void readEntityFromNBT(final NBTTagCompound p_70037_1_) {
         super.readEntityFromNBT(p_70037_1_);
         if (!(this.initialized = p_70037_1_.getBoolean("initialized"))) {
-            final Multimap map = HashMultimap.create();
+            final Multimap<String, AttributeModifier> map = HashMultimap.create();
             map.put("generic.movementSpeed", new AttributeModifier("generic.movementSpeed", 0.1, 1));
             map.put("horse.jumpStrength", new AttributeModifier("horse.jumpStrength", 0.25, 1));
             map.put("generic.maxHealth", new AttributeModifier("generic.maxHealth", 4.0, 1));
@@ -38,11 +41,13 @@ public class EntityEndersteed extends EntityHorse {
         }
     }
 
+    @Override
     public void writeEntityToNBT(final NBTTagCompound p_70014_1_) {
         super.writeEntityToNBT(p_70014_1_);
         p_70014_1_.setBoolean("initialized", this.initialized);
     }
 
+    @Override
     public void setJumpPower(final int p_110206_1_) {
         final double blocks = p_110206_1_ / 7.0;
         this.teleportTo(
@@ -51,11 +56,21 @@ public class EntityEndersteed extends EntityHorse {
                 this.posZ + blocks * Math.cos(Math.toRadians(this.rotationYaw)));
     }
 
+    @Override
     public String getCommandSenderName() {
         if (this.hasCustomNameTag()) {
             return this.getCustomNameTag();
         }
         return StatCollector.translateToLocal("entity.ThaumicHorizons.Endersteed.name");
+    }
+
+    @Override
+    public IChatComponent func_145748_c_() {
+        if (this.hasCustomNameTag()) {
+            return super.func_145748_c_();
+        } else {
+            return new ChatComponentTranslation("entity.ThaumicHorizons.Endersteed.name");
+        }
     }
 
     protected boolean teleportTo(final double p_70825_1_, final double p_70825_3_, final double p_70825_5_) {
