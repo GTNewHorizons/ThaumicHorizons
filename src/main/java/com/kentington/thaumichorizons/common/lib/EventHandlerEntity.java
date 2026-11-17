@@ -339,6 +339,7 @@ public class EventHandlerEntity {
                 }
             }
             if (prop.hasPlayerInfusion(6) && event.entity.ticksExisted % 200 == 0
+                    && player.getFoodStats().needFood()
                     && player.worldObj.isDaytime()
                     && player.worldObj.canBlockSeeTheSky(
                             MathHelper.floor_double(player.posX),
